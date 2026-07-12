@@ -4,10 +4,10 @@ import { COLORS, fontHead, fontBody } from "../../theme";
 export default function Step({ number, title, desc, accent }) {
   const circleStyle =
     accent === "filled"
-      ? { background: COLORS.burgundy, borderColor: COLORS.burgundy, color: "#fff" }
+      ? { background: COLORS.accent, borderColor: COLORS.accent, color: "#fff" }
       : accent === "burgundy"
-      ? { borderColor: COLORS.burgundy, color: COLORS.burgundy }
-      : { borderColor: COLORS.blue, color: COLORS.blue };
+      ? { borderColor: COLORS.accent, color: COLORS.accent }
+      : { borderColor: COLORS.primary, color: COLORS.primary };
 
   return (
     <div className="relative z-10 px-4 text-left">
@@ -17,10 +17,10 @@ export default function Step({ number, title, desc, accent }) {
       >
         {number}
       </div>
-      <h4 className="text-[17px] font-semibold mb-2" style={{ ...fontHead, color: COLORS.ink }}>
+      <h4 className="text-[17px] font-semibold mb-2" style={{ ...fontHead, color: COLORS.textDark }}>
         {title}
       </h4>
-      <p className="text-[14.5px] leading-relaxed" style={{ ...fontBody, color: COLORS.gray }}>
+      <p className="text-[14.5px] leading-relaxed" style={{ ...fontBody, color: COLORS.textMuted }}>
         {desc}
       </p>
     </div>

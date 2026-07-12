@@ -15,7 +15,7 @@ export default function Hero() {
     <header
       className="relative overflow-hidden text-white pb-16"
       style={{
-        background: `linear-gradient(135deg, ${COLORS.blue} 0%, #2A3FB0 45%, ${COLORS.burgundy} 100%)`,
+        background: `linear-gradient(135deg, ${COLORS.primary} 0%, #2A3FB0 45%, ${COLORS.accent} 100%)`,
         clipPath: "polygon(0 0, 100% 0, 100% 92%, 0 100%)",
       }}
     >
@@ -26,14 +26,14 @@ export default function Hero() {
             "radial-gradient(circle at 80% 20%, rgba(255,255,255,0.10), transparent 45%), radial-gradient(circle at 10% 90%, rgba(255,255,255,0.08), transparent 40%)",
         }}
       />
-      <div className="max-w-[1180px] mx-auto px-5 md:px-8 relative z-10">
+      <div className="max-w-295 mx-auto px-5 md:px-8 relative z-10">
         <div className="grid md:grid-cols-[1.05fr_0.95fr] gap-12 items-center pt-16 md:pt-20">
           <div>
             <div
               className="inline-flex items-center gap-2 bg-white/15 border border-white/30 px-4 py-1.5 rounded-full text-[13px] font-semibold tracking-wide mb-6"
               style={fontBody}
             >
-              <span className="w-[7px] h-[7px] rounded-full" style={{ background: "#FFD166" }} />
+              <span className="w-1.75 h-1.75 rounded-full" style={{ background: "#FFD166" }} />
               Built for university talent
             </div>
             <h1 className="text-4xl md:text-[50px] font-bold leading-[1.1] mb-5" style={fontHead}>
@@ -41,7 +41,7 @@ export default function Hero() {
               <br />
               Build Your <span style={{ color: "#FFD166" }}>Future.</span>
             </h1>
-            <p className="text-lg leading-relaxed max-w-[480px] mb-8 text-white/90" style={fontBody}>
+            <p className="text-lg leading-relaxed max-w-120 mb-8 text-white/90" style={fontBody}>
               UniHirex connects university students with recruiters, internships, and entry-level roles — one
               profile, every opportunity, zero guesswork.
             </p>
@@ -63,38 +63,38 @@ export default function Hero() {
             </div>
           </div>
 
-          <div className="relative h-[340px] md:h-[430px] mt-6 md:mt-0">
+          <div className="relative h-85 md:h-107.5 mt-6 md:mt-0">
             <FloatingCard
-              avatarGradient={`linear-gradient(135deg, ${COLORS.blueSoft}, ${COLORS.blue})`}
+              avatarGradient={`linear-gradient(135deg, ${COLORS.primaryLight}, ${COLORS.primary})`}
               name="Ayesha Khan"
               role="BSCS · IUB"
               extra={
                 <div className="h-1.5 bg-[#E7EAF3] rounded-full overflow-hidden mt-2.5">
-                  <div className="h-full rounded-full" style={{ width: "82%", background: COLORS.burgundy }} />
+                  <div className="h-full rounded-full" style={{ width: "82%", background: COLORS.accent }} />
                 </div>
               }
               tagBg="#EEF1FC"
-              tagColor={COLORS.blue}
+              tagColor={COLORS.primary}
               tagText="Profile 82% complete"
               floatClass="animate-[float1_6s_ease-in-out_infinite]"
               position={{ top: 0, left: "5%" }}
             />
             <FloatingCard
-              avatarGradient={`linear-gradient(135deg, ${COLORS.burgundySoft}, ${COLORS.burgundy})`}
+              avatarGradient={`linear-gradient(135deg, ${COLORS.accentLight}, ${COLORS.accent})`}
               name="Frontend Intern"
               role="Go Automation · Remote"
               tagBg="#F8ECF1"
-              tagColor={COLORS.burgundy}
+              tagColor={COLORS.accent}
               tagText="New match"
               floatClass="animate-[float2_7s_ease-in-out_infinite]"
               position={{ top: "34%", right: 0 }}
             />
             <FloatingCard
-              avatarGradient={`linear-gradient(135deg, ${COLORS.blueSoft}, ${COLORS.blue})`}
+              avatarGradient={`linear-gradient(135deg, ${COLORS.primaryLight}, ${COLORS.primary})`}
               name="Application shortlisted"
               role="CRM Automation Associate"
               tagBg="#EEF1FC"
-              tagColor={COLORS.blue}
+              tagColor={COLORS.primary}
               tagText="Interview invite sent"
               floatClass="animate-[float3_6.5s_ease-in-out_infinite]"
               position={{ bottom: 0, left: "12%" }}

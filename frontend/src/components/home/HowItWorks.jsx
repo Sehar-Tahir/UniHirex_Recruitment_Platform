@@ -30,8 +30,8 @@ const STEPS = [
 
 export default function HowItWorks() {
   return (
-    <section id="how" className="py-20 md:py-24" style={{ background: COLORS.light }}>
-      <div className="max-w-[1180px] mx-auto px-5 md:px-8">
+    <section id="how" className="py-20 md:py-24" style={{ background: COLORS.surfaceMuted }}>
+      <div className="max-w-295 mx-auto px-5 md:px-8">
         <SectionHead
           kicker="The journey"
           title="From profile to placement!"
@@ -39,7 +39,7 @@ export default function HowItWorks() {
         />
         <div className="relative grid md:grid-cols-4 gap-10 md:gap-0">
           <div
-            className="hidden md:block absolute top-7 left-[60px] right-[60px] h-0.5 z-0"
+            className="hidden md:block absolute top-7 left-15 right-15 h-0.5 z-0"
             style={{
               background:
                 "repeating-linear-gradient(to right, #C7CEE6 0, #C7CEE6 8px, transparent 8px, transparent 16px)",

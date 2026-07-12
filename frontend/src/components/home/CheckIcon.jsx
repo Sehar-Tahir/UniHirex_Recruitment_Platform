@@ -9,7 +9,7 @@ export default function CheckIcon({ color }) {
       fill="none"
       stroke={color}
       strokeWidth="2.4"
-      className="flex-shrink-0 mt-0.5"
+      className="shrink-0 mt-0.5"
     >
       <path d="M5 12l5 5L19 7" />
     </svg>

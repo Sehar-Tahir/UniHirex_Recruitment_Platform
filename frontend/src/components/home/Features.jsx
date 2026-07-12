@@ -15,8 +15,8 @@ const TILES = [
 
 export default function Features() {
   return (
-    <section id="features" className="py-20 md:py-24" style={{ background: COLORS.light }}>
-      <div className="max-w-[1180px] mx-auto px-5 md:px-8">
+    <section id="features" className="py-20 md:py-24" style={{ background: COLORS.surfaceMuted }}>
+      <div className="max-w-295 mx-auto px-5 md:px-8">
         <SectionHead
           kicker="Platform features"
           title="Everything a campus hire needs"

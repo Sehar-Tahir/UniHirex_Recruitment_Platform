@@ -15,11 +15,11 @@ export default function Button({ children, variant = "primary", href = "#", clas
 
   const style =
     variant === "primary"
-      ? { background: COLORS.burgundy }
+      ? { background: COLORS.accent }
       : variant === "outline"
-      ? { color: COLORS.blue }
+      ? { color: COLORS.primary }
       : variant === "white"
-      ? { background: "#fff", color: COLORS.burgundy }
+      ? { background: "#fff", color: COLORS.accent }
       : {};
 
   return (

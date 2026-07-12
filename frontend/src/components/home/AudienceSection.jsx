@@ -5,7 +5,7 @@ import AudienceCard from "./AudienceCard";
 export default function AudienceSection() {
   return (
     <section id="students" className="py-20 md:py-24">
-      <div className="max-w-[1180px] mx-auto px-5 md:px-8">
+      <div className="max-w-295 mx-auto px-5 md:px-8">
         <SectionHead
           kicker="Built for both sides"
           title="One platform, two clear paths"

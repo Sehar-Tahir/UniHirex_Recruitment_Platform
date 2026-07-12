@@ -71,13 +71,13 @@ const SOCIALS = [
 export default function Footer() {
   return (
     <footer className="pt-16 pb-7" style={{ background: "#15192B", color: "#9AA5BD" }}>
-      <div className="max-w-[1180px] mx-auto px-5 md:px-8">
+      <div className="max-w-295 mx-auto px-5 md:px-8">
         <div className="grid md:grid-cols-[1.4fr_1fr_1fr_1fr] gap-10 mb-12">
           <div>
             <div className="mb-3.5">
               <Logo dark />
             </div>
-            <p className="text-sm leading-relaxed max-w-[280px]" style={fontBody}>
+            <p className="text-sm leading-relaxed max-w-70" style={fontBody}>
               Connecting university students with recruiters, internships, and career opportunities — one profile
               at a time.
             </p>

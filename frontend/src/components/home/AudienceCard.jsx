@@ -16,14 +16,14 @@ export default function AudienceCard({ id, badge, title, desc, items, ctaLabel, 
     >
       <span
         className="inline-block text-xs font-bold tracking-wide uppercase px-3.5 py-1.5 rounded-full mb-5 text-white"
-        style={{ ...fontBody, background: isStudent ? COLORS.blue : COLORS.burgundy }}
+        style={{ ...fontBody, background: isStudent ? COLORS.primary : COLORS.accent }}
       >
         {badge}
       </span>
-      <h3 className="text-2xl font-semibold mb-3" style={{ ...fontHead, color: COLORS.ink }}>
+      <h3 className="text-2xl font-semibold mb-3" style={{ ...fontHead, color: COLORS.textDark }}>
         {title}
       </h3>
-      <p className="text-[15px] leading-relaxed mb-6" style={{ ...fontBody, color: COLORS.gray }}>
+      <p className="text-[15px] leading-relaxed mb-6" style={{ ...fontBody, color: COLORS.textMuted }}>
         {desc}
       </p>
       <ul className="mb-2">
@@ -31,9 +31,9 @@ export default function AudienceCard({ id, badge, title, desc, items, ctaLabel, 
           <li
             key={item}
             className="flex items-start gap-2.5 text-[14.5px] font-medium mb-3"
-            style={{ ...fontBody, color: COLORS.ink }}
+            style={{ ...fontBody, color: COLORS.textDark }}
           >
-            <CheckIcon color={isStudent ? COLORS.blue : COLORS.burgundy} />
+            <CheckIcon color={isStudent ? COLORS.primary : COLORS.accent} />
             {item}
           </li>
         ))}
