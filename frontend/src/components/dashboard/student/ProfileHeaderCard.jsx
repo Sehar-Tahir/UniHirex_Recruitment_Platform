@@ -1,0 +1,113 @@
+import React, { useState } from "react";
+import { COLORS, fontHead, fontBody } from "../../../theme";
+
+export default function ProfileHeaderCard({ profile, onSave }) {
+  const [editing, setEditing] = useState(false);
+  const [form, setForm] = useState(profile);
+
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    // TODO: upload to Cloudinary in Phase 2, for now just preview locally
+    const previewUrl = URL.createObjectURL(file);
+    setForm({ ...form, photoUrl: previewUrl });
+  };
+
+  const handleSave = () => {
+    onSave(form);
+    setEditing(false);
+  };
+
+  const fields = [
+    { key: "name", label: "Full Name" },
+    { key: "email", label: "Email" },
+    { key: "phone", label: "Phone" },
+    { key: "university", label: "University" },
+    { key: "department", label: "Department" },
+    { key: "semester", label: "Semester" },
+    { key: "cgpa", label: "CGPA" },
+  ];
+
+  return (
+    <div className="border border-[#ECEEF3] rounded-2xl p-6 bg-white">
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-[16px] font-semibold" style={{ ...fontHead, color: COLORS.textDark }}>
+          Basic Information
+        </h3>
+        {editing ? (
+          <div className="flex gap-3">
+            <button
+              onClick={() => { setForm(profile); setEditing(false); }}
+              className="text-[13.5px] font-semibold"
+              style={{ ...fontBody, color: COLORS.textMuted }}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSave}
+              className="text-[13.5px] font-semibold"
+              style={{ ...fontBody, color: COLORS.primary }}
+            >
+              Save
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => setEditing(true)}
+            className="text-[13.5px] font-semibold"
+            style={{ ...fontBody, color: COLORS.accent }}
+          >
+            Edit
+          </button>
+        )}
+      </div>
+
+      <div className="flex items-center gap-5 mb-6">
+        <div
+          className="w-20 h-20 rounded-full flex items-center justify-center overflow-hidden font-semibold text-2xl text-white shrink-0"
+          style={{ background: COLORS.primary }}
+        >
+          {form.photoUrl ? (
+            <img src={form.photoUrl} alt="Profile" className="w-full h-full object-cover" />
+          ) : (
+            form.name?.[0]?.toUpperCase() || "U"
+          )}
+        </div>
+        {editing && (
+          <label
+            className="text-[13.5px] font-semibold cursor-pointer"
+            style={{ ...fontBody, color: COLORS.primary }}
+          >
+            Change photo
+            <input type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
+          </label>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+        {fields.map((f) => (
+          <div key={f.key}>
+            <p className="text-[12.5px] font-medium mb-1" style={{ ...fontBody, color: COLORS.textMuted }}>
+              {f.label}
+            </p>
+            {editing ? (
+              <input
+                name={f.key}
+                value={form[f.key]}
+                onChange={handleChange}
+                className="w-full px-3 py-2 rounded-lg border-[1.5px] text-[14px] outline-none"
+                style={{ ...fontBody, borderColor: "#D7DEF5" }}
+              />
+            ) : (
+              <p className="text-[14.5px] font-medium" style={{ ...fontBody, color: COLORS.textDark }}>
+                {form[f.key]}
+              </p>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
