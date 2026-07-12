@@ -3,9 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { COLORS, fontBody } from "../../theme";
 import AuthLayout from "../../components/auth/AuthLayout";
 import FormInput from "../../components/auth/FormInput";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [form, setForm] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
 
@@ -26,9 +28,11 @@ export default function Login() {
     const errs = validate();
     setErrors(errs);
     if (Object.keys(errs).length === 0) {
-      // TODO: connect to backend login API (Phase 2) — will return role + JWT
-      console.log("Logging in", form);
-      navigate("/dashboard"); // placeholder until role-based redirect exists
+      // TODO: replace with real backend login API (Phase 2) — will return role + JWT
+      // For now, dummy login: treat every email as a student account
+      const dummyUser = { name: form.email.split("@")[0], email: form.email, role: "student" };
+      login(dummyUser);
+      navigate(`/${dummyUser.role}/dashboard`);
     }
   };
 

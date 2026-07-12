@@ -50,7 +50,7 @@ export default function Register() {
           name="name"
           value={form.name}
           onChange={handleChange}
-          placeholder="e.g. Sehar Fatima"
+          placeholder="e.g. Sehar Tahir"
           error={errors.name}
         />
         <FormInput
@@ -71,7 +71,7 @@ export default function Register() {
           placeholder="At least 6 characters"
           error={errors.password}
         />
-        <FormInput
+        {/* <FormInput
           label="Confirm password"
           name="confirmPassword"
           type="password"
@@ -79,7 +79,7 @@ export default function Register() {
           onChange={handleChange}
           placeholder="Re-enter your password"
           error={errors.confirmPassword}
-        />
+        /> */}
 
         <button
           type="submit"

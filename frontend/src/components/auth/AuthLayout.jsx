@@ -28,7 +28,7 @@ export default function AuthLayout({ title, subtitle, children }) {
       </div>
 
       {/* Right form panel */}
-      <div className="flex-1 flex items-center justify-center px-6 py-12 bg-white">
+      <div className="flex-1 flex items-center justify-center px-6 py-6 bg-white">
         <div className="w-full max-w-105">
           <div className="lg:hidden mb-8 flex justify-center">
             <Logo />
