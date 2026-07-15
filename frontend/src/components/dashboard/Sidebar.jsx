@@ -10,6 +10,7 @@ const NAV_LINKS = {
     { to: "/student/jobs", label: "Browse Jobs" },
     { to: "/student/internships", label: "Internships" },
     { to: "/student/applications", label: "My Applications" },
+    { to: "/student/notifications", label: "Notifications" },
   ],
   recruiter: [
     { to: "/recruiter/dashboard", label: "Dashboard" },
@@ -17,11 +18,13 @@ const NAV_LINKS = {
     { to: "/recruiter/post-listing", label: "Post a Listing" },
     { to: "/recruiter/listings", label: "Manage Listings" },
     { to: "/recruiter/candidates", label: "Search Candidates" },
+    { to: "/recruiter/notifications", label: "Notifications" },
   ],
   admin: [
     { to: "/admin/dashboard", label: "Dashboard" },
     { to: "/admin/users", label: "Manage Users" },
     { to: "/admin/jobs", label: "Manage Jobs" },
+    { to: "/admin/notifications", label: "Notifications" },
   ],
 };
 

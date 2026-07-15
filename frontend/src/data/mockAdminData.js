@@ -14,6 +14,12 @@ export const mockRecentActivity = [
   { id: 4, text: "42 new student registrations this week", time: "1d ago" },
 ];
 
+export const mockAdminNotifications = [
+  { id: 1, text: "New recruiter registration pending review: Techverse Solutions.", time: "1h ago" },
+  { id: 2, text: "Listing 'React Developer' by CodeCrafters was auto-flagged for suspicious salary range.", time: "5h ago" },
+  { id: 3, text: "Weekly platform report is ready.", time: "1d ago" },
+];
+
 export const mockUsers = [
   { id: 1, name: "Ahmed Raza", email: "ahmed.raza@iub.edu.pk", role: "student", status: "Active", joinedOn: "2026-06-01" },
   { id: 2, name: "Fatima Noor", email: "fatima.noor@lums.edu.pk", role: "student", status: "Active", joinedOn: "2026-06-03" },

@@ -34,6 +34,11 @@ import ManageJobsPage from "./pages/admin/ManageJobsPage";
 
 import NotFound from "./pages/NotFound";
 
+import NotificationsPage from "./pages/NotificationsPage";
+import { mockNotifications } from "./data/mockStudentData";
+import { mockRecruiterNotifications } from "./data/mockRecruiterData";
+import { mockAdminNotifications } from "./data/mockAdminData";
+
 const App = () => {
   return (
     <>
@@ -56,6 +61,7 @@ const App = () => {
               <Route path="/student/jobs/:id" element={<JobDetailsPage />} />
               <Route path="/student/internships" element={<JobsListPage mode="internships" />} />
               <Route path="/student/applications" element={<MyApplicationsPage />} />
+              <Route path="/student/notifications" element={<NotificationsPage role="student" initialData={mockNotifications} />} />
             </Route>
           </Route>
 
@@ -67,7 +73,8 @@ const App = () => {
               <Route path="/recruiter/listings" element={<ManageListingsPage />} />
               <Route path="/recruiter/listings/:id/applicants" element={<ApplicantsReviewPage />} />
               <Route path="/recruiter/candidates" element={<SearchCandidatesPage />} />
-              <Route path="/recruiter/candidates/:id" element={<CandidateDetailsPage />} />
+               <Route path="/recruiter/candidates/:id" element={<CandidateDetailsPage />} />
+              <Route path="/recruiter/notifications" element={<NotificationsPage role="recruiter" initialData={mockRecruiterNotifications} />} />
             </Route>
           </Route>
 
@@ -76,11 +83,12 @@ const App = () => {
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/admin/users" element={<ManageUsersPage />} />
               <Route path="/admin/jobs" element={<ManageJobsPage />} />
+              <Route path="/admin/notifications" element={<NotificationsPage role="admin" initialData={mockAdminNotifications} />} />
             </Route>
           </Route>
 
           <Route path="*" element={<NotFound />} />
-          
+
         </Routes>
       </div>
     </AuthProvider>

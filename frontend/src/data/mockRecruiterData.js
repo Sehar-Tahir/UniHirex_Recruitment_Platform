@@ -28,6 +28,12 @@ export const mockListings = [
   { id: 4, title: "QA Intern", type: "Internship", applicants: 2, status: "Closed", postedOn: "2026-05-15" },
 ];
 
+export const mockRecruiterNotifications = [
+  { id: 1, text: "Ahmed Raza applied to your Frontend Developer Intern listing.", time: "2h ago" },
+  { id: 2, text: "Your listing 'React Developer' was flagged for review by admin.", time: "1d ago" },
+  { id: 3, text: "3 new candidates match your active listings.", time: "2d ago" },
+];
+
 export const mockCandidates = [
   {
     id: 1,

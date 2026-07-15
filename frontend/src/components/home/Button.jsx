@@ -1,7 +1,8 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { COLORS, fontBody } from "../../theme";
 
-export default function Button({ children, variant = "primary", href = "#", className = "" }) {
+export default function Button({ children, variant = "primary", href = "#", to, className = "", onClick }) {
   const base =
     "inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-[10px] font-semibold text-[15px] transition-all duration-200 active:translate-y-px";
 
@@ -22,8 +23,19 @@ export default function Button({ children, variant = "primary", href = "#", clas
       ? { background: "#fff", color: COLORS.accent }
       : {};
 
+  const combinedClassName = `${base} ${variants[variant]} ${className}`;
+  const combinedStyle = { ...fontBody, ...style };
+
+  if (to) {
+    return (
+      <Link to={to} onClick={onClick} className={combinedClassName} style={combinedStyle}>
+        {children}
+      </Link>
+    );
+  }
+
   return (
-    <a href={href} className={`${base} ${variants[variant]} ${className}`} style={{ ...fontBody, ...style }}>
+    <a href={href} onClick={onClick} className={combinedClassName} style={combinedStyle}>
       {children}
     </a>
   );
