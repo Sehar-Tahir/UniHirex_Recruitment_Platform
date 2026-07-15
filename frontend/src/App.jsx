@@ -33,6 +33,7 @@ import ManageUsersPage from "./pages/admin/ManageUsersPage";
 import ManageJobsPage from "./pages/admin/ManageJobsPage";
 
 import NotFound from "./pages/NotFound";
+import Unauthorized from "./pages/Unauthorized";
 
 import NotificationsPage from "./pages/NotificationsPage";
 import { mockNotifications } from "./data/mockStudentData";
@@ -87,6 +88,7 @@ const App = () => {
             </Route>
           </Route>
 
+          <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="*" element={<NotFound />} />
 
         </Routes>
