@@ -1,11 +1,15 @@
 import React from 'react'
 import { COLORS, fontBody } from "./theme";
 import { Routes, Route } from "react-router-dom";
+
 import LandingPage from "./pages/home/LandingPage";
+
 import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import VerifyEmail from "./pages/auth/VerifyEmail";
+import ResetPassword from "./pages/auth/ResetPassword";
+
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./routes/ProtectedRoute";
 
@@ -40,6 +44,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
 
           <Route element={<ProtectedRoute allowedRoles={["student"]} />}>
             <Route element={<DashboardLayout />}>
