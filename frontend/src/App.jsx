@@ -17,6 +17,7 @@ import JobDetailsPage from "./pages/student/JobDetailsPage";
 import MyApplicationsPage from "./pages/student/MyApplicationsPage";
 
 import RecruiterDashboard from "./pages/recruiter/RecruiterDashboard";
+import CompanyProfilePage from "./pages/recruiter/CompanyProfilePage";
 
 
 const App = () => {
@@ -45,6 +46,7 @@ const App = () => {
           <Route element={<ProtectedRoute allowedRoles={["recruiter"]} />}>
             <Route element={<DashboardLayout />}>
               <Route path="/recruiter/dashboard" element={<RecruiterDashboard />} />
+              <Route path="/recruiter/company" element={<CompanyProfilePage />} />
             </Route>
           </Route>
         </Routes>
