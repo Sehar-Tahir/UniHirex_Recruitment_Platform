@@ -13,6 +13,7 @@ import StudentDashboard from "./pages/student/StudentDashboard";
 import StudentProfile from "./pages/student/StudentProfile";
 import JobsListPage from "./pages/student/JobsListPage";
 import JobDetailsPage from "./pages/student/JobDetailsPage";
+import MyApplicationsPage from "./pages/student/MyApplicationsPage";
 
 
 const App = () => {
@@ -34,6 +35,7 @@ const App = () => {
               <Route path="/student/jobs" element={<JobsListPage mode="jobs" />} />
               <Route path="/student/jobs/:id" element={<JobDetailsPage />} />
               <Route path="/student/internships" element={<JobsListPage mode="internships" />} />
+              <Route path="/student/applications" element={<MyApplicationsPage />} />
             </Route>
           </Route>
         </Routes>
