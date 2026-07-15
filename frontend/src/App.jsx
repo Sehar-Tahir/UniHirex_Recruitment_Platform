@@ -24,12 +24,15 @@ import ApplicantsReviewPage from "./pages/recruiter/ApplicantsReviewPage";
 import SearchCandidatesPage from "./pages/recruiter/SearchCandidatesPage";
 import CandidateDetailsPage from "./pages/recruiter/CandidateDetailsPage";
 
+import AdminDashboard from "./pages/admin/AdminDashboard";
+
 
 const App = () => {
   return (
     <>
       <AuthProvider>
       <div style={{ ...fontBody, color: COLORS.textDark, background: "#fff" }} className="overflow-x-hidden">
+        
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/register" element={<Register />} />
@@ -59,6 +62,14 @@ const App = () => {
               <Route path="/recruiter/candidates/:id" element={<CandidateDetailsPage />} />
             </Route>
           </Route>
+
+          <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+            <Route element={<DashboardLayout />}>
+              <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            </Route>
+          </Route>
+
+
         </Routes>
       </div>
     </AuthProvider>
