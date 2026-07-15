@@ -26,6 +26,7 @@ import CandidateDetailsPage from "./pages/recruiter/CandidateDetailsPage";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ManageUsersPage from "./pages/admin/ManageUsersPage";
+import ManageJobsPage from "./pages/admin/ManageJobsPage";
 
 const App = () => {
   return (
@@ -67,6 +68,7 @@ const App = () => {
             <Route element={<DashboardLayout />}>
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/admin/users" element={<ManageUsersPage />} />
+              <Route path="/admin/jobs" element={<ManageJobsPage />} />
             </Route>
           </Route>
 
