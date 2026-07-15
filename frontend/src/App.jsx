@@ -18,6 +18,7 @@ import MyApplicationsPage from "./pages/student/MyApplicationsPage";
 
 import RecruiterDashboard from "./pages/recruiter/RecruiterDashboard";
 import CompanyProfilePage from "./pages/recruiter/CompanyProfilePage";
+import PostListingPage from "./pages/recruiter/PostListingPage";
 
 
 const App = () => {
@@ -47,6 +48,7 @@ const App = () => {
             <Route element={<DashboardLayout />}>
               <Route path="/recruiter/dashboard" element={<RecruiterDashboard />} />
               <Route path="/recruiter/company" element={<CompanyProfilePage />} />
+              <Route path="/recruiter/post-listing" element={<PostListingPage />} />
             </Route>
           </Route>
         </Routes>

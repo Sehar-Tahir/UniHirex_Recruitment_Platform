@@ -15,7 +15,7 @@ export default function CompanyProfilePage() {
         This information is shown to students on your job listings.
       </p>
 
-      <div className="max-w-[640px]">
+      <div className="max-w-160">
         <CompanyProfileCard company={company} onSave={(updated) => setCompany({ ...company, ...updated })} />
       </div>
     </div>

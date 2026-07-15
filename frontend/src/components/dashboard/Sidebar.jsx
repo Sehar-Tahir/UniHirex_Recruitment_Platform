@@ -14,6 +14,7 @@ const NAV_LINKS = {
   recruiter: [
     { to: "/recruiter/dashboard", label: "Dashboard" },
     { to: "/recruiter/company", label: "Company Profile" },
+    { to: "/recruiter/post-listing", label: "Post a Listing" },
     { to: "/recruiter/listings", label: "Manage Listings" },
     { to: "/recruiter/candidates", label: "Search Candidates" },
   ],

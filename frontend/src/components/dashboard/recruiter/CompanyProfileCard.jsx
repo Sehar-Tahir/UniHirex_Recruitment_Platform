@@ -62,7 +62,7 @@ export default function CompanyProfileCard({ company, onSave }) {
 
       <div className="flex items-center gap-5 mb-6">
         <div
-          className="w-20 h-20 rounded-2xl flex items-center justify-center overflow-hidden font-semibold text-2xl text-white flex-shrink-0"
+          className="w-20 h-20 rounded-2xl flex items-center justify-center overflow-hidden font-semibold text-2xl text-white shrink-0"
           style={{ background: COLORS.primary }}
         >
           {form.logoUrl ? (
