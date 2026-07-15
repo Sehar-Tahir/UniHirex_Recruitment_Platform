@@ -25,14 +25,14 @@ import SearchCandidatesPage from "./pages/recruiter/SearchCandidatesPage";
 import CandidateDetailsPage from "./pages/recruiter/CandidateDetailsPage";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
-
+import ManageUsersPage from "./pages/admin/ManageUsersPage";
 
 const App = () => {
   return (
     <>
       <AuthProvider>
       <div style={{ ...fontBody, color: COLORS.textDark, background: "#fff" }} className="overflow-x-hidden">
-        
+
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/register" element={<Register />} />
@@ -66,6 +66,7 @@ const App = () => {
           <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
             <Route element={<DashboardLayout />}>
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              <Route path="/admin/users" element={<ManageUsersPage />} />
             </Route>
           </Route>
 
