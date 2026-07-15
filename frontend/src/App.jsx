@@ -8,12 +8,15 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import VerifyEmail from "./pages/auth/VerifyEmail";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./routes/ProtectedRoute";
+
 import DashboardLayout from "./components/dashboard/DashboardLayout";
 import StudentDashboard from "./pages/student/StudentDashboard";
 import StudentProfile from "./pages/student/StudentProfile";
 import JobsListPage from "./pages/student/JobsListPage";
 import JobDetailsPage from "./pages/student/JobDetailsPage";
 import MyApplicationsPage from "./pages/student/MyApplicationsPage";
+
+import RecruiterDashboard from "./pages/recruiter/RecruiterDashboard";
 
 
 const App = () => {
@@ -36,6 +39,12 @@ const App = () => {
               <Route path="/student/jobs/:id" element={<JobDetailsPage />} />
               <Route path="/student/internships" element={<JobsListPage mode="internships" />} />
               <Route path="/student/applications" element={<MyApplicationsPage />} />
+            </Route>
+          </Route>
+
+          <Route element={<ProtectedRoute allowedRoles={["recruiter"]} />}>
+            <Route element={<DashboardLayout />}>
+              <Route path="/recruiter/dashboard" element={<RecruiterDashboard />} />
             </Route>
           </Route>
         </Routes>
