@@ -22,6 +22,7 @@ import PostListingPage from "./pages/recruiter/PostListingPage";
 import ManageListingsPage from "./pages/recruiter/ManageListingsPage";
 import ApplicantsReviewPage from "./pages/recruiter/ApplicantsReviewPage";
 import SearchCandidatesPage from "./pages/recruiter/SearchCandidatesPage";
+import CandidateDetailsPage from "./pages/recruiter/CandidateDetailsPage";
 
 
 const App = () => {
@@ -55,6 +56,7 @@ const App = () => {
               <Route path="/recruiter/listings" element={<ManageListingsPage />} />
               <Route path="/recruiter/listings/:id/applicants" element={<ApplicantsReviewPage />} />
               <Route path="/recruiter/candidates" element={<SearchCandidatesPage />} />
+              <Route path="/recruiter/candidates/:id" element={<CandidateDetailsPage />} />
             </Route>
           </Route>
         </Routes>

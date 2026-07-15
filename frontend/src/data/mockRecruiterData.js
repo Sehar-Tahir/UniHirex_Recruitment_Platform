@@ -29,7 +29,37 @@ export const mockListings = [
 ];
 
 export const mockCandidates = [
-  { id: 1, name: "Ahmed Raza", university: "IUB", department: "Information Technology", skills: ["React.js", "Node.js", "MongoDB"], cgpa: "3.72" },
-  { id: 2, name: "Fatima Noor", university: "LUMS", department: "Computer Science", skills: ["React.js", "Redux Toolkit", "Tailwind CSS"], cgpa: "3.90" },
-  { id: 3, name: "Bilal Khan", university: "FAST-NUCES", department: "Software Engineering", skills: ["Node.js", "Express.js", "MongoDB"], cgpa: "3.55" },
+  {
+    id: 1,
+    name: "Ahmed Raza",
+    university: "IUB",
+    department: "Information Technology",
+    skills: ["React.js", "Node.js", "MongoDB"],
+    cgpa: "3.72",
+    email: "ahmed.raza@iub.edu.pk",
+    semester: "7th",
+    projects: [{ id: 1, title: "Campus Event Portal", description: "A MERN app for managing university event registrations." }],
+  },
+  {
+    id: 2,
+    name: "Fatima Noor",
+    university: "LUMS",
+    department: "Computer Science",
+    skills: ["React.js", "Redux Toolkit", "Tailwind CSS"],
+    cgpa: "3.90",
+    email: "fatima.noor@lums.edu.pk",
+    semester: "8th",
+    projects: [{ id: 1, title: "E-commerce Dashboard", description: "Admin dashboard with Redux Toolkit and charts for order analytics." }],
+  },
+  {
+    id: 3,
+    name: "Bilal Khan",
+    university: "FAST-NUCES",
+    department: "Software Engineering",
+    skills: ["Node.js", "Express.js", "MongoDB"],
+    cgpa: "3.55",
+    email: "bilal.khan@nu.edu.pk",
+    semester: "6th",
+    projects: [{ id: 1, title: "Inventory API", description: "REST API for warehouse inventory tracking with role-based access." }],
+  },
 ];
