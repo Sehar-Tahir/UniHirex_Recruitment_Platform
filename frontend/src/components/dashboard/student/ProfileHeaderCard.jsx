@@ -4,8 +4,19 @@ import { COLORS, fontHead, fontBody } from "../../../theme";
 export default function ProfileHeaderCard({ profile, onSave }) {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState(profile);
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const validate = () => {
+    const errs = {};
+    if (!form.name?.trim()) errs.name = "Name is required";
+    if (!form.email?.trim()) errs.email = "Email is required";
+    else if (!/\S+@\S+\.\S+/.test(form.email)) errs.email = "Enter a valid email";
+    if (form.phone && !/^[\d+\-\s()]{7,}$/.test(form.phone)) errs.phone = "Enter a valid phone number";
+    if (form.cgpa && (isNaN(form.cgpa) || Number(form.cgpa) < 0 || Number(form.cgpa) > 4)) errs.cgpa = "CGPA must be between 0 and 4";
+    return errs;
+  };
 
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
@@ -16,8 +27,12 @@ export default function ProfileHeaderCard({ profile, onSave }) {
   };
 
   const handleSave = () => {
-    onSave(form);
-    setEditing(false);
+    const errs = validate();
+    setErrors(errs);
+    if (Object.keys(errs).length === 0) {
+      onSave(form);
+      setEditing(false);
+    }
   };
 
   const fields = [
@@ -93,13 +108,18 @@ export default function ProfileHeaderCard({ profile, onSave }) {
               {f.label}
             </p>
             {editing ? (
-              <input
-                name={f.key}
-                value={form[f.key]}
-                onChange={handleChange}
-                className="w-full px-3 py-2 rounded-lg border-[1.5px] text-[14px] outline-none"
-                style={{ ...fontBody, borderColor: "#D7DEF5" }}
-              />
+              <>
+                <input
+                  name={f.key}
+                  value={form[f.key]}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 rounded-lg border-[1.5px] text-[14px] outline-none"
+                  style={{ ...fontBody, borderColor: errors[f.key] ? "#DC2626" : "#D7DEF5" }}
+                />
+                {errors[f.key] && (
+                  <p className="text-[12.5px] mt-1" style={{ color: "#DC2626" }}>{errors[f.key]}</p>
+                )}
+              </>
             ) : (
               <p className="text-[14.5px] font-medium" style={{ ...fontBody, color: COLORS.textDark }}>
                 {form[f.key]}

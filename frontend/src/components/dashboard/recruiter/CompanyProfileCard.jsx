@@ -4,8 +4,17 @@ import { COLORS, fontHead, fontBody } from "../../../theme";
 export default function CompanyProfileCard({ company, onSave }) {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState(company);
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const validate = () => {
+    const errs = {};
+    if (!form.name?.trim()) errs.name = "Company name is required";
+    if (!form.industry?.trim()) errs.industry = "Industry is required";
+    if (form.website && !/^https?:\/\/.+\..+/.test(form.website)) errs.website = "Enter a valid URL (starting with http:// or https://)";
+    return errs;
+  };
 
   const handleLogoChange = (e) => {
     const file = e.target.files[0];
@@ -16,8 +25,12 @@ export default function CompanyProfileCard({ company, onSave }) {
   };
 
   const handleSave = () => {
-    onSave(form);
-    setEditing(false);
+    const errs = validate();
+    setErrors(errs);
+    if (Object.keys(errs).length === 0) {
+      onSave(form);
+      setEditing(false);
+    }
   };
 
   const fields = [
@@ -25,6 +38,7 @@ export default function CompanyProfileCard({ company, onSave }) {
     { key: "industry", label: "Industry" },
     { key: "website", label: "Website" },
   ];
+   
 
   return (
     <div className="border border-[#ECEEF3] rounded-2xl p-6 bg-white">
@@ -89,13 +103,18 @@ export default function CompanyProfileCard({ company, onSave }) {
               {f.label}
             </p>
             {editing ? (
-              <input
-                name={f.key}
-                value={form[f.key]}
-                onChange={handleChange}
-                className="w-full px-3 py-2 rounded-lg border-[1.5px] text-[14px] outline-none"
-                style={{ ...fontBody, borderColor: "#D7DEF5" }}
-              />
+              <>
+                <input
+                  name={f.key}
+                  value={form[f.key]}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 rounded-lg border-[1.5px] text-[14px] outline-none"
+                  style={{ ...fontBody, borderColor: errors[f.key] ? "#DC2626" : "#D7DEF5" }}
+                />
+                {errors[f.key] && (
+                  <p className="text-[12.5px] mt-1" style={{ color: "#DC2626" }}>{errors[f.key]}</p>
+                )}
+              </>
             ) : (
               <p className="text-[14.5px] font-medium" style={{ ...fontBody, color: COLORS.textDark }}>
                 {form[f.key]}
