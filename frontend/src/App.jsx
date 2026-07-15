@@ -21,6 +21,7 @@ import CompanyProfilePage from "./pages/recruiter/CompanyProfilePage";
 import PostListingPage from "./pages/recruiter/PostListingPage";
 import ManageListingsPage from "./pages/recruiter/ManageListingsPage";
 import ApplicantsReviewPage from "./pages/recruiter/ApplicantsReviewPage";
+import SearchCandidatesPage from "./pages/recruiter/SearchCandidatesPage";
 
 
 const App = () => {
@@ -53,6 +54,7 @@ const App = () => {
               <Route path="/recruiter/post-listing" element={<PostListingPage />} />
               <Route path="/recruiter/listings" element={<ManageListingsPage />} />
               <Route path="/recruiter/listings/:id/applicants" element={<ApplicantsReviewPage />} />
+              <Route path="/recruiter/candidates" element={<SearchCandidatesPage />} />
             </Route>
           </Route>
         </Routes>
