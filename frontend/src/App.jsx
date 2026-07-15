@@ -32,6 +32,8 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import ManageUsersPage from "./pages/admin/ManageUsersPage";
 import ManageJobsPage from "./pages/admin/ManageJobsPage";
 
+import NotFound from "./pages/NotFound";
+
 const App = () => {
   return (
     <>
@@ -77,7 +79,8 @@ const App = () => {
             </Route>
           </Route>
 
-
+          <Route path="*" element={<NotFound />} />
+          
         </Routes>
       </div>
     </AuthProvider>
