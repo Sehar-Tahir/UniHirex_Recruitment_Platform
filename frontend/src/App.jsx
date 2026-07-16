@@ -6,7 +6,6 @@ import LandingPage from "./pages/home/LandingPage";
 
 import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
-import ForgotPassword from "./pages/auth/ForgotPassword";
 import VerifyEmail from "./pages/auth/VerifyEmail";
 import ResetPassword from "./pages/auth/ResetPassword";
 
@@ -50,7 +49,7 @@ const App = () => {
           <Route path="/" element={<LandingPage />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
+          
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
 
