@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { COLORS, fontBody } from "../../theme";
 import { useAuth } from "../../context/AuthContext";
 
-export default function Topbar() {
+export default function Topbar({ onMenuClick }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -14,10 +14,14 @@ export default function Topbar() {
 
   return (
     <header
-      className="h-18 flex items-center justify-between px-8 border-b sticky top-0 bg-white z-10"
+      className="h-18 flex items-center justify-between px-5 md:px-8 border-b sticky top-0 bg-white z-10"
       style={{ borderColor: "#EEF1F8" }}
     >
-      <div />
+      <button onClick={onMenuClick} className="lg:hidden" aria-label="Open menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={COLORS.textDark} strokeWidth="2">
+          <path d="M3 6h18M3 12h18M3 18h18" strokeLinecap="round" />
+        </svg>
+      </button>
 
       <div className="flex items-center gap-4">
         <div className="text-right">

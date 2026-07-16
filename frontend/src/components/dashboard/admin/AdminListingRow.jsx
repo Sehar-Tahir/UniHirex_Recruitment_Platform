@@ -11,7 +11,7 @@ export default function AdminListingRow({ id, title, company, type, status, post
   const style = STATUS_STYLES[status] || STATUS_STYLES.Closed;
 
   return (
-    <div className="flex items-center justify-between py-4 border-b border-[#F1F3F9] last:border-0">
+    <div className="flex flex-wrap items-center justify-between gap-y-2 gap-x-4 py-4 border-b border-[#F1F3F9] last:border-0">
       <div className="flex-1 min-w-0">
         <p className="text-[14.5px] font-semibold truncate" style={{ ...fontBody, color: COLORS.textDark }}>
           {title}

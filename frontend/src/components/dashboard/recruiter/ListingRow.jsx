@@ -6,7 +6,7 @@ export default function ListingRow({ id, title, type, applicants, status, posted
   const navigate = useNavigate();
 
   return (
-    <div className="flex items-center justify-between py-4 border-b border-[#F1F3F9] last:border-0">
+    <div className="flex flex-wrap items-center justify-between gap-y-2 gap-x-4 py-4 border-b border-[#F1F3F9] last:border-0">
       <div>
         <p className="text-[14.5px] font-semibold mb-0.5" style={{ ...fontBody, color: COLORS.textDark }}>
           {title}
