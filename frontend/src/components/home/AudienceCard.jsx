@@ -3,7 +3,7 @@ import { COLORS, fontHead, fontBody } from "../../theme";
 import Button from "./Button";
 import CheckIcon from "./CheckIcon";
 
-export default function AudienceCard({ id, badge, title, desc, items, ctaLabel, ctaVariant, theme }) {
+export default function AudienceCard({ id, badge, title, desc, items, ctaLabel, ctaVariant, ctaTo, theme }) {
   const isStudent = theme === "student";
   return (
     <div
@@ -38,7 +38,7 @@ export default function AudienceCard({ id, badge, title, desc, items, ctaLabel, 
           </li>
         ))}
       </ul>
-      <Button variant={ctaVariant} className="mt-2">
+      <Button variant={ctaVariant} to={ctaTo} className="mt-2">
         {ctaLabel}
       </Button>
     </div>

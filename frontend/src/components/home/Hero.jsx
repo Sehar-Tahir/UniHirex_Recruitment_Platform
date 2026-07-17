@@ -118,7 +118,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { COLORS, fontHead, fontBody, fontMono } from "../../theme";
+import { COLORS, fontHead, fontBody } from "../../theme";
 import NodeGraph from "./NodeGraph";
 import LiveCounter from "./LiveCounter";
 
@@ -188,7 +188,7 @@ export default function Hero() {
         <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6 border-t border-white/10 pt-6 max-w-2xl mx-auto">
           {STATS.map((s) => (
             <div key={s.label} className="text-center">
-              <div className="text-[26px] font-semibold" style={fontMono}>
+              <div className="text-[26px] font-semibold" style={fontBody}>
                 <LiveCounter target={s.value} suffix={s.suffix} />
               </div>
               <div className="text-[12.5px] text-white/50 mt-1" style={fontBody}>

@@ -5,12 +5,42 @@ import FeatureTile from "./FeatureTile";
 import { icons } from "./icons";
 
 const TILES = [
-  { icon: icons.search, title: "Smart job search", desc: "Filter by location, category, type, salary, and experience level to skip the noise.", theme: "blue" },
-  { icon: icons.discover, title: "Recruiter discovery", desc: "Companies search profiles directly by skill and university — visibility without applying first.", theme: "burgundy" },
-  { icon: icons.resume, title: "Resume hub", desc: "Upload, update, and download your resume — always synced with your latest profile.", theme: "blueSoft" },
-  { icon: icons.bell, title: "Live notifications", desc: "Application updates, new matches, and interview invites — delivered the moment they happen.", theme: "blue" },
-  { icon: icons.grid, title: "Application tracking", desc: "One dashboard for every job and internship you've applied to, and exactly where it stands.", theme: "burgundy" },
-  { icon: icons.layers, title: "Role-based access", desc: "Separate, purpose-built experiences for students, recruiters, and platform admins.", theme: "blueSoft" },
+  {
+    icon: icons.resume,
+    title: "Complete student profiles",
+    desc: "Education, skills, projects, certifications, and resume, one living profile recruiters can actually evaluate.",
+    theme: "blue",
+  },
+  {
+    icon: icons.search,
+    title: "Smart job & internship search",
+    desc: "Filter by category, type, salary, experience level, and location to find the right fit fast.",
+    theme: "burgundy",
+  },
+  {
+    icon: icons.discover,
+    title: "Recruiter candidate search",
+    desc: "Companies search verified student profiles by skill, department, or CGPA, no application required first.",
+    theme: "blueSoft",
+  },
+  {
+    icon: icons.briefcase,
+    title: "Post & manage listings",
+    desc: "Recruiters publish jobs and internships, then review, shortlist, or close listings from one dashboard.",
+    theme: "blue",
+  },
+  {
+    icon: icons.grid,
+    title: "Application tracking",
+    desc: "Students track every application's status; recruiters track every applicant's progress in real time.",
+    theme: "burgundy",
+  },
+  {
+    icon: icons.layers,
+    title: "Role-based dashboards",
+    desc: "Purpose-built experiences for students, recruiters, and admins, including platform-wide moderation tools.",
+    theme: "blueSoft",
+  },
 ];
 
 export default function Features() {

@@ -22,8 +22,8 @@ export const COLORS = {
   surfaceMuted: "#F1F5F9",
 };
 
-// export const fontHead = { fontFamily: "'Poppins', sans-serif", letterSpacing: "-0.02em" };
-// export const fontBody = { fontFamily: "'Inter', sans-serif" };
 export const fontHead = { fontFamily: "'Poppins', sans-serif", letterSpacing: "-0.02em" };
 export const fontBody = { fontFamily: "'Inter', sans-serif" };
-export const fontMono = { fontFamily: "'JetBrains Mono', monospace" };
+// export const fontHead = { fontFamily: "'Poppins', sans-serif", letterSpacing: "-0.02em" };
+// export const fontBody = { fontFamily: "'Inter', sans-serif" };
+// export const fontMono = { fontFamily: "'JetBrains Mono', monospace" };

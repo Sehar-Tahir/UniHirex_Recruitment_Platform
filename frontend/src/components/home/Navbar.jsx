@@ -9,7 +9,7 @@ const LINKS = [
   { label: "How it works", href: "#how" },
   { label: "For students", href: "#students" },
   { label: "For recruiters", href: "#recruiters" },
-  { label: "Features", href: "#features" },
+  // { label: "Features", href: "#features" },
 ];
 
 export default function Navbar() {
@@ -25,7 +25,9 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b border-[#EEF0F4]">
       <div className="max-w-295 mx-auto px-5 md:px-8 h-19 flex items-center justify-between">
-        <Logo  />
+        <Link to="/">
+          <Logo />
+        </Link>
 
         <div className="hidden md:flex gap-9 font-medium text-[15px]" style={{ ...fontBody, color: COLORS.textDark }}>
           {LINKS.map((l) => (

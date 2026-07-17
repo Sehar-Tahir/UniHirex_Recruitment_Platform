@@ -9,7 +9,7 @@ export default function AudienceSection() {
         <SectionHead
           kicker="Built for both sides"
           title="One platform, two clear paths"
-          desc="Whether you're applying or hiring, UniHirex gives you exactly what the job requires — nothing extra to dig through."
+          desc="Whether you're applying or hiring, UniHirex gives you exactly what the job requires nothing extra to dig through."
         />
         <div className="grid md:grid-cols-2 gap-7">
           <AudienceCard
@@ -24,6 +24,7 @@ export default function AudienceSection() {
             ]}
             ctaLabel="Create student profile"
             ctaVariant="outline"
+            ctaTo="/register"
           />
           <AudienceCard
             id="recruiters"
@@ -38,6 +39,7 @@ export default function AudienceSection() {
             ]}
             ctaLabel="Post your first job"
             ctaVariant="primary"
+            ctaTo="/register"
           />
         </div>
       </div>

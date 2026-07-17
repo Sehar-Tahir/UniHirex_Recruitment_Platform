@@ -3,6 +3,7 @@ import { COLORS, fontBody } from "./theme";
 import { Routes, Route } from "react-router-dom";
 
 import LandingPage from "./pages/home/LandingPage";
+import ScrollToTop from "./components/ScrollToTop";
 
 import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
@@ -39,12 +40,20 @@ import { mockNotifications } from "./data/mockStudentData";
 import { mockRecruiterNotifications } from "./data/mockRecruiterData";
 import { mockAdminNotifications } from "./data/mockAdminData";
 
+import About from "./pages/company/About";
+import Careers from "./pages/company/Careers";
+import Contact from "./pages/company/Contact";
+import Blog from "./pages/company/Blog";
+import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
+import TermsOfService from "./pages/legal/TermsOfService";
+import CookiePolicy from "./pages/legal/CookiePolicy";
+
 const App = () => {
   return (
     <>
       <AuthProvider>
       <div style={{ ...fontBody, color: COLORS.textDark, background: "#fff" }} className="overflow-x-hidden">
-
+       <ScrollToTop />
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/register" element={<Register />} />
@@ -88,6 +97,13 @@ const App = () => {
           </Route>
 
           <Route path="/unauthorized" element={<Unauthorized />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/careers" element={<Careers />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-of-service" element={<TermsOfService />} />
+          <Route path="/cookie-policy" element={<CookiePolicy />} />
           <Route path="*" element={<NotFound />} />
 
         </Routes>
