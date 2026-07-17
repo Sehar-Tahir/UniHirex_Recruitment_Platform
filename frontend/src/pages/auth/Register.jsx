@@ -8,7 +8,12 @@ import RoleToggle from "../../components/auth/RoleToggle";
 export default function Register() {
   const navigate = useNavigate();
   const [role, setRole] = useState("student");
-  const [form, setForm] = useState({ name: "", email: "", password: "", confirmPassword: "" });
+
+  const handleRoleChange = (newRole) => {
+    setRole(newRole);
+    setErrors({});
+  };
+  const [form, setForm] = useState({ name: "", email: "", password: "", confirmPassword: "", companyName: "" });
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
@@ -20,6 +25,10 @@ export default function Register() {
     if (!form.name.trim()) errs.name = "Name is required";
     if (!form.email.trim()) errs.email = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(form.email)) errs.email = "Enter a valid email";
+    else if (role === "student" && !form.email.toLowerCase().endsWith("@iub.edu.pk")) {
+      errs.email = "Registration is currently limited to IUB students, use your @iub.edu.pk email";
+    }
+    if (role === "recruiter" && !form.companyName.trim()) errs.companyName = "Company name is required";
     if (!form.password) errs.password = "Password is required";
     else if (form.password.length < 6) errs.password = "Minimum 6 characters";
     if (form.confirmPassword !== form.password) errs.confirmPassword = "Passwords don't match";
@@ -33,7 +42,7 @@ export default function Register() {
     if (Object.keys(errs).length === 0) {
       // TODO: connect to backend register API (Phase 2)
       console.log("Registering", { role, ...form });
-      navigate("/verify-email");
+      navigate(role === "recruiter" ? "/pending-verification" : "/verify-email");
     }
   };
 
@@ -42,15 +51,34 @@ export default function Register() {
       title="Create your account"
       subtitle="Start your journey with UniHirex today"
     >
-      <RoleToggle role={role} setRole={setRole} />
+      <RoleToggle role={role} setRole={handleRoleChange} />
+
+      {role === "student" && (
+        <div
+          className="text-[13px] font-medium px-4 py-2.5 rounded-lg mb-5"
+          style={{ background: "#EEF1FC", color: COLORS.primary }}
+        >
+          Currently open to IUB students only, use your @iub.edu.pk email.
+        </div>
+      )}
 
       <form onSubmit={handleSubmit}>
+        {role === "recruiter" && (
+          <FormInput
+            label="Company name"
+            name="companyName"
+            value={form.companyName}
+            onChange={handleChange}
+            placeholder="e.g. Techverse Solutions"
+            error={errors.companyName}
+          />
+        )}
         <FormInput
           label="Full name"
           name="name"
           value={form.name}
           onChange={handleChange}
-          placeholder="e.g. Sehar Tahir"
+          placeholder={role === "recruiter" ? "e.g. Ayesha Malik" : "e.g. Sehar Tahir"}
           error={errors.name}
         />
         <FormInput
@@ -59,9 +87,10 @@ export default function Register() {
           type="email"
           value={form.email}
           onChange={handleChange}
-          placeholder="you@university.edu.pk"
+          placeholder={role === "recruiter" ? "you@company.com" : "you@iub.edu.pk"}
           error={errors.email}
         />
+
         <FormInput
           label="Password"
           name="password"
@@ -71,7 +100,7 @@ export default function Register() {
           placeholder="At least 6 characters"
           error={errors.password}
         />
-        {/* <FormInput
+        <FormInput
           label="Confirm password"
           name="confirmPassword"
           type="password"
@@ -79,7 +108,14 @@ export default function Register() {
           onChange={handleChange}
           placeholder="Re-enter your password"
           error={errors.confirmPassword}
-        /> */}
+        />
+
+
+        {role === "recruiter" && (
+          <p className="text-[12.5px] mb-4 leading-relaxed" style={{ ...fontBody, color: COLORS.textMuted }}>
+            Recruiter accounts are manually reviewed to confirm company authenticity before you can post listings.
+          </p>
+        )}
 
         <button
           type="submit"

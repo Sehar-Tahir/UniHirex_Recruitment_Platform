@@ -62,7 +62,7 @@ export default function Login() {
         />
 
         <div className="flex justify-end mb-6">
-          <Link to="/forgot-password" className="text-[14px] font-semibold" style={{ ...fontBody, color: COLORS.primary }}>
+          <Link to="/forget-password" className="text-[14px] font-semibold" style={{ ...fontBody, color: COLORS.primary }}>
             Forgot password?
           </Link>
         </div>

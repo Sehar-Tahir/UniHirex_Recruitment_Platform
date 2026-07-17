@@ -10,6 +10,8 @@ import Login from "./pages/auth/Login";
 import VerifyEmail from "./pages/auth/VerifyEmail";
 import ResetPassword from "./pages/auth/ResetPassword";
 import ForgetPassword from "./pages/auth/ForgetPassword";
+import PendingVerification from "./pages/auth/PendingVerification";
+
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./routes/ProtectedRoute";
 
@@ -62,6 +64,8 @@ const App = () => {
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/forget-password" element={<ForgetPassword />} />
+          <Route path="/pending-verification" element={<PendingVerification />} />
+          
           <Route element={<ProtectedRoute allowedRoles={["student"]} />}>
             <Route element={<DashboardLayout />}>
               <Route path="/student/dashboard" element={<StudentDashboard />} />
