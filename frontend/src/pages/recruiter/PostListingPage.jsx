@@ -59,7 +59,7 @@ export default function PostListingPage() {
         Post a Job or Internship
       </h1>
       <p className="text-[14.5px] mb-8" style={{ ...fontBody, color: COLORS.textMuted }}>
-        Fill in the details below — students will see this on the Jobs page.
+        Fill in the details below, students will see this on the Jobs page.
       </p>
 
       <form onSubmit={handleSubmit} className="border border-[#ECEEF3] rounded-2xl p-7 bg-white flex flex-col gap-5">

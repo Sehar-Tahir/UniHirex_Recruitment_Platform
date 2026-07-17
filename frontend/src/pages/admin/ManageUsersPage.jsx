@@ -31,14 +31,14 @@ export default function ManageUsersPage() {
       </p>
 
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           {ROLE_TABS.map((tab) => {
             const active = activeTab === tab;
             return (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className="px-4 py-2 rounded-full text-[13.5px] font-semibold transition-colors"
+                className="px-3 md:px-4 py-1.5 md:py-2 rounded-full text-[12.5px] md:text-[13.5px] font-semibold capitalize transition-colors whitespace-nowrap"
                 style={{
                   ...fontBody,
                   background: active ? COLORS.primary : "#F1F5F9",

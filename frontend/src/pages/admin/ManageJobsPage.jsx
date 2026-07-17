@@ -38,7 +38,7 @@ export default function ManageJobsPage() {
               <button
                 key={tab}
                 onClick={() => setStatusTab(tab)}
-                className="px-4 py-2 rounded-full text-[13.5px] font-semibold transition-colors"
+                className="px-3 md:px-4 py-1.5 md:py-2 rounded-full text-[12.5px] md:text-[13.5px] font-semibold transition-colors whitespace-nowrap"
                 style={{
                   ...fontBody,
                   background: active ? COLORS.primary : "#F1F5F9",
