@@ -1,14 +1,52 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { COLORS, fontHead, fontBody } from "../../theme";
-import { useUsers } from "../../hooks/useUsers";
+import { getAllUsers, approveUser, toggleUserStatus } from "../../api/admin";
+import { useAuth } from "../../context/AuthContext";
 import UserRow from "../../components/dashboard/admin/UserRow";
 
 const ROLE_TABS = ["All", "Student", "Recruiter"];
 
 export default function ManageUsersPage() {
-  const { users, toggleStatus, approveUser } = useUsers();
+  const { token } = useAuth();
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState("All");
   const [search, setSearch] = useState("");
+
+  const fetchUsers = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await getAllUsers(token);
+      setUsers(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  const handleApprove = async (id) => {
+    try {
+      await approveUser(id, token);
+      setUsers((prev) => prev.map((u) => (u._id === id ? { ...u, status: "Active" } : u)));
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleToggleStatus = async (id) => {
+    try {
+      const res = await toggleUserStatus(id, token);
+      setUsers((prev) => prev.map((u) => (u._id === id ? { ...u, status: res.user.status } : u)));
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   const filtered = useMemo(() => {
     return users.filter((u) => {
@@ -27,8 +65,14 @@ export default function ManageUsersPage() {
         Manage Users
       </h1>
       <p className="text-[14.5px] mb-6" style={{ ...fontBody, color: COLORS.textMuted }}>
-        {filtered.length} of {users.length} users
+        {loading ? "Loading..." : `${filtered.length} of ${users.length} users`}
       </p>
+
+      {error && (
+        <p className="text-[13.5px] mb-4" style={{ color: "#DC2626" }}>
+          {error}
+        </p>
+      )}
 
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <div className="flex flex-wrap gap-2">
@@ -61,11 +105,15 @@ export default function ManageUsersPage() {
 
       <div className="border border-[#ECEEF3] rounded-2xl p-6 bg-white">
         {filtered.length > 0 ? (
-          filtered.map((u) => <UserRow key={u.id} {...u} onToggleStatus={toggleStatus} onApprove={approveUser} />)
+          filtered.map((u) => (
+            <UserRow key={u._id} {...u} id={u._id} onToggleStatus={handleToggleStatus} onApprove={handleApprove} />
+          ))
         ) : (
-          <p className="text-[14px] text-center py-8" style={{ ...fontBody, color: COLORS.textMuted }}>
-            No users match your search.
-          </p>
+          !loading && (
+            <p className="text-[14px] text-center py-8" style={{ ...fontBody, color: COLORS.textMuted }}>
+              No users match your search.
+            </p>
+          )
         )}
       </div>
     </div>

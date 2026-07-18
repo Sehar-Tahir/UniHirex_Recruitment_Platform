@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Job = require("../models/Job");
 
 // @route  GET /api/admin/users
 const getAllUsers = async (req, res) => {
@@ -62,4 +63,14 @@ const createAdmin = async (req, res) => {
   }
 };
 
-module.exports = { getAllUsers, approveUser, toggleUserStatus, createAdmin };
+// @route  GET /api/admin/jobs  (ALL jobs regardless of status — unlike the public browse endpoint which only shows Active ones)
+const getAllJobsForAdmin = async (req, res) => {
+  try {
+    const jobs = await Job.find().populate("postedBy", "name companyName").sort({ createdAt: -1 });
+    res.json(jobs);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch jobs", error: err.message });
+  }
+};
+
+module.exports = { getAllUsers, approveUser, toggleUserStatus, createAdmin, getAllJobsForAdmin };

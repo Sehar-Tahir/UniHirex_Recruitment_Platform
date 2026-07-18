@@ -1,6 +1,6 @@
 const express = require("express");
 const { protect, authorize } = require("../middleware/authMiddleware");
-const { getAllUsers, approveUser, toggleUserStatus, createAdmin } = require("../controllers/adminController");
+const { getAllUsers, approveUser, toggleUserStatus, createAdmin, getAllJobsForAdmin } = require("../controllers/adminController");
 
 const router = express.Router();
 
@@ -11,5 +11,6 @@ router.get("/users", getAllUsers);
 router.patch("/users/:id/approve", approveUser);
 router.patch("/users/:id/toggle-status", toggleUserStatus);
 router.post("/create-admin", createAdmin);
+router.get("/jobs", getAllJobsForAdmin);
 
 module.exports = router;
