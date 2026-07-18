@@ -36,6 +36,7 @@ const NAV_LINKS = {
   ],
   admin: [
     { to: "/admin/dashboard", label: "Dashboard", icon: "dashboard" },
+    { to: "/admin/profile", label: "My Profile", icon: "profile" },
     { to: "/admin/users", label: "Manage Users", icon: "users" },
     { to: "/admin/jobs", label: "Manage Jobs", icon: "briefcase" },
     { to: "/admin/notifications", label: "Notifications", icon: "bell" },
