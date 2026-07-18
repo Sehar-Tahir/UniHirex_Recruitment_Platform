@@ -1,20 +1,39 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { COLORS, fontHead, fontBody } from "../../theme";
 import ApplicationRow from "../../components/dashboard/student/ApplicationRow";
-import { mockApplications } from "../../data/mockApplications";
+import { getMyApplications } from "../../api/applications";
+import { useAuth } from "../../context/AuthContext";
 
 const TABS = ["All", "Under Review", "Shortlisted", "Rejected"];
 
 export default function MyApplicationsPage() {
+  const { token } = useAuth();
   const [activeTab, setActiveTab] = useState("All");
+  const [applications, setApplications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchApplications = async () => {
+      try {
+        const data = await getMyApplications(token);
+        setApplications(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchApplications();
+  }, [token]);
 
   const filtered = useMemo(() => {
-    if (activeTab === "All") return mockApplications;
-    return mockApplications.filter((a) => a.status === activeTab);
-  }, [activeTab]);
+    if (activeTab === "All") return applications;
+    return applications.filter((a) => a.status === activeTab);
+  }, [applications, activeTab]);
 
   const countFor = (status) =>
-    status === "All" ? mockApplications.length : mockApplications.filter((a) => a.status === status).length;
+    status === "All" ? applications.length : applications.filter((a) => a.status === status).length;
 
   return (
     <div>
@@ -45,9 +64,27 @@ export default function MyApplicationsPage() {
         })}
       </div>
 
+      {error && (
+        <p className="text-[13.5px] mb-4" style={{ color: "#DC2626" }}>
+          {error}
+        </p>
+      )}
+
       <div className="border border-[#ECEEF3] rounded-2xl p-6 bg-white">
-        {filtered.length > 0 ? (
-          filtered.map((app) => <ApplicationRow key={app.id} {...app} />)
+        {loading ? (
+          <p className="text-[14px] text-center py-8" style={{ ...fontBody, color: COLORS.textMuted }}>
+            Loading...
+          </p>
+        ) : filtered.length > 0 ? (
+          filtered.map((app) => (
+            <ApplicationRow
+              key={app._id}
+              title={app.job?.title}
+              company={app.job?.company}
+              status={app.status}
+              appliedOn={new Date(app.createdAt).toLocaleDateString()}
+            />
+          ))
         ) : (
           <p className="text-[14px] text-center py-8" style={{ ...fontBody, color: COLORS.textMuted }}>
             No applications with this status yet.

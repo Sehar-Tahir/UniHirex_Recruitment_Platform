@@ -17,7 +17,7 @@ export default function ApplicantReviewRow({ id, studentName, university, cgpa, 
           {studentName}
         </p>
         <p className="text-[13px]" style={{ ...fontBody, color: COLORS.textMuted }}>
-          {university} · CGPA {cgpa} · Applied {appliedOn}
+          {university || "University not set"} · CGPA {cgpa || "—"} · Applied {appliedOn}
         </p>
       </div>
 

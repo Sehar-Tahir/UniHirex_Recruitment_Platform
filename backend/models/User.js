@@ -30,6 +30,32 @@ const userSchema = new mongoose.Schema(
       trim: true,
       // only relevant for recruiters
     },
+    // Student-specific fields
+    university: { type: String, trim: true, default: "" },
+    department: { type: String, trim: true, default: "" },
+    semester: { type: String, trim: true, default: "" },
+    cgpa: { type: String, trim: true, default: "" },
+    skills: [{ type: String }],
+    projects: [
+      {
+        title: String,
+        description: String,
+        link: String,
+      },
+    ],
+    certifications: [
+      {
+        name: String,
+        issuer: String,
+        year: String,
+      },
+    ],
+    resumeUrl: { type: String, default: "" },
+    photoUrl: { type: String, default: "" },
+    // Recruiter-specific fields (beyond companyName)
+    industry: { type: String, trim: true, default: "" },
+    website: { type: String, trim: true, default: "" },
+    logoUrl: { type: String, default: "" },
     status: {
       type: String,
       enum: ["Active", "Pending", "Suspended"],
