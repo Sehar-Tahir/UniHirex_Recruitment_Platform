@@ -52,7 +52,7 @@ export default function Sidebar({ role, open, onClose }) {
       )}
 
       <aside
-        className={`w-65 h-screen fixed lg:sticky top-0 flex flex-col px-4 py-6 z-40 transition-transform duration-300 ${
+        className={`w-65 h-dvh fixed top-0 left-0 flex flex-col px-4 py-6 z-40 transition-transform duration-300 ${
           open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
         style={{ background: "#0A0E27" }}

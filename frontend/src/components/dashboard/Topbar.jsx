@@ -53,25 +53,6 @@ export default function Topbar({ onMenuClick }) {
           </svg>
         </Link>
 
-        <div className="w-px h-7 bg-[#EEF1F8] hidden sm:block" />
-
-        <div className="hidden sm:flex items-center gap-2.5">
-          <div
-            className="w-9.5 h-9.5 rounded-full flex items-center justify-center font-semibold text-white text-[13.5px] shrink-0"
-            style={{ background: COLORS.primary }}
-          >
-            {user?.name?.[0]?.toUpperCase() || "U"}
-          </div>
-          <div>
-            <p className="text-[13.5px] font-semibold leading-tight" style={{ ...fontBody, color: COLORS.textDark }}>
-              {user?.name || "Guest"}
-            </p>
-            <p className="text-[12px] capitalize leading-tight" style={{ ...fontBody, color: COLORS.textMuted }}>
-              {user?.role}
-            </p>
-          </div>
-        </div>
-
         <button
           onClick={handleLogout}
           className="text-[13px] font-semibold px-3 py-2 rounded-lg transition-colors hover:bg-[#FBEAEA]"
@@ -79,6 +60,36 @@ export default function Topbar({ onMenuClick }) {
         >
           Logout
         </button>
+
+        <div className="w-px h-7 bg-[#EEF1F8]" />
+
+         <Link
+          to={user?.role === "student" ? "/student/profile" : user?.role === "recruiter" ? "/recruiter/company" : "/admin/profile"}
+          className="flex items-center gap-2.5"
+        >
+          <div
+            className="w-9.5 h-9.5 rounded-full flex items-center justify-center font-semibold text-white text-[13.5px] shrink-0"
+            style={{ background: COLORS.primary }}
+          >
+            {user?.name?.[0]?.toUpperCase() || "U"}
+          </div>
+          <div className="hidden sm:block">
+            <p className="text-[13.5px] font-semibold leading-tight" style={{ ...fontBody, color: COLORS.textDark }}>
+              {user?.name || "Guest"}
+            </p>
+            <p className="text-[12px] capitalize leading-tight" style={{ ...fontBody, color: COLORS.textMuted }}>
+              {user?.role}
+            </p>
+          </div>
+        </Link>
+
+        {/* <button
+          onClick={handleLogout}
+          className="text-[13px] font-semibold px-3 py-2 rounded-lg transition-colors hover:bg-[#FBEAEA]"
+          style={{ ...fontBody, color: COLORS.accent }}
+        >
+          Logout
+        </button> */}
       </div>
     </header>
   );

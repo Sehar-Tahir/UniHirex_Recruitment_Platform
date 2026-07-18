@@ -11,8 +11,8 @@ export default function AdminListingRow({ id, title, company, type, status, post
   const style = STATUS_STYLES[status] || STATUS_STYLES.Closed;
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-y-2 gap-x-4 py-4 border-b border-[#F1F3F9] last:border-0">
-      <div className="flex-1 min-w-0">
+    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 py-4 border-b border-[#F1F3F9] last:border-0">
+      <div className="min-w-0">
         <p className="text-[14.5px] font-semibold truncate" style={{ ...fontBody, color: COLORS.textDark }}>
           {title}
         </p>
@@ -21,19 +21,19 @@ export default function AdminListingRow({ id, title, company, type, status, post
         </p>
       </div>
 
-      <span
-        className="text-[12px] font-semibold px-3 py-1.5 rounded-full whitespace-nowrap mx-4"
-        style={{ ...fontBody, background: style.bg, color: style.color }}
-      >
-        {status}
-      </span>
+      <div className="flex flex-wrap items-center gap-2 md:gap-3 md:shrink-0">
+        <span
+          className="text-[11.5px] font-semibold px-2.5 py-1 rounded-full whitespace-nowrap"
+          style={{ ...fontBody, background: style.bg, color: style.color }}
+        >
+          {status}
+        </span>
 
-      <div className="flex gap-3 whitespace-nowrap">
         {status !== "Flagged" && (
           <button
             onClick={() => onSetStatus(id, "Flagged")}
-            className="text-[13px] font-semibold"
-            style={{ ...fontBody, color: "#B45309" }}
+            className="text-[12.5px] font-semibold whitespace-nowrap px-2.5 py-1 rounded-full border"
+            style={{ ...fontBody, color: "#B45309", borderColor: "#F5E1BB" }}
           >
             Flag
           </button>
@@ -41,8 +41,8 @@ export default function AdminListingRow({ id, title, company, type, status, post
         {status !== "Closed" && (
           <button
             onClick={() => onSetStatus(id, "Closed")}
-            className="text-[13px] font-semibold"
-            style={{ ...fontBody, color: "#B91C1C" }}
+            className="text-[12.5px] font-semibold whitespace-nowrap px-2.5 py-1 rounded-full border"
+            style={{ ...fontBody, color: "#B91C1C", borderColor: "#F3D2D2" }}
           >
             Close
           </button>
@@ -50,8 +50,8 @@ export default function AdminListingRow({ id, title, company, type, status, post
         {status !== "Active" && (
           <button
             onClick={() => onSetStatus(id, "Active")}
-            className="text-[13px] font-semibold"
-            style={{ ...fontBody, color: COLORS.primary }}
+            className="text-[12.5px] font-semibold whitespace-nowrap px-2.5 py-1 rounded-full border"
+            style={{ ...fontBody, color: COLORS.primary, borderColor: "#D7DEF5" }}
           >
             Reactivate
           </button>

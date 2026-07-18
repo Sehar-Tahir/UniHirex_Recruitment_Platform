@@ -9,9 +9,9 @@ export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex bg-[#FAFBFE] min-h-screen">
+    <div className="bg-[#FAFBFE] min-h-dvh">
       <Sidebar role={user?.role} open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex flex-col min-w-0 lg:ml-65">
         <Topbar onMenuClick={() => setSidebarOpen(true)} />
         <main className="flex-1 p-5 md:p-8">
           <Outlet />

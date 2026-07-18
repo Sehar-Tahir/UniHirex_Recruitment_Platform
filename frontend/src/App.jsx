@@ -11,6 +11,7 @@ import VerifyEmail from "./pages/auth/VerifyEmail";
 import ResetPassword from "./pages/auth/ResetPassword";
 import ForgetPassword from "./pages/auth/ForgetPassword";
 import PendingVerification from "./pages/auth/PendingVerification";
+import AdminLogin from "./pages/auth/AdminLogin";
 
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./routes/ProtectedRoute";
@@ -33,6 +34,7 @@ import CandidateDetailsPage from "./pages/recruiter/CandidateDetailsPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ManageUsersPage from "./pages/admin/ManageUsersPage";
 import ManageJobsPage from "./pages/admin/ManageJobsPage";
+import AdminProfilePage from "./pages/admin/AdminProfilePage";
 
 import NotFound from "./pages/NotFound";
 import Unauthorized from "./pages/Unauthorized";
@@ -60,6 +62,7 @@ const App = () => {
           <Route path="/" element={<LandingPage />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
           
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
@@ -96,6 +99,7 @@ const App = () => {
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/admin/users" element={<ManageUsersPage />} />
               <Route path="/admin/jobs" element={<ManageJobsPage />} />
+              <Route path="/admin/profile" element={<AdminProfilePage />} />
               <Route path="/admin/notifications" element={<NotificationsPage role="admin" initialData={mockAdminNotifications} />} />
             </Route>
           </Route>

@@ -6,7 +6,7 @@ import UserRow from "../../components/dashboard/admin/UserRow";
 const ROLE_TABS = ["All", "Student", "Recruiter"];
 
 export default function ManageUsersPage() {
-  const { users, toggleStatus } = useUsers();
+  const { users, toggleStatus, approveUser } = useUsers();
   const [activeTab, setActiveTab] = useState("All");
   const [search, setSearch] = useState("");
 
@@ -61,7 +61,7 @@ export default function ManageUsersPage() {
 
       <div className="border border-[#ECEEF3] rounded-2xl p-6 bg-white">
         {filtered.length > 0 ? (
-          filtered.map((u) => <UserRow key={u.id} {...u} onToggleStatus={toggleStatus} />)
+          filtered.map((u) => <UserRow key={u.id} {...u} onToggleStatus={toggleStatus} onApprove={approveUser} />)
         ) : (
           <p className="text-[14px] text-center py-8" style={{ ...fontBody, color: COLORS.textMuted }}>
             No users match your search.

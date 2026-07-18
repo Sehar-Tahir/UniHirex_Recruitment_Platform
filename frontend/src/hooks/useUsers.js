@@ -21,5 +21,18 @@ export function useUsers() {
     );
   };
 
-  return { users, toggleStatus };
+  const approveUser = (id) => {
+    setUsers((prev) => prev.map((u) => (u.id === id ? { ...u, status: "Active" } : u)));
+  };
+
+  const addUser = ({ name, email, role, status }) => {
+    setUsers((prev) => [
+      { id: Date.now(), name, email, role, status, joinedOn: new Date().toISOString().slice(0, 10) },
+      ...prev,
+    ]);
+  };
+
+  const findByEmail = (email) => users.find((u) => u.email.toLowerCase() === email.toLowerCase());
+
+  return { users, toggleStatus, approveUser, addUser, findByEmail };
 }

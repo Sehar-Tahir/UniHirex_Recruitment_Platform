@@ -15,7 +15,7 @@ export default function ManageListingsPage() {
         </h1>
         <Link
           to="/recruiter/post-listing"
-          className="px-4 py-2.5 rounded-lg font-semibold text-[13.5px] text-white"
+          className="px-4 py-2.5 rounded-lg font-semibold md:text-[13.5px] text-[11.5px] text-white"
           style={{ ...fontBody, background: COLORS.accent }}
         >
           + Post New Listing

@@ -4,12 +4,15 @@ import { COLORS, fontBody } from "../../theme";
 import AuthLayout from "../../components/auth/AuthLayout";
 import FormInput from "../../components/auth/FormInput";
 import { useAuth } from "../../context/AuthContext";
+import { useUsers } from "../../hooks/useUsers";
 
 export default function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { findByEmail } = useUsers();
   const [form, setForm] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
+  const [loginError, setLoginError] = useState("");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -27,13 +30,28 @@ export default function Login() {
     e.preventDefault();
     const errs = validate();
     setErrors(errs);
-    if (Object.keys(errs).length === 0) {
-      // TODO: replace with real backend login API (Phase 2) — will return role + JWT
-      // For now, dummy login: treat every email as a student account
-      const dummyUser = { name: form.email.split("@")[0], email: form.email, role: "student" };
-      login(dummyUser);
-      navigate(`/${dummyUser.role}/dashboard`);
+    setLoginError("");
+    if (Object.keys(errs).length > 0) return;
+
+    // TODO: replace with real backend login API (Phase 2) — will return role + JWT from the actual account
+    const isIUBEmail = form.email.toLowerCase().endsWith("@iub.edu.pk");
+    const role = isIUBEmail ? "student" : "recruiter";
+
+    if (role === "recruiter") {
+      const existing = findByEmail(form.email);
+      if (existing?.status === "Pending") {
+        setLoginError("Your recruiter account is still pending admin approval.");
+        return;
+      }
+      if (existing?.status === "Suspended") {
+        setLoginError("This account has been suspended. Contact support for help.");
+        return;
+      }
     }
+
+    const dummyUser = { name: form.email.split("@")[0], email: form.email, role };
+    login(dummyUser);
+    navigate(`/${role}/dashboard`);
   };
 
   return (
@@ -61,6 +79,14 @@ export default function Login() {
           error={errors.password}
         />
 
+    
+
+        {loginError && (
+          <p className="text-[13.5px] mb-4" style={{ color: "#DC2626" }}>
+            {loginError}
+          </p>
+        )}
+
         <div className="flex justify-end mb-6">
           <Link to="/forget-password" className="text-[14px] font-semibold" style={{ ...fontBody, color: COLORS.primary }}>
             Forgot password?
@@ -76,7 +102,13 @@ export default function Login() {
         </button>
       </form>
 
-      <p className="text-center text-[14px] mt-6" style={{ ...fontBody, color: COLORS.textMuted }}>
+      {/* <p className="text-center text-[14px] mt-6" style={{ ...fontBody, color: COLORS.textMuted }}>
+        Don't have an account?{" "}
+        <Link to="/register" className="font-semibold" style={{ color: COLORS.primary }}>
+          Create one
+        </Link>
+      </p> */}
+<p className="text-center text-[14px] mt-6" style={{ ...fontBody, color: COLORS.textMuted }}>
         Don't have an account?{" "}
         <Link to="/register" className="font-semibold" style={{ color: COLORS.primary }}>
           Create one

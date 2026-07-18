@@ -4,9 +4,11 @@ import { COLORS, fontBody } from "../../theme";
 import AuthLayout from "../../components/auth/AuthLayout";
 import FormInput from "../../components/auth/FormInput";
 import RoleToggle from "../../components/auth/RoleToggle";
+import { useUsers } from "../../hooks/useUsers";
 
 export default function Register() {
   const navigate = useNavigate();
+  const { addUser } = useUsers();
   const [role, setRole] = useState("student");
 
   const handleRoleChange = (newRole) => {
@@ -41,7 +43,14 @@ export default function Register() {
     setErrors(errs);
     if (Object.keys(errs).length === 0) {
       // TODO: connect to backend register API (Phase 2)
-      console.log("Registering", { role, ...form });
+      if (role === "recruiter") {
+        addUser({
+          name: form.companyName || form.name,
+          email: form.email,
+          role: "recruiter",
+          status: "Pending",
+        });
+      }
       navigate(role === "recruiter" ? "/pending-verification" : "/verify-email");
     }
   };
