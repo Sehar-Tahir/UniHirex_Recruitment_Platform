@@ -1,14 +1,44 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { COLORS, fontHead, fontBody } from "../../theme";
-import { useAdminListings } from "../../hooks/useAdminListings";
+import { getAllJobsForAdmin } from "../../api/admin";
+import { updateJobStatus } from "../../api/jobs";
+import { useAuth } from "../../context/AuthContext";
 import AdminListingRow from "../../components/dashboard/admin/AdminListingRow";
 
 const STATUS_TABS = ["All", "Active", "Flagged", "Closed"];
 
 export default function ManageJobsPage() {
-  const { listings, setStatus } = useAdminListings();
+  const { token } = useAuth();
+  const [listings, setListings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [statusTab, setStatusTab] = useState("All");
   const [search, setSearch] = useState("");
+
+  const fetchListings = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await getAllJobsForAdmin(token);
+      setListings(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    fetchListings();
+  }, [fetchListings]);
+
+  const handleSetStatus = async (id, status) => {
+    try {
+      await updateJobStatus(id, status, token);
+      setListings((prev) => prev.map((l) => (l._id === id ? { ...l, status } : l)));
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   const filtered = useMemo(() => {
     return listings.filter((l) => {
@@ -27,8 +57,14 @@ export default function ManageJobsPage() {
         Manage Jobs
       </h1>
       <p className="text-[14.5px] mb-6" style={{ ...fontBody, color: COLORS.textMuted }}>
-        {filtered.length} of {listings.length} listings platform-wide
+        {loading ? "Loading..." : `${filtered.length} of ${listings.length} listings platform-wide`}
       </p>
+
+      {error && (
+        <p className="text-[13.5px] mb-4" style={{ color: "#DC2626" }}>
+          {error}
+        </p>
+      )}
 
       <div className="flex flex-wrap gap-3 mb-6">
         <div className="flex gap-2">
@@ -61,11 +97,24 @@ export default function ManageJobsPage() {
 
       <div className="border border-[#ECEEF3] rounded-2xl p-6 bg-white">
         {filtered.length > 0 ? (
-          filtered.map((l) => <AdminListingRow key={l.id} {...l} onSetStatus={setStatus} />)
+          filtered.map((l) => (
+            <AdminListingRow
+              key={l._id}
+              id={l._id}
+              title={l.title}
+              company={l.company}
+              type={l.type}
+              status={l.status}
+              postedOn={new Date(l.createdAt).toLocaleDateString()}
+              onSetStatus={handleSetStatus}
+            />
+          ))
         ) : (
-          <p className="text-[14px] text-center py-8" style={{ ...fontBody, color: COLORS.textMuted }}>
-            No listings match your filters.
-          </p>
+          !loading && (
+            <p className="text-[14px] text-center py-8" style={{ ...fontBody, color: COLORS.textMuted }}>
+              No listings match your filters.
+            </p>
+          )
         )}
       </div>
     </div>
