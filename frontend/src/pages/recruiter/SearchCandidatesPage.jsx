@@ -1,28 +1,40 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { COLORS, fontHead, fontBody } from "../../theme";
 import CandidateCard from "../../components/dashboard/recruiter/CandidateCard";
-import { mockCandidates } from "../../data/mockRecruiterData";
+import { getCandidates } from "../../api/candidates";
+import { useAuth } from "../../context/AuthContext";
 
 export default function SearchCandidatesPage() {
+  const { token } = useAuth();
   const [search, setSearch] = useState("");
   const [skillFilter, setSkillFilter] = useState("");
+  const [candidates, setCandidates] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchCandidates = async () => {
+      setLoading(true);
+      setError("");
+      try {
+        const data = await getCandidates({ search, skill: skillFilter }, token);
+        setCandidates(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const debounce = setTimeout(fetchCandidates, 350);
+    return () => clearTimeout(debounce);
+  }, [search, skillFilter, token]);
 
   const allSkills = useMemo(() => {
     const set = new Set();
-    mockCandidates.forEach((c) => c.skills.forEach((s) => set.add(s)));
+    candidates.forEach((c) => (c.skills || []).forEach((s) => set.add(s)));
     return Array.from(set);
-  }, []);
-
-  const filtered = useMemo(() => {
-    return mockCandidates.filter((c) => {
-      const matchesSearch =
-        !search ||
-        c.name.toLowerCase().includes(search.toLowerCase()) ||
-        c.university.toLowerCase().includes(search.toLowerCase());
-      const matchesSkill = !skillFilter || c.skills.includes(skillFilter);
-      return matchesSearch && matchesSkill;
-    });
-  }, [search, skillFilter]);
+  }, [candidates]);
 
   const inputStyle = { ...fontBody, borderColor: "#D7DEF5", color: COLORS.textDark };
 
@@ -32,7 +44,7 @@ export default function SearchCandidatesPage() {
         Search Candidates
       </h1>
       <p className="text-[14.5px] mb-6" style={{ ...fontBody, color: COLORS.textMuted }}>
-        {filtered.length} candidate{filtered.length === 1 ? "" : "s"} found
+        {loading ? "Searching..." : `${candidates.length} candidate${candidates.length === 1 ? "" : "s"} found`}
       </p>
 
       <div className="border border-[#ECEEF3] rounded-2xl p-5 bg-white mb-6 flex flex-wrap gap-3">
@@ -54,13 +66,27 @@ export default function SearchCandidatesPage() {
         </select>
       </div>
 
+      {error && (
+        <p className="text-[13.5px] mb-4" style={{ color: "#DC2626" }}>
+          {error}
+        </p>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {filtered.map((c) => (
-          <CandidateCard key={c.id} {...c} />
+        {candidates.map((c) => (
+          <CandidateCard
+            key={c._id}
+            id={c._id}
+            name={c.name}
+            university={c.university}
+            department={c.department}
+            skills={c.skills || []}
+            cgpa={c.cgpa}
+          />
         ))}
       </div>
 
-      {filtered.length === 0 && (
+      {!loading && !error && candidates.length === 0 && (
         <p className="text-[14px] text-center py-12" style={{ ...fontBody, color: COLORS.textMuted }}>
           No candidates match your filters.
         </p>

@@ -30,4 +30,40 @@ const updateMyProfile = async (req, res) => {
   }
 };
 
-module.exports = { getMyProfile, updateMyProfile };
+// @route  GET /api/users/candidates   (recruiter/admin only — search students)
+const getCandidates = async (req, res) => {
+  try {
+    const { search, skill } = req.query;
+    const filter = { role: "student" };
+
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { university: { $regex: search, $options: "i" } },
+      ];
+    }
+    if (skill) filter.skills = skill;
+
+    const candidates = await User.find(filter).select(
+      "name email university department semester cgpa skills projects"
+    );
+    res.json(candidates);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch candidates", error: err.message });
+  }
+};
+
+// @route  GET /api/users/candidates/:id   (recruiter/admin only — one student's full public profile)
+const getCandidateById = async (req, res) => {
+  try {
+    const candidate = await User.findOne({ _id: req.params.id, role: "student" }).select(
+      "name email university department semester cgpa skills projects"
+    );
+    if (!candidate) return res.status(404).json({ message: "Candidate not found" });
+    res.json(candidate);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch candidate", error: err.message });
+  }
+};
+
+module.exports = { getMyProfile, updateMyProfile, getCandidates, getCandidateById };
