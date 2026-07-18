@@ -1,32 +1,35 @@
-/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-    const [user, setUser] = useState(() => {
-        const stored = localStorage.getItem("unihirex_user");
-        return stored ? JSON.parse(stored) : null;
-    });
+  const [user, setUser] = useState(() => {
+    const stored = localStorage.getItem("unihirex_user");
+    return stored ? JSON.parse(stored) : null;
+  });
+  const [token, setToken] = useState(() => localStorage.getItem("unihirex_token"));
 
-    const login = (userData) => {
-        // TODO: replace with real JWT response from backend (Phase 2)
-        localStorage.setItem("unihirex_user", JSON.stringify(userData));
-        setUser(userData);
-    };
+  const login = (userData, authToken) => {
+    localStorage.setItem("unihirex_user", JSON.stringify(userData));
+    localStorage.setItem("unihirex_token", authToken);
+    setUser(userData);
+    setToken(authToken);
+  };
 
-    const logout = () => {
-        localStorage.removeItem("unihirex_user");
-        setUser(null);
-    };
+  const logout = () => {
+    localStorage.removeItem("unihirex_user");
+    localStorage.removeItem("unihirex_token");
+    setUser(null);
+    setToken(null);
+  };
 
-    return (
-        <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, logout }}>
-            {children}
-        </AuthContext.Provider>
-    );
+  return (
+    <AuthContext.Provider value={{ user, token, isAuthenticated: !!user && !!token, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
-
+// 
 export function useAuth() {
-    return useContext(AuthContext);
+  return useContext(AuthContext);
 }

@@ -4,19 +4,17 @@ import { COLORS, fontBody } from "../../theme";
 import AuthLayout from "../../components/auth/AuthLayout";
 import FormInput from "../../components/auth/FormInput";
 import { useAuth } from "../../context/AuthContext";
-import { useUsers } from "../../hooks/useUsers";
+import { loginUser } from "../../api/auth";
 
 export default function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const { findByEmail } = useUsers();
   const [form, setForm] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
   const [loginError, setLoginError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const validate = () => {
     const errs = {};
@@ -26,39 +24,30 @@ export default function Login() {
     return errs;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const errs = validate();
     setErrors(errs);
     setLoginError("");
     if (Object.keys(errs).length > 0) return;
 
-    // TODO: replace with real backend login API (Phase 2) — will return role + JWT from the actual account
-    const isIUBEmail = form.email.toLowerCase().endsWith("@iub.edu.pk");
-    const role = isIUBEmail ? "student" : "recruiter";
-
-    if (role === "recruiter") {
-      const existing = findByEmail(form.email);
-      if (existing?.status === "Pending") {
-        setLoginError("Your recruiter account is still pending admin approval.");
-        return;
-      }
-      if (existing?.status === "Suspended") {
-        setLoginError("This account has been suspended. Contact support for help.");
-        return;
-      }
+    setLoading(true);
+    try {
+      const data = await loginUser({ email: form.email, password: form.password });
+      login(
+        { id: data.id, name: data.name, email: data.email, role: data.role, status: data.status },
+        data.token
+      );
+      navigate(`/${data.role}/dashboard`);
+    } catch (err) {
+      setLoginError(err.message);
+    } finally {
+      setLoading(false);
     }
-
-    const dummyUser = { name: form.email.split("@")[0], email: form.email, role };
-    login(dummyUser);
-    navigate(`/${role}/dashboard`);
   };
 
   return (
-    <AuthLayout
-      title="Welcome back"
-      subtitle="Sign in to continue to your dashboard"
-    >
+    <AuthLayout title="Welcome back" subtitle="Sign in to continue to your dashboard">
       <form onSubmit={handleSubmit}>
         <FormInput
           label="Email address"
@@ -66,7 +55,7 @@ export default function Login() {
           type="email"
           value={form.email}
           onChange={handleChange}
-          placeholder="you@university.edu.pk"
+          placeholder="you@iub.edu.pk"
           error={errors.email}
         />
         <FormInput
@@ -78,8 +67,6 @@ export default function Login() {
           placeholder="Enter your password"
           error={errors.password}
         />
-
-    
 
         {loginError && (
           <p className="text-[13.5px] mb-4" style={{ color: "#DC2626" }}>
@@ -95,20 +82,15 @@ export default function Login() {
 
         <button
           type="submit"
-          className="w-full py-3.5 rounded-[10px] font-semibold text-[15px] text-white"
+          disabled={loading}
+          className="w-full py-3.5 rounded-[10px] font-semibold text-[15px] text-white disabled:opacity-60"
           style={{ ...fontBody, background: COLORS.accent }}
         >
-          Sign in
+          {loading ? "Signing in..." : "Sign in"}
         </button>
       </form>
 
-      {/* <p className="text-center text-[14px] mt-6" style={{ ...fontBody, color: COLORS.textMuted }}>
-        Don't have an account?{" "}
-        <Link to="/register" className="font-semibold" style={{ color: COLORS.primary }}>
-          Create one
-        </Link>
-      </p> */}
-<p className="text-center text-[14px] mt-6" style={{ ...fontBody, color: COLORS.textMuted }}>
+      <p className="text-center text-[14px] mt-6" style={{ ...fontBody, color: COLORS.textMuted }}>
         Don't have an account?{" "}
         <Link to="/register" className="font-semibold" style={{ color: COLORS.primary }}>
           Create one
