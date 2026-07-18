@@ -1,14 +1,50 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { COLORS, fontHead, fontBody } from "../../theme";
-import { mockJobs } from "../../data/mockJobs";
+import { getJobById } from "../../api/jobs";
+import { applyToJob } from "../../api/applications";
+import { useAuth } from "../../context/AuthContext";
 
 export default function JobDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { token } = useAuth();
+  const [job, setJob] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [applied, setApplied] = useState(false);
+  const [applyError, setApplyError] = useState("");
+  const [applying, setApplying] = useState(false);
 
-  const job = mockJobs.find((j) => j.id === Number(id));
+  useEffect(() => {
+    const fetchJob = async () => {
+      try {
+        const data = await getJobById(id);
+        setJob(data);
+      } catch {
+        setJob(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchJob();
+  }, [id]);
+
+  const handleApply = async () => {
+    setApplying(true);
+    setApplyError("");
+    try {
+      await applyToJob(id, token);
+      setApplied(true);
+    } catch (err) {
+      setApplyError(err.message);
+    } finally {
+      setApplying(false);
+    }
+  };
+
+  if (loading) {
+    return <p className="text-[14px]" style={{ ...fontBody, color: COLORS.textMuted }}>Loading...</p>;
+  }
 
   if (!job) {
     return (
@@ -17,11 +53,6 @@ export default function JobDetailsPage() {
       </p>
     );
   }
-
-  const handleApply = () => {
-    // TODO: connect to backend apply API in Phase 2
-    setApplied(true);
-  };
 
   return (
     <div className="max-w-180">
@@ -71,13 +102,19 @@ export default function JobDetailsPage() {
           ))}
         </ul>
 
+        {applyError && (
+          <p className="text-[13.5px] mb-3" style={{ color: "#DC2626" }}>
+            {applyError}
+          </p>
+        )}
+
         <button
           onClick={handleApply}
-          disabled={applied}
-          className="px-6 py-3 rounded-lg font-semibold text-[14.5px] text-white"
+          disabled={applied || applying}
+          className="px-6 py-3 rounded-lg font-semibold text-[14.5px] text-white disabled:opacity-60"
           style={{ ...fontBody, background: applied ? "#94A3B8" : COLORS.accent }}
         >
-          {applied ? "Applied ✓" : "Apply Now"}
+          {applied ? "Applied ✓" : applying ? "Applying..." : "Apply Now"}
         </button>
       </div>
     </div>

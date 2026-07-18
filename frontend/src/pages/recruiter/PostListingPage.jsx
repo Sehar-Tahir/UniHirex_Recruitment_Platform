@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { COLORS, fontHead, fontBody } from "../../theme";
-import { useListings } from "../../hooks/useListings";
 import { CATEGORIES, TYPES, EXPERIENCE_LEVELS } from "../../data/mockJobs";
+import { createJob } from "../../api/jobs";
+import { useAuth } from "../../context/AuthContext";
 
 const inputStyle = { borderColor: "#D7DEF5" };
 
 export default function PostListingPage() {
   const navigate = useNavigate();
-  const { addListing } = useListings();
+  const { token } = useAuth();
   const [form, setForm] = useState({
     title: "",
     category: CATEGORIES[0],
@@ -21,6 +22,8 @@ export default function PostListingPage() {
   const [requirementInput, setRequirementInput] = useState("");
   const [requirements, setRequirements] = useState([]);
   const [errors, setErrors] = useState({});
+  const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -40,14 +43,21 @@ export default function PostListingPage() {
     return errs;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const errs = validate();
     setErrors(errs);
-    if (Object.keys(errs).length === 0) {
-      // TODO: connect to backend post-listing API (Phase 2)
-      addListing({ ...form, requirements });
+    setServerError("");
+    if (Object.keys(errs).length > 0) return;
+
+    setLoading(true);
+    try {
+      await createJob({ ...form, requirements }, token);
       navigate("/recruiter/listings");
+    } catch (err) {
+      setServerError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -150,12 +160,19 @@ export default function PostListingPage() {
           </div>
         </div>
 
+        {serverError && (
+          <p className="text-[13.5px]" style={{ color: "#DC2626" }}>
+            {serverError}
+          </p>
+        )}
+
         <button
           type="submit"
-          className="w-full py-3.5 rounded-[10px] font-semibold text-[15px] text-white mt-2"
+          disabled={loading}
+          className="w-full py-3.5 rounded-[10px] font-semibold text-[15px] text-white mt-2 disabled:opacity-60"
           style={{ ...fontBody, background: COLORS.accent }}
         >
-          Publish Listing
+          {loading ? "Publishing..." : "Publish Listing"}
         </button>
       </form>
     </div>
