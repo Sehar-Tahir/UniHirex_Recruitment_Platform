@@ -9,7 +9,7 @@ const getMyProfile = async (req, res) => {
 const updateMyProfile = async (req, res) => {
   try {
     const allowedFields = [
-      "name", "university", "department", "semester", "cgpa",
+      "name", "phone", "university", "department", "semester", "cgpa",
       "skills", "projects", "certifications", "resumeUrl", "photoUrl",
       "companyName", "industry", "website", "logoUrl",
     ];

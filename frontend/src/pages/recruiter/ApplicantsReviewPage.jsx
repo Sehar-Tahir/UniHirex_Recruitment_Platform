@@ -57,7 +57,7 @@ export default function ApplicantsReviewPage() {
       </button>
 
       <h1 className="text-[24px] font-bold mb-1" style={{ ...fontHead, color: COLORS.textDark }}>
-        Applicants {job ? `— ${job.title}` : ""}
+        Applicants {job ? `- ${job.title}` : ""}
       </h1>
       <p className="text-[14.5px] mb-6" style={{ ...fontBody, color: COLORS.textMuted }}>
         {loading ? "Loading..." : `${applicants.length} applicant${applicants.length === 1 ? "" : "s"}`}
@@ -76,7 +76,8 @@ export default function ApplicantsReviewPage() {
               key={a._id}
               id={a._id}
               studentName={a.student?.name}
-              studentEmail={a.student?.email}
+              university={a.student?.university}
+              cgpa={a.student?.cgpa}
               appliedOn={new Date(a.createdAt).toLocaleDateString()}
               status={a.status}
               onUpdateStatus={handleUpdateStatus}

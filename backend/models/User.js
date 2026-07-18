@@ -31,6 +31,7 @@ const userSchema = new mongoose.Schema(
       // only relevant for recruiters
     },
     // Student-specific fields
+    phone: { type: String, trim: true, default: "" },
     university: { type: String, trim: true, default: "" },
     department: { type: String, trim: true, default: "" },
     semester: { type: String, trim: true, default: "" },
