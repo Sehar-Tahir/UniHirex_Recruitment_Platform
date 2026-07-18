@@ -14,6 +14,8 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok", message: "UniHirex API is running" });
 });
 
+app.use("/api/auth", require("./routes/authRoutes"));
+
 const PORT = process.env.PORT || 5000;
 
 connectDB().then(() => {
