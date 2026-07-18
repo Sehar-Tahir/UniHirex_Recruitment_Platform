@@ -34,6 +34,13 @@ export default function Login() {
     setLoading(true);
     try {
       const data = await loginUser({ email: form.email, password: form.password });
+
+      if (data.role === "admin") {
+        setLoginError("Invalid email or password");
+        setLoading(false);
+        return;
+      }
+
       login(
         { id: data.id, name: data.name, email: data.email, role: data.role, status: data.status },
         data.token

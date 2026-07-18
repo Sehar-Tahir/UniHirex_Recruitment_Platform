@@ -4,14 +4,7 @@ import { COLORS, fontBody } from "../../theme";
 import AuthLayout from "../../components/auth/AuthLayout";
 import FormInput from "../../components/auth/FormInput";
 import { useAuth } from "../../context/AuthContext";
-
-// TEMPORARY hardcoded check — replace with a real backend admin-login API in Phase 2.
-// This is NOT secure (anyone reading the frontend code can see these), it only
-// gates casual access until real authentication exists.
-const ADMIN_CREDENTIALS = {
-  email: "admin@unihirex.com",
-  password: "UniHirexAdmin@2026",
-};
+import { loginUser } from "../../api/auth";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -19,6 +12,7 @@ export default function AdminLogin() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -30,26 +24,37 @@ export default function AdminLogin() {
     return errs;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const errs = validate();
     setErrors(errs);
     setError("");
     if (Object.keys(errs).length > 0) return;
 
-    if (form.email === ADMIN_CREDENTIALS.email && form.password === ADMIN_CREDENTIALS.password) {
-      login({ name: "Platform Admin", email: form.email, role: "admin" });
+    setLoading(true);
+    try {
+      const data = await loginUser({ email: form.email, password: form.password });
+
+      if (data.role !== "admin") {
+        setError("Invalid admin credentials");
+        setLoading(false);
+        return;
+      }
+
+      login(
+        { id: data.id, name: data.name, email: data.email, role: data.role, status: data.status },
+        data.token
+      );
       navigate("/admin/dashboard");
-    } else {
+    } catch {
       setError("Invalid admin credentials");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <AuthLayout
-      title="Admin Sign In"
-      subtitle="Restricted access, platform administrators only"
-    >
+    <AuthLayout title="Admin Sign In" subtitle="Restricted access, platform administrators only">
       <form onSubmit={handleSubmit}>
         <FormInput
           label="Admin email"
@@ -78,10 +83,11 @@ export default function AdminLogin() {
 
         <button
           type="submit"
-          className="w-full py-3.5 rounded-[10px] font-semibold text-[15px] text-white mt-2"
+          disabled={loading}
+          className="w-full py-3.5 rounded-[10px] font-semibold text-[15px] text-white mt-2 disabled:opacity-60"
           style={{ ...fontBody, background: COLORS.accent }}
         >
-          Sign in as Admin
+          {loading ? "Signing in..." : "Sign in as Admin"}
         </button>
       </form>
     </AuthLayout>
