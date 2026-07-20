@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
 import { toggleSavedCandidate as toggleSavedCandidateAPI, getMyProfile } from "../api/users";
 
@@ -19,11 +20,14 @@ export function useSavedCandidates() {
   }, [token]);
 
   const toggleSave = async (id) => {
-    setSavedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+    const wasSaved = savedIds.includes(id);
+    setSavedIds((prev) => (wasSaved ? prev.filter((x) => x !== id) : [...prev, id]));
     try {
       await toggleSavedCandidateAPI(id, token);
+      toast.success(wasSaved ? "Removed from saved candidates" : "Candidate saved");
     } catch {
-      setSavedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+      setSavedIds((prev) => (wasSaved ? [...prev, id] : prev.filter((x) => x !== id)));
+      toast.error("Something went wrong, please try again");
     }
   };
 

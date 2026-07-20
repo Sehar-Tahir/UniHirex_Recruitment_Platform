@@ -10,7 +10,7 @@ import { getMyProfile, updateMyProfile } from "../../api/users";
 import { useAuth } from "../../context/AuthContext";
 
 export default function StudentProfile() {
-  const { token } = useAuth();
+  const { token, updateUser } = useAuth();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -33,6 +33,7 @@ export default function StudentProfile() {
     try {
       const updated = await updateMyProfile(updates, token);
       setProfile(updated);
+      updateUser({ name: updated.name });
       toast.success("Profile updated successfully!");
     } catch (err) {
       setError(err.message);

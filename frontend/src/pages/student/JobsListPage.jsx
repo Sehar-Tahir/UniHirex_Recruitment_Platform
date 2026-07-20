@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { COLORS, fontHead, fontBody } from "../../theme";
+import toast from "react-hot-toast";
 import JobFilters from "../../components/dashboard/student/JobFilters";
 import JobCard from "../../components/dashboard/student/JobCard";
 import { getJobs } from "../../api/jobs";
@@ -27,12 +28,15 @@ export default function JobsListPage({ mode = "jobs" }) {
   }, [token]);
 
   const toggleSave = async (id) => {
-    setSavedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+    const wasSaved = savedIds.includes(id);
+    setSavedIds((prev) => (wasSaved ? prev.filter((x) => x !== id) : [...prev, id]));
     try {
       await toggleSavedJob(id, token);
+      toast.success(wasSaved ? "Removed from saved jobs" : "Job saved");
     } catch {
       // revert on failure
-      setSavedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+      setSavedIds((prev) => (wasSaved ? [...prev, id] : prev.filter((x) => x !== id)));
+      toast.error("Something went wrong, please try again");
     }
   };
 

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 // import { Link, useNavigate, useParams } from "react-router-dom";
 import { Link, useParams } from "react-router-dom";
 // import { COLORS, fontHead, fontBody } from "../../theme";
+import toast from "react-hot-toast";
 import { COLORS, fontBody } from "../../theme";
 import AuthLayout from "../../components/auth/AuthLayout";
 import FormInput from "../../components/auth/FormInput";
@@ -31,6 +32,7 @@ export default function ResetPassword() {
       // TODO: connect to backend reset-password API using `token` (Phase 2)
       console.log("Resetting password with token:", token);
       setDone(true);
+      toast.success("Password reset successful!");
     }
   };
 

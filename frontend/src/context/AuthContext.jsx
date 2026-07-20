@@ -16,6 +16,14 @@ export function AuthProvider({ children }) {
     setToken(authToken);
   };
 
+  const updateUser = (updates) => {
+    setUser((prev) => {
+      const updated = { ...prev, ...updates };
+      localStorage.setItem("unihirex_user", JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   const logout = () => {
     localStorage.removeItem("unihirex_user");
     localStorage.removeItem("unihirex_token");
@@ -24,12 +32,12 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, isAuthenticated: !!user && !!token, login, logout }}>
+    <AuthContext.Provider value={{ user, token, isAuthenticated: !!user && !!token, login, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );
 }
-// 
+
 export function useAuth() {
   return useContext(AuthContext);
 }

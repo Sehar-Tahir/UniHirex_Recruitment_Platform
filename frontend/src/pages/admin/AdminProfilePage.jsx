@@ -5,7 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import { getMyProfile, updateMyProfile } from "../../api/users";
 
 export default function AdminProfilePage() {
-  const { token } = useAuth();
+  const { token, updateUser } = useAuth();
   const [profile, setProfile] = useState(null);
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({ name: "" });
@@ -43,6 +43,7 @@ export default function AdminProfilePage() {
     try {
       const updated = await updateMyProfile({ name: form.name }, token);
       setProfile(updated);
+      updateUser({ name: updated.name });
       setEditing(false);
       toast.success("Profile updated successfully!");
     } catch (err) {

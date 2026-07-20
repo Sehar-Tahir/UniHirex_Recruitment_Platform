@@ -6,7 +6,7 @@ import { getMyProfile, updateMyProfile } from "../../api/users";
 import { useAuth } from "../../context/AuthContext";
 
 export default function CompanyProfilePage() {
-  const { token } = useAuth();
+  const { token, updateUser } = useAuth();
   const [company, setCompany] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -42,6 +42,7 @@ export default function CompanyProfilePage() {
         token
       );
       setCompany(updated);
+      updateUser({ companyName: updated.name });
       toast.success("Company profile updated successfully!");
     } catch (err) {
       setError(err.message);

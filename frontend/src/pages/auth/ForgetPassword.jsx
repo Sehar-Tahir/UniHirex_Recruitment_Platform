@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { COLORS, fontBody } from "../../theme";
+import toast from "react-hot-toast";
 import AuthLayout from "../../components/auth/AuthLayout";
 import FormInput from "../../components/auth/FormInput";
 
@@ -18,6 +19,7 @@ export default function ForgetPassword() {
     console.log("Sending reset link to", email);
     setError("");
     setSent(true);
+    toast.success("Reset link sent! Check your inbox.");
   };
 
   if (sent) {
