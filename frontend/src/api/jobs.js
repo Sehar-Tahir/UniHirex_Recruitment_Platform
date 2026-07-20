@@ -11,9 +11,13 @@ export const getJobs = (filters = {}) => {
 
 export const getJobById = (id) => request(`/jobs/${id}`);
 
+export const getRecommendedJobs = () => request("/jobs/recommended");
+
 export const createJob = (payload, token) => request("/jobs", { method: "POST", body: payload, token });
 
 export const getMyJobs = (token) => request("/jobs/recruiter/mine", { token });
+
+export const getRecruiterStats = (token) => request("/jobs/recruiter/stats", { token });
 
 export const updateJobStatus = (id, status, token) =>
   request(`/jobs/${id}/status`, { method: "PATCH", body: { status }, token });

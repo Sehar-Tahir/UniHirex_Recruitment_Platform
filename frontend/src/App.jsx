@@ -1,6 +1,7 @@
 import React from 'react'
 import { COLORS, fontBody } from "./theme";
 import { Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
 import LandingPage from "./pages/home/LandingPage";
 import ScrollToTop from "./components/ScrollToTop";
@@ -40,9 +41,6 @@ import NotFound from "./pages/NotFound";
 import Unauthorized from "./pages/Unauthorized";
 
 import NotificationsPage from "./pages/NotificationsPage";
-import { mockNotifications } from "./data/mockStudentData";
-import { mockRecruiterNotifications } from "./data/mockRecruiterData";
-import { mockAdminNotifications } from "./data/mockAdminData";
 
 import About from "./pages/company/About";
 import Careers from "./pages/company/Careers";
@@ -56,6 +54,7 @@ const App = () => {
   return (
     <>
       <AuthProvider>
+        <Toaster position="top-right" toastOptions={{ style: { fontFamily: "'Inter', sans-serif", fontSize: "14px" } }} />
       <div style={{ ...fontBody, color: COLORS.textDark, background: "#fff" }} className="overflow-x-hidden">
        <ScrollToTop />
         <Routes>
@@ -77,7 +76,7 @@ const App = () => {
               <Route path="/student/jobs/:id" element={<JobDetailsPage />} />
               <Route path="/student/internships" element={<JobsListPage mode="internships" />} />
               <Route path="/student/applications" element={<MyApplicationsPage />} />
-              <Route path="/student/notifications" element={<NotificationsPage role="student" initialData={mockNotifications} />} />
+              <Route path="/student/notifications" element={<NotificationsPage />} />
             </Route>
           </Route>
 
@@ -90,7 +89,7 @@ const App = () => {
               <Route path="/recruiter/listings/:id/applicants" element={<ApplicantsReviewPage />} />
               <Route path="/recruiter/candidates" element={<SearchCandidatesPage />} />
                <Route path="/recruiter/candidates/:id" element={<CandidateDetailsPage />} />
-              <Route path="/recruiter/notifications" element={<NotificationsPage role="recruiter" initialData={mockRecruiterNotifications} />} />
+              <Route path="/recruiter/notifications" element={<NotificationsPage />} />
             </Route>
           </Route>
 
@@ -100,7 +99,7 @@ const App = () => {
               <Route path="/admin/users" element={<ManageUsersPage />} />
               <Route path="/admin/jobs" element={<ManageJobsPage />} />
               <Route path="/admin/profile" element={<AdminProfilePage />} />
-              <Route path="/admin/notifications" element={<NotificationsPage role="admin" initialData={mockAdminNotifications} />} />
+              <Route path="/admin/notifications" element={<NotificationsPage />} />
             </Route>
           </Route>
 

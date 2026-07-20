@@ -2,7 +2,28 @@ const User = require("../models/User");
 
 // @route  GET /api/users/me
 const getMyProfile = async (req, res) => {
-  res.json(req.user);
+  const user = req.user;
+
+  if (user.role === "student") {
+    const fields = ["phone", "university", "department", "semester", "cgpa"];
+    const filledCount = fields.filter((f) => user[f] && user[f].trim() !== "").length;
+    const hasSkills = user.skills && user.skills.length > 0;
+    const hasResume = user.resumeUrl && user.resumeUrl.trim() !== "";
+
+    const totalChecks = fields.length + 2; // +2 for skills and resume
+    const completedChecks = filledCount + (hasSkills ? 1 : 0) + (hasResume ? 1 : 0);
+    const completion = Math.round((completedChecks / totalChecks) * 100);
+
+    const missing = [];
+    if (!hasResume) missing.push("Resume");
+    if (!hasSkills) missing.push("Skills");
+    if (!user.university) missing.push("University");
+    if (!user.cgpa) missing.push("CGPA");
+
+    return res.json({ ...user.toObject(), profileCompletion: completion, profileMissing: missing });
+  }
+
+  res.json(user);
 };
 
 // @route  PATCH /api/users/me

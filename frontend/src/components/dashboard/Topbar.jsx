@@ -1,7 +1,9 @@
-import React from "react";
+
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { COLORS, fontHead, fontBody } from "../../theme";
 import { useAuth } from "../../context/AuthContext";
+import { getMyNotifications } from "../../api/notifications";
 
 function getPageTitle(pathname) {
   const segments = pathname.split("/").filter(Boolean);
@@ -16,9 +18,22 @@ function getPageTitle(pathname) {
 }
 
 export default function Topbar({ onMenuClick }) {
-  const { user, logout } = useAuth();
+  const { user, logout, token } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    const fetchUnread = async () => {
+      try {
+        const data = await getMyNotifications(token);
+        setUnreadCount(data.filter((n) => !n.read).length);
+      } catch {
+        // silently ignore — badge is a nice-to-have
+      }
+    };
+    fetchUnread();
+  }, [token, location.pathname]);
 
   const handleLogout = () => {
     logout();
@@ -44,13 +59,21 @@ export default function Topbar({ onMenuClick }) {
       <div className="flex items-center gap-3">
         <Link
           to={`/${user?.role}/notifications`}
-          className="w-9.5 h-9.5 rounded-full flex items-center justify-center transition-colors hover:bg-[#F7F8FC]"
+          className="relative w-9.5 h-9.5 rounded-full flex items-center justify-center transition-colors hover:bg-[#F7F8FC]"
           aria-label="Notifications"
         >
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke={COLORS.textMuted} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M6 9a6 6 0 0 1 12 0c0 4 1.5 5.5 1.5 5.5H4.5S6 13 6 9Z" />
             <path d="M10 19a2 2 0 0 0 4 0" />
           </svg>
+          {unreadCount > 0 && (
+            <span
+              className="absolute top-1 right-1 min-w-4 h-4 px-1 rounded-full flex items-center justify-center text-[10px] font-bold text-white"
+              style={{ background: COLORS.accent }}
+            >
+              {unreadCount > 9 ? "9+" : unreadCount}
+            </span>
+          )}
         </Link>
 
         <button

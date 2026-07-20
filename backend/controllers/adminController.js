@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const Job = require("../models/Job");
+const { createNotification } = require("./notificationController");
 
 // @route  GET /api/admin/users
 const getAllUsers = async (req, res) => {
@@ -19,6 +20,8 @@ const approveUser = async (req, res) => {
 
     user.status = "Active";
     await user.save();
+
+    await createNotification(user._id, "Your recruiter account has been approved! You can now post listings.");
 
     res.json({ message: "User approved", user });
   } catch (err) {
@@ -73,4 +76,47 @@ const getAllJobsForAdmin = async (req, res) => {
   }
 };
 
-module.exports = { getAllUsers, approveUser, toggleUserStatus, createAdmin, getAllJobsForAdmin };
+// @route  GET /api/admin/stats
+const getAdminStats = async (req, res) => {
+  try {
+    const Application = require("../models/Application");
+
+    const [totalStudents, totalRecruiters, totalListings, totalApplications, recentUsers, recentJobs] =
+      await Promise.all([
+        User.countDocuments({ role: "student" }),
+        User.countDocuments({ role: "recruiter" }),
+        Job.countDocuments(),
+        Application.countDocuments(),
+        User.find({ role: { $in: ["student", "recruiter"] } })
+          .sort({ createdAt: -1 })
+          .limit(5)
+          .select("name role companyName createdAt"),
+        Job.find().sort({ createdAt: -1 }).limit(5).select("title company createdAt"),
+      ]);
+
+    // Merge two different kinds of events into one "recent activity" feed, sorted by time
+    const activity = [
+      ...recentUsers.map((u) => ({
+        id: u._id,
+        text:
+          u.role === "recruiter"
+            ? `New recruiter registered: ${u.companyName || u.name}`
+            : `New student registered: ${u.name}`,
+        time: u.createdAt,
+      })),
+      ...recentJobs.map((j) => ({
+        id: j._id,
+        text: `${j.company} posted a new listing: ${j.title}`,
+        time: j.createdAt,
+      })),
+    ]
+      .sort((a, b) => new Date(b.time) - new Date(a.time))
+      .slice(0, 6);
+
+    res.json({ totalStudents, totalRecruiters, totalListings, totalApplications, activity });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch admin stats", error: err.message });
+  }
+};
+
+module.exports = { getAllUsers, approveUser, toggleUserStatus, createAdmin, getAllJobsForAdmin, getAdminStats };

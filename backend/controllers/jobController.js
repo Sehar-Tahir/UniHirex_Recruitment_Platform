@@ -1,4 +1,5 @@
 const Job = require("../models/Job");
+const Application = require("../models/Application");
 
 // @route  POST /api/jobs   (recruiter only)
 const createJob = async (req, res) => {
@@ -97,4 +98,59 @@ const updateJobStatus = async (req, res) => {
   }
 };
 
-module.exports = { createJob, getJobs, getJobById, getMyJobs, updateJobStatus };
+// @route  GET /api/jobs/recommended   (student dashboard — latest active listings)
+const getRecommendedJobs = async (req, res) => {
+  try {
+    const jobs = await Job.find({ status: "Active" }).sort({ createdAt: -1 }).limit(6);
+    res.json(jobs);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch recommended jobs", error: err.message });
+  }
+};
+
+// @route  GET /api/jobs/recruiter/stats   (recruiter dashboard)
+const getRecruiterStats = async (req, res) => {
+  try {
+    const Application = require("../models/Application");
+    const recruiterId = req.user._id;
+
+    const myJobs = await Job.find({ postedBy: recruiterId }).select("_id status");
+    const myJobIds = myJobs.map((j) => j._id);
+
+    const activeListings = myJobs.filter((j) => j.status === "Active").length;
+
+    const [totalApplicants, shortlisted, newThisWeek, recentApplicants] = await Promise.all([
+      Application.countDocuments({ job: { $in: myJobIds } }),
+      Application.countDocuments({ job: { $in: myJobIds }, status: "Shortlisted" }),
+      Application.countDocuments({
+        job: { $in: myJobIds },
+        createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
+      }),
+      Application.find({ job: { $in: myJobIds } })
+        .populate("student", "name")
+        .populate("job", "title")
+        .sort({ createdAt: -1 })
+        .limit(5),
+    ]);
+
+    res.json({
+      activeListings,
+      totalApplicants,
+      shortlisted,
+      newThisWeek,
+      recentApplicants,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch recruiter stats", error: err.message });
+  }
+};
+
+module.exports = {
+  createJob,
+  getJobs,
+  getJobById,
+  getMyJobs,
+  updateJobStatus,
+  getRecommendedJobs,
+  getRecruiterStats,
+};

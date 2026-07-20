@@ -1,5 +1,6 @@
 const Application = require("../models/Application");
 const Job = require("../models/Job");
+const { createNotification } = require("./notificationController");
 
 // @route  POST /api/applications   (student only)
 const applyToJob = async (req, res) => {
@@ -14,6 +15,10 @@ const applyToJob = async (req, res) => {
     }
 
     const application = await Application.create({ student: req.user._id, job: jobId });
+
+    // Notify the recruiter who posted this job
+    await createNotification(job.postedBy, `${req.user.name} applied to your listing: ${job.title}`);
+
     res.status(201).json(application);
   } catch (err) {
     if (err.code === 11000) {
@@ -72,6 +77,13 @@ const updateApplicationStatus = async (req, res) => {
 
     application.status = status;
     await application.save();
+
+    // Notify the student whose application status changed
+    await createNotification(
+      application.student,
+      `Your application to ${application.job.title} was ${status.toLowerCase()}`
+    );
+
     res.json(application);
   } catch (err) {
     res.status(500).json({ message: "Failed to update application status", error: err.message });

@@ -8,3 +8,5 @@ export const toggleUserStatus = (id, token) =>
   request(`/admin/users/${id}/toggle-status`, { method: "PATCH", token });
 
 export const getAllJobsForAdmin = (token) => request("/admin/jobs", { token });
+
+export const getAdminStats = (token) => request("/admin/stats", { token });
