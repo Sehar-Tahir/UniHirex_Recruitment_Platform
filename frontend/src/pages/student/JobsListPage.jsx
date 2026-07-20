@@ -3,16 +3,28 @@ import { COLORS, fontHead, fontBody } from "../../theme";
 import JobFilters from "../../components/dashboard/student/JobFilters";
 import JobCard from "../../components/dashboard/student/JobCard";
 import { getJobs } from "../../api/jobs";
-import { toggleSavedJob } from "../../api/users";
+import { toggleSavedJob, getMyProfile } from "../../api/users";
 import { useAuth } from "../../context/AuthContext";
 
 export default function JobsListPage({ mode = "jobs" }) {
-  const { user, token } = useAuth();
+  const { token } = useAuth();
   const [filters, setFilters] = useState({ search: "", category: "", type: "", experienceLevel: "", location: "" });
-  const [savedIds, setSavedIds] = useState(user?.savedJobs || []);
+  const [savedIds, setSavedIds] = useState([]);
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchSaved = async () => {
+      try {
+        const profile = await getMyProfile(token);
+        setSavedIds(profile.savedJobs || []);
+      } catch {
+        // silently ignore — saved-state is a nice-to-have, not critical path
+      }
+    };
+    fetchSaved();
+  }, [token]);
 
   const toggleSave = async (id) => {
     setSavedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));

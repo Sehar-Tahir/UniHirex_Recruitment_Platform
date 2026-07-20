@@ -1,18 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
-import { toggleSavedCandidate as toggleSavedCandidateAPI } from "../api/users";
+import { toggleSavedCandidate as toggleSavedCandidateAPI, getMyProfile } from "../api/users";
 
 export function useSavedCandidates() {
-  const { user, token } = useAuth();
-  const [trackedUser, setTrackedUser] = useState(user);
-  const [savedIds, setSavedIds] = useState(user?.savedCandidates || []);
+  const { token } = useAuth();
+  const [savedIds, setSavedIds] = useState([]);
 
-  // React's recommended pattern for "reset state when a value changes" —
-  // done during render, not inside a useEffect (avoids cascading re-renders).
-  if (user !== trackedUser) {
-    setTrackedUser(user);
-    setSavedIds(user?.savedCandidates || []);
-  }
+  useEffect(() => {
+    const fetchSaved = async () => {
+      try {
+        const profile = await getMyProfile(token);
+        setSavedIds(profile.savedCandidates || []);
+      } catch {
+        // silently ignore — saved-state is a nice-to-have, not critical path
+      }
+    };
+    fetchSaved();
+  }, [token]);
 
   const toggleSave = async (id) => {
     setSavedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
