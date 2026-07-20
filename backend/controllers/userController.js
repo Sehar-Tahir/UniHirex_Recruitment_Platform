@@ -66,4 +66,49 @@ const getCandidateById = async (req, res) => {
   }
 };
 
-module.exports = { getMyProfile, updateMyProfile, getCandidates, getCandidateById };
+// @route  PATCH /api/users/me/saved-jobs/:jobId   (student only — toggle save)
+const toggleSavedJob = async (req, res) => {
+  try {
+    const user = req.user;
+    const jobId = req.params.jobId;
+    const alreadySaved = user.savedJobs.some((id) => id.toString() === jobId);
+
+    if (alreadySaved) {
+      user.savedJobs = user.savedJobs.filter((id) => id.toString() !== jobId);
+    } else {
+      user.savedJobs.push(jobId);
+    }
+    await user.save();
+    res.json({ savedJobs: user.savedJobs });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to update saved jobs", error: err.message });
+  }
+};
+
+// @route  PATCH /api/users/me/saved-candidates/:candidateId   (recruiter only — toggle save)
+const toggleSavedCandidate = async (req, res) => {
+  try {
+    const user = req.user;
+    const candidateId = req.params.candidateId;
+    const alreadySaved = user.savedCandidates.some((id) => id.toString() === candidateId);
+
+    if (alreadySaved) {
+      user.savedCandidates = user.savedCandidates.filter((id) => id.toString() !== candidateId);
+    } else {
+      user.savedCandidates.push(candidateId);
+    }
+    await user.save();
+    res.json({ savedCandidates: user.savedCandidates });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to update saved candidates", error: err.message });
+  }
+};
+
+module.exports = {
+  getMyProfile,
+  updateMyProfile,
+  getCandidates,
+  getCandidateById,
+  toggleSavedJob,
+  toggleSavedCandidate,
+};

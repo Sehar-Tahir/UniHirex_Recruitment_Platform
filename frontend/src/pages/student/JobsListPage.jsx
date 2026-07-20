@@ -3,16 +3,25 @@ import { COLORS, fontHead, fontBody } from "../../theme";
 import JobFilters from "../../components/dashboard/student/JobFilters";
 import JobCard from "../../components/dashboard/student/JobCard";
 import { getJobs } from "../../api/jobs";
+import { toggleSavedJob } from "../../api/users";
+import { useAuth } from "../../context/AuthContext";
 
 export default function JobsListPage({ mode = "jobs" }) {
+  const { user, token } = useAuth();
   const [filters, setFilters] = useState({ search: "", category: "", type: "", experienceLevel: "", location: "" });
-  const [savedIds, setSavedIds] = useState([]);
+  const [savedIds, setSavedIds] = useState(user?.savedJobs || []);
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const toggleSave = (id) => {
+  const toggleSave = async (id) => {
     setSavedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+    try {
+      await toggleSavedJob(id, token);
+    } catch {
+      // revert on failure
+      setSavedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+    }
   };
 
   useEffect(() => {

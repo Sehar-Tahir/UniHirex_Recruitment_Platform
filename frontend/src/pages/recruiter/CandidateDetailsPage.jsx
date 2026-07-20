@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { COLORS, fontHead, fontBody } from "../../theme";
-import { getCandidateById } from "../../api/candidates";
+import { getCandidateById } from "../../api/users";
 import { useAuth } from "../../context/AuthContext";
 import { useSavedCandidates } from "../../hooks/useSavedCandidates";
 

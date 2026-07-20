@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { COLORS, fontHead, fontBody } from "../../theme";
 import CandidateCard from "../../components/dashboard/recruiter/CandidateCard";
-import { getCandidates } from "../../api/candidates";
+import { getCandidates } from "../../api/users";
 import { useAuth } from "../../context/AuthContext";
 
 export default function SearchCandidatesPage() {

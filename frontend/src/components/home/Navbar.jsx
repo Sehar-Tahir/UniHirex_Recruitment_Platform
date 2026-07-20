@@ -24,14 +24,14 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b border-[#EEF0F4]">
-      <div className="max-w-295 mx-auto px-5 md:px-8 h-19 flex items-center justify-between">
-        <Link to="/">
+      <div className="max-w-295 mx-auto px-5 md:px-8 h-19 flex items-center justify-between gap-4">
+        <Link to="/" className="shrink-0">
           <Logo />
         </Link>
 
-        <div className="hidden md:flex gap-9 font-medium text-[15px]" style={{ ...fontBody, color: COLORS.textDark }}>
+        <div className="hidden lg:flex gap-7 xl:gap-9 font-medium text-[14px] xl:text-[15px] shrink-0" style={{ ...fontBody, color: COLORS.textDark }}>
           {LINKS.map((l) => (
-            <a key={l.label} href={l.href} className="relative py-1.5 group">
+            <a key={l.label} href={l.href} className="relative py-1.5 group whitespace-nowrap">
               {l.label}
               <span
                 className="absolute left-0 bottom-0 w-0 h-0.5 transition-all duration-200 group-hover:w-full"
@@ -41,28 +41,32 @@ export default function Navbar() {
           ))}
         </div>
 
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden lg:flex items-center gap-3 xl:gap-4 shrink-0">
           {isAuthenticated ? (
             <>
-              <span className="text-[14px]" style={{ ...fontBody, color: COLORS.textMuted }}>
-                Hi, {user?.name}
+              <span className="hidden xl:inline text-[14px] whitespace-nowrap" style={{ ...fontBody, color: COLORS.textMuted }}>
+                Hi, {user?.name?.split(" ")[0]}
               </span>
-              <Button variant="primary" to={`/${user?.role}/dashboard`}>Go to Dashboard</Button>
-              <button onClick={handleLogout} className="font-semibold text-[14px]" style={{ ...fontBody, color: COLORS.accent }}>
+              <Button variant="primary" to={`/${user?.role}/dashboard`} className="whitespace-nowrap px-4! xl:px-7! text-[13.5px]! xl:text-[15px]!">
+                Dashboard
+              </Button>
+              <button onClick={handleLogout} className="font-semibold text-[13.5px] xl:text-[14px] whitespace-nowrap" style={{ ...fontBody, color: COLORS.accent }}>
                 Logout
               </button>
             </>
           ) : (
             <>
-              <Link to="/login" className="font-semibold text-[15px]" style={{ color: COLORS.primary }}>
+              <Link to="/login" className="font-semibold text-[14px] xl:text-[15px] whitespace-nowrap" style={{ color: COLORS.primary }}>
                 Sign in
               </Link>
-              <Button variant="primary" to="/register">Get started</Button>
+              <Button variant="primary" to="/register" className="whitespace-nowrap px-4! xl:px-7! text-[13.5px]! xl:text-[15px]!">
+                Get started
+              </Button>
             </>
           )}
         </div>
 
-        <button className="md:hidden" onClick={() => setOpen(!open)} aria-label="Toggle menu">
+        <button className="lg:hidden shrink-0" onClick={() => setOpen(!open)} aria-label="Toggle menu">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke={COLORS.textDark} strokeWidth="2">
             {open ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M3 6h18M3 12h18M3 18h18" />}
           </svg>
@@ -70,7 +74,7 @@ export default function Navbar() {
       </div>
 
       {open && (
-        <div className="md:hidden px-5 pb-5 flex flex-col gap-4 bg-white border-t border-[#EEF0F4]" style={fontBody}>
+        <div className="lg:hidden px-5 pb-5 flex flex-col gap-4 bg-white border-t border-[#EEF0F4]" style={fontBody}>
           {LINKS.map((l) => (
             <a
               key={l.label}
@@ -84,6 +88,9 @@ export default function Navbar() {
           ))}
           {isAuthenticated ? (
             <>
+              <p className="text-[14px]" style={{ ...fontBody, color: COLORS.textMuted }}>
+                Signed in as {user?.name}
+              </p>
               <Button variant="primary" className="w-fit" to={`/${user?.role}/dashboard`} onClick={() => setOpen(false)}>
                 Go to Dashboard
               </Button>

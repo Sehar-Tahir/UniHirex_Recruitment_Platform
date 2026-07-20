@@ -53,6 +53,8 @@ const userSchema = new mongoose.Schema(
     ],
     resumeUrl: { type: String, default: "" },
     photoUrl: { type: String, default: "" },
+   savedJobs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Job" }],
+    savedCandidates: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     // Recruiter-specific fields (beyond companyName)
     industry: { type: String, trim: true, default: "" },
     website: { type: String, trim: true, default: "" },
