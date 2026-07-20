@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { COLORS, fontHead, fontBody } from "../../theme";
+import toast from "react-hot-toast";
 import { getMyJobs, updateJobStatus } from "../../api/jobs";
 import { useAuth } from "../../context/AuthContext";
 import ListingRow from "../../components/dashboard/recruiter/ListingRow";
@@ -31,8 +32,10 @@ export default function ManageListingsPage() {
     try {
       await updateJobStatus(id, "Closed", token);
       setListings((prev) => prev.map((l) => (l._id === id ? { ...l, status: "Closed" } : l)));
+      toast.success("Listing closed successfully");
     } catch (err) {
       setError(err.message);
+      toast.error(err.message);
     }
   };
 

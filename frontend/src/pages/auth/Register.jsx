@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { COLORS, fontBody } from "../../theme";
+import toast from "react-hot-toast";
 import AuthLayout from "../../components/auth/AuthLayout";
 import FormInput from "../../components/auth/FormInput";
 import RoleToggle from "../../components/auth/RoleToggle";
@@ -50,9 +51,11 @@ export default function Register() {
         role,
         companyName: role === "recruiter" ? form.companyName : undefined,
       });
+      toast.success("Account created successfully!");
       navigate(role === "recruiter" ? "/pending-verification" : "/verify-email");
     } catch (err) {
       setServerError(err.message);
+      toast.error(err.message);
     } finally {
       setLoading(false);
     }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { COLORS, fontHead, fontBody } from "../../theme";
+import toast from "react-hot-toast";
 import { getAllUsers, approveUser, toggleUserStatus } from "../../api/admin";
 import { useAuth } from "../../context/AuthContext";
 import UserRow from "../../components/dashboard/admin/UserRow";
@@ -34,8 +35,10 @@ export default function ManageUsersPage() {
     try {
       await approveUser(id, token);
       setUsers((prev) => prev.map((u) => (u._id === id ? { ...u, status: "Active" } : u)));
+      toast.success("User approved successfully");
     } catch (err) {
       setError(err.message);
+      toast.error(err.message);
     }
   };
 
@@ -43,8 +46,10 @@ export default function ManageUsersPage() {
     try {
       const res = await toggleUserStatus(id, token);
       setUsers((prev) => prev.map((u) => (u._id === id ? { ...u, status: res.user.status } : u)));
+      toast.success(`User ${res.user.status === "Active" ? "activated" : "suspended"} successfully`);
     } catch (err) {
       setError(err.message);
+      toast.error(err.message);
     }
   };
 

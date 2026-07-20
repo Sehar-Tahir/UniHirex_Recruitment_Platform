@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { COLORS, fontHead, fontBody } from "../../theme";
+import toast from "react-hot-toast";
 import { getApplicantsForJob, updateApplicationStatus } from "../../api/applications";
 import { getJobById } from "../../api/jobs";
 import { useAuth } from "../../context/AuthContext";
@@ -41,8 +42,10 @@ export default function ApplicantsReviewPage() {
       setApplicants((prev) =>
         prev.map((a) => (a._id === applicationId ? { ...a, status } : a))
       );
+      toast.success(`Applicant ${status.toLowerCase()}`);
     } catch (err) {
       setError(err.message);
+      toast.error(err.message);
     }
   };
 

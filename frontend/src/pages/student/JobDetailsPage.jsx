@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { COLORS, fontHead, fontBody } from "../../theme";
+import toast from "react-hot-toast";
 import { getJobById } from "../../api/jobs";
 import { applyToJob } from "../../api/applications";
 import { useAuth } from "../../context/AuthContext";
@@ -35,8 +36,10 @@ export default function JobDetailsPage() {
     try {
       await applyToJob(id, token);
       setApplied(true);
+      toast.success("Application submitted successfully!");
     } catch (err) {
       setApplyError(err.message);
+      toast.error(err.message);
     } finally {
       setApplying(false);
     }

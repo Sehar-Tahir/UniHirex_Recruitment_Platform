@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { COLORS, fontHead, fontBody } from "../../theme";
+import toast from "react-hot-toast";
 import { CATEGORIES, TYPES, EXPERIENCE_LEVELS } from "../../data/mockJobs";
 import { createJob } from "../../api/jobs";
 import { useAuth } from "../../context/AuthContext";
@@ -53,9 +54,11 @@ export default function PostListingPage() {
     setLoading(true);
     try {
       await createJob({ ...form, requirements }, token);
+      toast.success("Listing published successfully!");
       navigate("/recruiter/listings");
     } catch (err) {
       setServerError(err.message);
+      toast.error(err.message);
     } finally {
       setLoading(false);
     }

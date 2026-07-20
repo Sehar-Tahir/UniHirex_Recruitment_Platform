@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { COLORS, fontHead, fontBody } from "../../theme";
+import toast from "react-hot-toast";
 import ProfileHeaderCard from "../../components/dashboard/student/ProfileHeaderCard";
 import SkillsCard from "../../components/dashboard/student/SkillsCard";
 import ProjectsCard from "../../components/dashboard/student/ProjectsCard";
@@ -32,8 +33,10 @@ export default function StudentProfile() {
     try {
       const updated = await updateMyProfile(updates, token);
       setProfile(updated);
+      toast.success("Profile updated successfully!");
     } catch (err) {
       setError(err.message);
+      toast.error(err.message);
     }
   };
 

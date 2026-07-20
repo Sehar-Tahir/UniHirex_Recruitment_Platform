@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { COLORS, fontHead, fontBody } from "../../theme";
+import toast from "react-hot-toast";
 import { getAllJobsForAdmin } from "../../api/admin";
 import { updateJobStatus } from "../../api/jobs";
 import { useAuth } from "../../context/AuthContext";
@@ -35,8 +36,10 @@ export default function ManageJobsPage() {
     try {
       await updateJobStatus(id, status, token);
       setListings((prev) => prev.map((l) => (l._id === id ? { ...l, status } : l)));
+      toast.success(`Listing ${status.toLowerCase()} successfully`);
     } catch (err) {
       setError(err.message);
+      toast.error(err.message);
     }
   };
 

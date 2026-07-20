@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { COLORS, fontHead, fontBody } from "../../theme";
+import toast from "react-hot-toast";
 import CompanyProfileCard from "../../components/dashboard/recruiter/CompanyProfileCard";
 import { getMyProfile, updateMyProfile } from "../../api/users";
 import { useAuth } from "../../context/AuthContext";
@@ -41,8 +42,10 @@ export default function CompanyProfilePage() {
         token
       );
       setCompany(updated);
+      toast.success("Company profile updated successfully!");
     } catch (err) {
       setError(err.message);
+      toast.error(err.message);
     }
   };
 
