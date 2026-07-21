@@ -1,7 +1,11 @@
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import { COLORS, fontHead, fontBody } from "../../../theme";
+import { uploadFile } from "../../../api/upload";
+import { useAuth } from "../../../context/AuthContext";
 
 export default function ProfileHeaderCard({ profile, onSave }) {
+  const { token } = useAuth();
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState(profile);
   const [errors, setErrors] = useState({});
@@ -18,12 +22,22 @@ export default function ProfileHeaderCard({ profile, onSave }) {
     return errs;
   };
 
-  const handlePhotoChange = (e) => {
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+
+  const handlePhotoChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    // TODO: upload to Cloudinary in Phase 2, for now just preview locally
-    const previewUrl = URL.createObjectURL(file);
-    setForm({ ...form, photoUrl: previewUrl });
+
+    setUploadingPhoto(true);
+    try {
+      const url = await uploadFile(file, "photo", token);
+      setForm((prev) => ({ ...prev, photoUrl: url }));
+      toast.success("Photo uploaded - click Save to apply");
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setUploadingPhoto(false);
+    }
   };
 
   const handleSave = () => {
@@ -54,7 +68,7 @@ export default function ProfileHeaderCard({ profile, onSave }) {
         {editing ? (
           <div className="flex gap-3">
             <button
-              onClick={() => { setForm(profile); setEditing(false); }}
+              onClick={() => { setForm(profile); setErrors({}); setEditing(false); }}
               className="text-[13.5px] font-semibold"
               style={{ ...fontBody, color: COLORS.textMuted }}
             >
@@ -93,10 +107,10 @@ export default function ProfileHeaderCard({ profile, onSave }) {
         {editing && (
           <label
             className="text-[13.5px] font-semibold cursor-pointer"
-            style={{ ...fontBody, color: COLORS.primary }}
+            style={{ ...fontBody, color: uploadingPhoto ? COLORS.textMuted : COLORS.primary }}
           >
-            Change photo
-            <input type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
+            {uploadingPhoto ? "Uploading..." : "Change photo"}
+            <input type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} disabled={uploadingPhoto} />
           </label>
         )}
       </div>

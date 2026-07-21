@@ -42,7 +42,7 @@ export default function CompanyProfilePage() {
         token
       );
       setCompany(updated);
-      updateUser({ companyName: updated.name });
+      updateUser({ companyName: updated.name, logoUrl: updated.logoUrl });
       toast.success("Company profile updated successfully!");
     } catch (err) {
       setError(err.message);

@@ -1,15 +1,29 @@
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import { COLORS, fontHead, fontBody } from "../../../theme";
+import { uploadFile } from "../../../api/upload";
+import { useAuth } from "../../../context/AuthContext";
 
 export default function ResumeCard({ resumeUrl, onChange }) {
-  const [fileName, setFileName] = useState(resumeUrl ? "Current Resume.pdf" : null);
+  const { token } = useAuth();
+  const [fileName, setFileName] = useState(resumeUrl ? "Current Resume" : null);
+  const [uploading, setUploading] = useState(false);
 
-  const handleUpload = (e) => {
+  const handleUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    // TODO: upload to Cloudinary in Phase 2, for now just track file name locally
-    setFileName(file.name);
-    onChange(URL.createObjectURL(file));
+
+    setUploading(true);
+    try {
+      const url = await uploadFile(file, "resume", token);
+      setFileName(file.name);
+      onChange(url);
+      toast.success("Resume uploaded successfully!");
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -40,10 +54,10 @@ export default function ResumeCard({ resumeUrl, onChange }) {
 
       <label
         className="inline-block px-4 py-2.5 rounded-lg font-semibold text-[13.5px] text-white cursor-pointer"
-        style={{ ...fontBody, background: COLORS.accent }}
+        style={{ ...fontBody, background: uploading ? "#94A3B8" : COLORS.accent }}
       >
-        {fileName ? "Replace Resume" : "Upload Resume"}
-        <input type="file" accept=".pdf,.doc,.docx" className="hidden" onChange={handleUpload} />
+        {uploading ? "Uploading..." : fileName ? "Replace Resume" : "Upload Resume"}
+        <input type="file" accept=".pdf,.doc,.docx" className="hidden" onChange={handleUpload} disabled={uploading} />
       </label>
     </div>
   );

@@ -33,7 +33,7 @@ export default function StudentProfile() {
     try {
       const updated = await updateMyProfile(updates, token);
       setProfile(updated);
-      updateUser({ name: updated.name });
+      updateUser({ name: updated.name, photoUrl: updated.photoUrl });
       toast.success("Profile updated successfully!");
     } catch (err) {
       setError(err.message);

@@ -1,10 +1,15 @@
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import { COLORS, fontHead, fontBody } from "../../../theme";
+import { uploadFile } from "../../../api/upload";
+import { useAuth } from "../../../context/AuthContext";
 
 export default function CompanyProfileCard({ company, onSave }) {
+  const { token } = useAuth();
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState(company);
   const [errors, setErrors] = useState({});
+  const [uploadingLogo, setUploadingLogo] = useState(false);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -16,12 +21,20 @@ export default function CompanyProfileCard({ company, onSave }) {
     return errs;
   };
 
-  const handleLogoChange = (e) => {
+  const handleLogoChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    // TODO: upload to Cloudinary in Phase 2, for now just preview locally
-    const previewUrl = URL.createObjectURL(file);
-    setForm({ ...form, logoUrl: previewUrl });
+
+    setUploadingLogo(true);
+    try {
+      const url = await uploadFile(file, "logo", token);
+      setForm((prev) => ({ ...prev, logoUrl: url }));
+      toast.success("Logo uploaded — click Save to apply");
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setUploadingLogo(false);
+    }
   };
 
   const handleSave = () => {
@@ -38,7 +51,6 @@ export default function CompanyProfileCard({ company, onSave }) {
     { key: "industry", label: "Industry" },
     { key: "website", label: "Website" },
   ];
-   
 
   return (
     <div className="border border-[#ECEEF3] rounded-2xl p-6 bg-white">
@@ -49,7 +61,7 @@ export default function CompanyProfileCard({ company, onSave }) {
         {editing ? (
           <div className="flex gap-3">
             <button
-              onClick={() => { setForm(company); setEditing(false); }}
+              onClick={() => { setForm(company); setErrors({}); setEditing(false); }}
               className="text-[13.5px] font-semibold"
               style={{ ...fontBody, color: COLORS.textMuted }}
             >
@@ -88,10 +100,10 @@ export default function CompanyProfileCard({ company, onSave }) {
         {editing && (
           <label
             className="text-[13.5px] font-semibold cursor-pointer"
-            style={{ ...fontBody, color: COLORS.primary }}
+            style={{ ...fontBody, color: uploadingLogo ? COLORS.textMuted : COLORS.primary }}
           >
-            Change logo
-            <input type="file" accept="image/*" className="hidden" onChange={handleLogoChange} />
+            {uploadingLogo ? "Uploading..." : "Change logo"}
+            <input type="file" accept="image/*" className="hidden" onChange={handleLogoChange} disabled={uploadingLogo} />
           </label>
         )}
       </div>

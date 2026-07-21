@@ -91,10 +91,16 @@ export default function Topbar({ onMenuClick }) {
           className="flex items-center gap-2.5"
         >
           <div
-            className="w-9.5 h-9.5 rounded-full flex items-center justify-center font-semibold text-white text-[13.5px] shrink-0"
+            className="w-9.5 h-9.5 rounded-full flex items-center justify-center font-semibold text-white text-[13.5px] shrink-0 overflow-hidden"
             style={{ background: COLORS.primary }}
           >
-            {user?.name?.[0]?.toUpperCase() || "U"}
+            {user?.role === "recruiter" && user?.logoUrl ? (
+              <img src={user.logoUrl} alt={user.name} className="w-full h-full object-cover" />
+            ) : user?.role !== "recruiter" && user?.photoUrl ? (
+              <img src={user.photoUrl} alt={user.name} className="w-full h-full object-cover" />
+            ) : (
+              user?.name?.[0]?.toUpperCase() || "U"
+            )}
           </div>
           <div className="hidden sm:block">
             <p className="text-[13.5px] font-semibold leading-tight" style={{ ...fontBody, color: COLORS.textDark }}>
