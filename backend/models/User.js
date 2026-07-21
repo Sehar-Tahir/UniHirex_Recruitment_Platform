@@ -55,6 +55,11 @@ const userSchema = new mongoose.Schema(
     photoUrl: { type: String, default: "" },
    savedJobs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Job" }],
     savedCandidates: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    isEmailVerified: { type: Boolean, default: false },
+    emailVerificationToken: { type: String, select: false },
+    emailVerificationExpires: { type: Date, select: false },
+    resetPasswordToken: { type: String, select: false },
+    resetPasswordExpires: { type: Date, select: false },
     // Recruiter-specific fields (beyond companyName)
     industry: { type: String, trim: true, default: "" },
     website: { type: String, trim: true, default: "" },

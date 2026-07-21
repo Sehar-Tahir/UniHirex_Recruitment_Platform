@@ -4,22 +4,30 @@ import { COLORS, fontBody } from "../../theme";
 import toast from "react-hot-toast";
 import AuthLayout from "../../components/auth/AuthLayout";
 import FormInput from "../../components/auth/FormInput";
+import { forgotPassword } from "../../api/auth";
 
 export default function ForgetPassword() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email.trim()) return setError("Email is required");
     if (!/\S+@\S+\.\S+/.test(email)) return setError("Enter a valid email");
 
-    // TODO: connect to backend forgot-password API (Phase 2)
-    console.log("Sending reset link to", email);
     setError("");
-    setSent(true);
-    toast.success("Reset link sent! Check your inbox.");
+    setLoading(true);
+    try {
+      await forgotPassword(email);
+      setSent(true);
+      toast.success("Reset link sent! Check your inbox.");
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (sent) {
@@ -36,13 +44,13 @@ export default function ForgetPassword() {
             </svg>
           </div>
           <p className="text-[15px] mb-1" style={{ ...fontBody, color: COLORS.textDark }}>
-            We've sent a password reset link to
+            If an account exists for
           </p>
           <p className="text-[15px] font-semibold mb-6" style={{ ...fontBody, color: COLORS.primary }}>
             {email}
           </p>
           <p className="text-[14px]" style={{ ...fontBody, color: COLORS.textMuted }}>
-            Didn't get it?{" "}
+            a reset link has been sent.{" "}
             <button
               onClick={() => setSent(false)}
               className="font-semibold"
@@ -74,10 +82,11 @@ export default function ForgetPassword() {
 
         <button
           type="submit"
-          className="w-full py-3.5 rounded-[10px] font-semibold text-[15px] text-white mt-2"
+          disabled={loading}
+          className="w-full py-3.5 rounded-[10px] font-semibold text-[15px] text-white mt-2 disabled:opacity-60"
           style={{ ...fontBody, background: COLORS.accent }}
         >
-          Send reset link
+          {loading ? "Sending..." : "Send reset link"}
         </button>
       </form>
 

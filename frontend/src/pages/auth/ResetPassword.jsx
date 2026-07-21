@@ -1,18 +1,17 @@
 import React, { useState } from "react";
-// import { Link, useNavigate, useParams } from "react-router-dom";
 import { Link, useParams } from "react-router-dom";
-// import { COLORS, fontHead, fontBody } from "../../theme";
 import toast from "react-hot-toast";
 import { COLORS, fontBody } from "../../theme";
 import AuthLayout from "../../components/auth/AuthLayout";
 import FormInput from "../../components/auth/FormInput";
+import { resetPassword } from "../../api/auth";
 
 export default function ResetPassword() {
   const { token } = useParams();
-//   const navigate = useNavigate();
   const [form, setForm] = useState({ password: "", confirmPassword: "" });
   const [errors, setErrors] = useState({});
   const [done, setDone] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -24,15 +23,21 @@ export default function ResetPassword() {
     return errs;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const errs = validate();
     setErrors(errs);
-    if (Object.keys(errs).length === 0) {
-      // TODO: connect to backend reset-password API using `token` (Phase 2)
-      console.log("Resetting password with token:", token);
+    if (Object.keys(errs).length > 0) return;
+
+    setLoading(true);
+    try {
+      await resetPassword(token, form.password);
       setDone(true);
       toast.success("Password reset successful!");
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -90,10 +95,11 @@ export default function ResetPassword() {
 
         <button
           type="submit"
-          className="w-full py-3.5 rounded-[10px] font-semibold text-[15px] text-white mt-2"
+          disabled={loading}
+          className="w-full py-3.5 rounded-[10px] font-semibold text-[15px] text-white mt-2 disabled:opacity-60"
           style={{ ...fontBody, background: COLORS.accent }}
         >
-          Reset Password
+          {loading ? "Resetting..." : "Reset Password"}
         </button>
       </form>
     </AuthLayout>

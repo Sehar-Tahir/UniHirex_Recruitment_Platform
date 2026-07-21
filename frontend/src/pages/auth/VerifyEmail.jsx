@@ -1,16 +1,29 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import toast from "react-hot-toast";
 import { COLORS, fontBody } from "../../theme";
 import AuthLayout from "../../components/auth/AuthLayout";
+import { resendVerification } from "../../api/auth";
 
 export default function VerifyEmail() {
-  const [resent, setResent] = useState(false);
+  const location = useLocation();
+  const email = location.state?.email;
+  const [resending, setResending] = useState(false);
 
-  const handleResend = () => {
-    // TODO: connect to backend resend-verification API (Phase 2)
-    console.log("Resending verification email");
-    setResent(true);
-    setTimeout(() => setResent(false), 4000);
+  const handleResend = async () => {
+    if (!email) {
+      toast.error("Please go back and register again — we couldn't find your email.");
+      return;
+    }
+    setResending(true);
+    try {
+      await resendVerification(email);
+      toast.success("Verification email resent!");
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setResending(false);
+    }
   };
 
   return (
@@ -27,16 +40,18 @@ export default function VerifyEmail() {
         </div>
 
         <p className="text-[15px] mb-6 leading-relaxed" style={{ ...fontBody, color: COLORS.textDark }}>
-          We've sent a verification link to your email. Click the link to activate
+          We've sent a verification link to{" "}
+          {email ? <strong>{email}</strong> : "your email"}. Check Your Spam Folder as well. Click the link to activate
           your UniHirex account.
         </p>
 
         <button
           onClick={handleResend}
-          className="w-full py-3.5 rounded-[10px] font-semibold text-[15px] text-white mb-4"
+          disabled={resending}
+          className="w-full py-3.5 rounded-[10px] font-semibold text-[15px] text-white mb-4 disabled:opacity-60"
           style={{ ...fontBody, background: COLORS.accent }}
         >
-          {resent ? "Verification email resent!" : "Resend verification email"}
+          {resending ? "Resending..." : "Resend verification email"}
         </button>
 
         <p className="text-[14px]" style={{ ...fontBody, color: COLORS.textMuted }}>

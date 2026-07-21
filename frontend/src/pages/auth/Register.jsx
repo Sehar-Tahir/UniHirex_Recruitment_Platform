@@ -52,7 +52,7 @@ export default function Register() {
         companyName: role === "recruiter" ? form.companyName : undefined,
       });
       toast.success("Account created successfully!");
-      navigate(role === "recruiter" ? "/pending-verification" : "/verify-email");
+      navigate(role === "recruiter" ? "/pending-verification" : "/verify-email", { state: { email: form.email } });
     } catch (err) {
       setServerError(err.message);
       toast.error(err.message);
@@ -70,7 +70,7 @@ export default function Register() {
           className="text-[13px] font-medium px-4 py-2.5 rounded-lg mb-5"
           style={{ background: "#EEF1FC", color: COLORS.primary }}
         >
-          Currently open to IUB students only — use your @iub.edu.pk email.
+          Currently open to IUB students only - use your @iub.edu.pk email.
         </div>
       )}
 

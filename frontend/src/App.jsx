@@ -9,6 +9,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
 import VerifyEmail from "./pages/auth/VerifyEmail";
+import VerifyEmailToken from "./pages/auth/VerifyEmailToken";
 import ResetPassword from "./pages/auth/ResetPassword";
 import ForgetPassword from "./pages/auth/ForgetPassword";
 import PendingVerification from "./pages/auth/PendingVerification";
@@ -62,8 +63,9 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/admin-login" element={<AdminLogin />} />
-          
           <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/verify-email/:token" element={<VerifyEmailToken />} />
+          
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/forget-password" element={<ForgetPassword />} />
           <Route path="/pending-verification" element={<PendingVerification />} />
