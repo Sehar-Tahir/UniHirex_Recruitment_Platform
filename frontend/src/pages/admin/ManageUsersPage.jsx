@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { COLORS, fontHead, fontBody } from "../../theme";
 import toast from "react-hot-toast";
-import { getAllUsers, approveUser, toggleUserStatus } from "../../api/admin";
+import { getAllUsers, approveUser, toggleUserStatus, createAdmin } from "../../api/admin";
 import { useAuth } from "../../context/AuthContext";
 import UserRow from "../../components/dashboard/admin/UserRow";
+import CreateAdminModal from "../../components/dashboard/admin/CreateAdminModal";
 
 const ROLE_TABS = ["All", "Student", "Recruiter"];
 
@@ -14,6 +15,7 @@ export default function ManageUsersPage() {
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState("All");
   const [search, setSearch] = useState("");
+  const [showCreateAdmin, setShowCreateAdmin] = useState(false);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -53,6 +55,17 @@ export default function ManageUsersPage() {
     }
   };
 
+  const handleCreateAdmin = async (form) => {
+    try {
+      await createAdmin(form, token);
+      toast.success("Admin account created successfully");
+      setShowCreateAdmin(false);
+      fetchUsers();
+    } catch (err) {
+      toast.error(err.message);
+    }
+  };
+
   const filtered = useMemo(() => {
     return users.filter((u) => {
       const matchesTab = activeTab === "All" || u.role === activeTab.toLowerCase();
@@ -66,9 +79,18 @@ export default function ManageUsersPage() {
 
   return (
     <div>
-      <h1 className="text-[24px] font-bold mb-1" style={{ ...fontHead, color: COLORS.textDark }}>
-        Manage Users
-      </h1>
+      <div className="flex items-center justify-between mb-1">
+        <h1 className="text-[24px] font-bold" style={{ ...fontHead, color: COLORS.textDark }}>
+          Manage Users
+        </h1>
+        <button
+          onClick={() => setShowCreateAdmin(true)}
+          className="px-4 py-2.5 rounded-lg font-semibold text-[13.5px] text-white"
+          style={{ ...fontBody, background: COLORS.accent }}
+        >
+          + Create Admin
+        </button>
+      </div>
       <p className="text-[14.5px] mb-6" style={{ ...fontBody, color: COLORS.textMuted }}>
         {loading ? "Loading..." : `${filtered.length} of ${users.length} users`}
       </p>
@@ -121,6 +143,10 @@ export default function ManageUsersPage() {
           )
         )}
       </div>
+
+      {showCreateAdmin && (
+        <CreateAdminModal onClose={() => setShowCreateAdmin(false)} onSubmit={handleCreateAdmin} />
+      )}
     </div>
   );
 }

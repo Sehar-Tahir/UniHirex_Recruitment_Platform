@@ -10,3 +10,6 @@ export const toggleUserStatus = (id, token) =>
 export const getAllJobsForAdmin = (token) => request("/admin/jobs", { token });
 
 export const getAdminStats = (token) => request("/admin/stats", { token });
+
+export const createAdmin = (payload, token) =>
+  request("/admin/create-admin", { method: "POST", body: payload, token });
