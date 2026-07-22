@@ -65,15 +65,6 @@ export default function Register() {
     <AuthLayout title="Create your account" subtitle="Start your journey with UniHirex today">
       <RoleToggle role={role} setRole={handleRoleChange} />
 
-      {role === "student" && (
-        <div
-          className="text-[13px] font-medium px-4 py-2.5 rounded-lg mb-5"
-          style={{ background: "#EEF1FC", color: COLORS.primary }}
-        >
-          Currently open to IUB students only - use your @iub.edu.pk email.
-        </div>
-      )}
-
       <form onSubmit={handleSubmit}>
         {role === "recruiter" && (
           <FormInput
@@ -99,7 +90,7 @@ export default function Register() {
           type="email"
           value={form.email}
           onChange={handleChange}
-          placeholder={role === "recruiter" ? "you@company.com" : "you@iub.edu.pk"}
+          placeholder={role === "recruiter" ? "you@company.com" : "you@example.com"}
           error={errors.email}
         />
         <FormInput

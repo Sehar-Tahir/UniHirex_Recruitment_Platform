@@ -58,7 +58,7 @@ const createAdmin = async (req, res) => {
       return res.status(409).json({ message: "An account with this email already exists" });
     }
 
-    const admin = await User.create({ name, email, password, role: "admin", status: "Active" });
+    const admin = await User.create({ name, email, password, role: "admin", status: "Active", isEmailVerified: true });
 
     res.status(201).json({ id: admin._id, name: admin.name, email: admin.email, role: admin.role });
   } catch (err) {

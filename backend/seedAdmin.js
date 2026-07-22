@@ -17,6 +17,7 @@ const createAdmin = async () => {
     password: "UniHirexAdmin@2026",
     role: "admin",
     status: "Active",
+    isEmailVerified: true,
   });
 
   console.log("Admin account created successfully");

@@ -62,7 +62,7 @@ export default function Login() {
           type="email"
           value={form.email}
           onChange={handleChange}
-          placeholder="you@iub.edu.pk"
+          placeholder="you@example.com"
           error={errors.email}
         />
         <FormInput

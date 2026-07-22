@@ -18,10 +18,6 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ message: "Name, email, password, and role are required" });
     }
 
-    if (role === "student" && !email.toLowerCase().endsWith("@iub.edu.pk")) {
-      return res.status(400).json({ message: "Student registration is currently limited to IUB students (@iub.edu.pk)" });
-    }
-
     if (role === "recruiter" && !companyName) {
       return res.status(400).json({ message: "Company name is required for recruiter accounts" });
     }
@@ -39,6 +35,7 @@ const registerUser = async (req, res) => {
       password,
       role,
       companyName,
+      isEmailVerified: role === "admin", // admins are created by trusted insiders, not self-registered
       emailVerificationToken: hashedToken,
       emailVerificationExpires: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
     });
@@ -94,6 +91,10 @@ const loginUser = async (req, res) => {
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    if (!user.isEmailVerified) {
+      return res.status(403).json({ message: "Please verify your email before logging in. Check your inbox for the verification link." });
     }
 
     if (user.status === "Pending") {
