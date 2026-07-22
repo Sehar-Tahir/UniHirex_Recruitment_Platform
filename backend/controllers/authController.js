@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const sendEmail = require("../config/email");
 const generateSecureToken = require("../utils/generateToken");
+const { createNotification } = require("./notificationController");
 
 const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
@@ -39,6 +40,16 @@ const registerUser = async (req, res) => {
       emailVerificationToken: hashedToken,
       emailVerificationExpires: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
     });
+
+
+    if (role === "recruiter") {
+      const admins = await User.find({ role: "admin" }).select("_id");
+      await Promise.all(
+        admins.map((admin) =>
+          createNotification(admin._id, `New recruiter registered and pending approval: ${companyName || name}`)
+        )
+      );
+    }
 
     const verifyLink = `${FRONTEND_URL}/verify-email/${rawToken}`;
     try {
@@ -112,6 +123,9 @@ const loginUser = async (req, res) => {
       role: user.role,
       status: user.status,
       isEmailVerified: user.isEmailVerified,
+      photoUrl: user.photoUrl,
+      logoUrl: user.logoUrl,
+      companyName: user.companyName,
       token: generateToken(user._id),
     });
   } catch (err) {

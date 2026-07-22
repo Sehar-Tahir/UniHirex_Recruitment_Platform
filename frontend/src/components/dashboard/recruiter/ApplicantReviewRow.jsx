@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { COLORS, fontBody } from "../../../theme";
 
 const STATUS_STYLES = {
@@ -7,7 +8,8 @@ const STATUS_STYLES = {
   "Rejected": { bg: "#FBEAEA", color: "#B91C1C" },
 };
 
-export default function ApplicantReviewRow({ id, studentName, university, cgpa, appliedOn, status, onUpdateStatus }) {
+export default function ApplicantReviewRow({ id, studentId, studentName, university, cgpa, appliedOn, status, onUpdateStatus }) {
+  const navigate = useNavigate();
   const style = STATUS_STYLES[status] || { bg: "#F1F5F9", color: COLORS.textMuted };
 
   return (
@@ -16,9 +18,16 @@ export default function ApplicantReviewRow({ id, studentName, university, cgpa, 
         <p className="text-[14.5px] font-semibold mb-0.5" style={{ ...fontBody, color: COLORS.textDark }}>
           {studentName}
         </p>
-        <p className="text-[13px]" style={{ ...fontBody, color: COLORS.textMuted }}>
+        <p className="text-[13px] mb-1" style={{ ...fontBody, color: COLORS.textMuted }}>
           {university || "University not set"} · CGPA {cgpa || "—"} · Applied {appliedOn}
         </p>
+        <button
+          onClick={() => navigate(`/recruiter/candidates/${studentId}`)}
+          className="text-[13px] font-semibold"
+          style={{ ...fontBody, color: COLORS.primary }}
+        >
+          View Profile →
+        </button>
       </div>
 
       <div className="flex items-center gap-3">

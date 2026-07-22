@@ -66,7 +66,7 @@ const getCandidates = async (req, res) => {
     if (skill) filter.skills = skill;
 
     const candidates = await User.find(filter).select(
-      "name email university department semester cgpa skills projects"
+      "name email university department semester cgpa skills projects, photoUrl, resumeUrl"
     );
     res.json(candidates);
   } catch (err) {
@@ -78,7 +78,7 @@ const getCandidates = async (req, res) => {
 const getCandidateById = async (req, res) => {
   try {
     const candidate = await User.findOne({ _id: req.params.id, role: "student" }).select(
-      "name email university department semester cgpa skills projects"
+      "name email university department semester cgpa skills projects photoUrl resumeUrl"
     );
     if (!candidate) return res.status(404).json({ message: "Candidate not found" });
     res.json(candidate);

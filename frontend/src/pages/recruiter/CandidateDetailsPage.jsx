@@ -105,13 +105,34 @@ export default function CandidateDetailsPage() {
           )}
         </div>
 
-        <button
-          onClick={() => toggleSave(candidate._id)}
-          className="px-6 py-3 rounded-lg font-semibold text-[14.5px] text-white"
-          style={{ ...fontBody, background: isSaved(candidate._id) ? "#94A3B8" : COLORS.accent }}
-        >
-          {isSaved(candidate._id) ? "★ Saved" : "☆ Save Candidate"}
-        </button>
+        <div className="flex flex-wrap gap-3">
+          <button
+            onClick={() => toggleSave(candidate._id)}
+            className="px-6 py-3 rounded-lg font-semibold text-[14.5px] text-white"
+            style={{ ...fontBody, background: isSaved(candidate._id) ? "#94A3B8" : COLORS.accent }}
+          >
+            {isSaved(candidate._id) ? "★ Saved" : "☆ Save Candidate"}
+          </button>
+
+          {candidate.resumeUrl ? (
+            <a
+              href={candidate.resumeUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="px-6 py-3 rounded-lg font-semibold text-[14.5px] border-2"
+              style={{ ...fontBody, color: COLORS.primary, borderColor: COLORS.primary }}
+            >
+              📄 View Resume
+            </a>
+          ) : (
+            <span
+              className="px-6 py-3 rounded-lg font-semibold text-[14.5px] border-2"
+              style={{ ...fontBody, color: COLORS.textMuted, borderColor: "#E2E8F0" }}
+            >
+              No resume uploaded
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );

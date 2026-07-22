@@ -8,10 +8,16 @@ const storage = new CloudinaryStorage({
   params: (req, file) => {
     const uploadType = req.params.uploadType;
     const isResume = uploadType === "resume";
+    const extension = file.originalname.split(".").pop().toLowerCase();
+    const baseName = file.originalname.replace(/\.[^/.]+$/, "").replace(/\s+/g, "-");
+
     return {
       folder: `unihirex/${uploadType || "misc"}`,
       resource_type: isResume ? "raw" : "image", // resumes (PDF/DOC) need "raw", images need "image"
       allowed_formats: isResume ? ["pdf", "doc", "docx"] : ["jpg", "jpeg", "png", "webp"],
+      // For "raw" resource types, Cloudinary needs the extension baked into the
+      // public_id itself — the separate "format" option isn't reliably honored for raw files.
+      public_id: isResume ? `${Date.now()}-${baseName}.${extension}` : undefined,
     };
   },
 });

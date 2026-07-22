@@ -42,7 +42,16 @@ export default function Login() {
       }
 
       login(
-        { id: data.id, name: data.name, email: data.email, role: data.role, status: data.status },
+        {
+          id: data.id,
+          name: data.name,
+          email: data.email,
+          role: data.role,
+          status: data.status,
+          photoUrl: data.photoUrl,
+          logoUrl: data.logoUrl,
+          companyName: data.companyName,
+        },
         data.token
       );
       navigate(`/${data.role}/dashboard`);

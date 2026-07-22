@@ -78,6 +78,7 @@ export default function ApplicantsReviewPage() {
             <ApplicantReviewRow
               key={a._id}
               id={a._id}
+              studentId={a.student?._id}
               studentName={a.student?.name}
               university={a.student?.university}
               cgpa={a.student?.cgpa}
