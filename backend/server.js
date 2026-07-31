@@ -28,7 +28,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.json({ message: "UniHirex API is running - see url/api/health for status" });
+  res.json({ message: "UniHirex API is running" });
 });
 
 // Health check route — confirms the server is alive
