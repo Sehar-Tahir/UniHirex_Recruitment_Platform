@@ -27,6 +27,10 @@ if (process.env.VERCEL === "1") {
 app.use(cors());
 app.use(express.json());
 
+app.get("/", (req, res) => {
+  res.json({ message: "UniHirex API is running - see url/api/health for status" });
+});
+
 // Health check route — confirms the server is alive
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", message: "UniHirex API is running" });
