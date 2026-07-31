@@ -6,12 +6,16 @@ import JobCard from "../../components/dashboard/student/JobCard";
 import { getJobs } from "../../api/jobs";
 import { toggleSavedJob, getMyProfile } from "../../api/users";
 import { useAuth } from "../../context/AuthContext";
+import Pagination from "../../components/Pagination";
 
 export default function JobsListPage({ mode = "jobs" }) {
   const { token } = useAuth();
   const [filters, setFilters] = useState({ search: "", category: "", type: "", experienceLevel: "", location: "" });
   const [savedIds, setSavedIds] = useState([]);
   const [jobs, setJobs] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalJobs, setTotalJobs] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -45,10 +49,12 @@ export default function JobsListPage({ mode = "jobs" }) {
       setLoading(true);
       setError("");
       try {
-        const effectiveFilters = { ...filters };
+        const effectiveFilters = { ...filters, page };
         if (mode === "internships") effectiveFilters.type = "Internship";
-        const data = await getJobs(effectiveFilters);
-        setJobs(data);
+        const result = await getJobs(effectiveFilters);
+        setJobs(result.data);
+        setTotalPages(result.totalPages);
+        setTotalJobs(result.total);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -58,6 +64,12 @@ export default function JobsListPage({ mode = "jobs" }) {
 
     const debounce = setTimeout(fetchJobs, 350);
     return () => clearTimeout(debounce);
+  }, [filters, mode, page]);
+
+  // Reset to page 1 whenever filters change — otherwise you could be stuck on
+  // "page 4" of a filtered result set that only has 1 page
+  useEffect(() => {
+    setPage(1);
   }, [filters, mode]);
 
   return (
@@ -66,7 +78,7 @@ export default function JobsListPage({ mode = "jobs" }) {
         {mode === "internships" ? "Browse Internships" : "Browse Jobs"}
       </h1>
       <p className="text-[14.5px] mb-6" style={{ ...fontBody, color: COLORS.textMuted }}>
-        {loading ? "Searching..." : `${jobs.length} ${mode === "internships" ? "internships" : "jobs"} found`}
+        {loading ? "Searching..." : `${totalJobs} ${mode === "internships" ? "internships" : "jobs"} found`}
       </p>
 
       <JobFilters filters={filters} setFilters={setFilters} />
@@ -97,6 +109,8 @@ export default function JobsListPage({ mode = "jobs" }) {
           No results match your filters.
         </p>
       )}
+
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
     </div>
   );
 }

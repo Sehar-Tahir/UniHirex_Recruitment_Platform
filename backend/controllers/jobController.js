@@ -1,4 +1,5 @@
 const Job = require("../models/Job");
+const { getPaginationParams, buildPaginatedResponse } = require("../utils/paginate");
 const Application = require("../models/Application");
 
 // @route  POST /api/jobs   (recruiter only)
@@ -46,8 +47,14 @@ const getJobs = async (req, res) => {
     if (experienceLevel) filter.experienceLevel = experienceLevel;
     if (location) filter.location = { $regex: location, $options: "i" };
 
-    const jobs = await Job.find(filter).sort({ createdAt: -1 });
-    res.json(jobs);
+    const { page, limit, skip } = getPaginationParams(req.query);
+
+    const [jobs, total] = await Promise.all([
+      Job.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
+      Job.countDocuments(filter),
+    ]);
+
+    res.json(buildPaginatedResponse(jobs, total, page, limit));
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch jobs", error: err.message });
   }

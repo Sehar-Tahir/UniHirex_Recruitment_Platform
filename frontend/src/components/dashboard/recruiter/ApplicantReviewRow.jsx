@@ -8,13 +8,24 @@ const STATUS_STYLES = {
   "Rejected": { bg: "#FBEAEA", color: "#B91C1C" },
 };
 
-export default function ApplicantReviewRow({ id, studentId, studentName, university, cgpa, appliedOn, status, onUpdateStatus }) {
+export default function ApplicantReviewRow({ id, studentId, studentName, photoUrl, university, cgpa, appliedOn, status, onUpdateStatus }) {
   const navigate = useNavigate();
   const style = STATUS_STYLES[status] || { bg: "#F1F5F9", color: COLORS.textMuted };
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-y-2 gap-x-4 py-4 border-b border-[#F1F3F9] last:border-0">
-      <div>
+    <div className="flex flex-wrap items-center gap-3 justify-between gap-y-2 gap-x-4 py-4 border-b border-[#F1F3F9] last:border-0">
+      <div className="flex items-center gap-3">
+        <div
+          className="w-10 h-10 rounded-full flex items-center justify-center font-semibold text-white text-[13px] shrink-0 overflow-hidden"
+          style={{ background: COLORS.primary }}
+        >
+          {photoUrl ? (
+            <img src={photoUrl} alt={studentName} className="w-full h-full object-cover" />
+          ) : (
+            studentName?.[0]?.toUpperCase() || "S"
+          )}
+        </div>
+        <div>
         <p className="text-[14.5px] font-semibold mb-0.5" style={{ ...fontBody, color: COLORS.textDark }}>
           {studentName}
         </p>
@@ -28,6 +39,7 @@ export default function ApplicantReviewRow({ id, studentId, studentName, univers
         >
           View Profile →
         </button>
+        </div>
       </div>
 
       <div className="flex items-center gap-3">

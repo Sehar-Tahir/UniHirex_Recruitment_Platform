@@ -80,6 +80,7 @@ export default function ApplicantsReviewPage() {
               id={a._id}
               studentId={a.student?._id}
               studentName={a.student?.name}
+              photoUrl={a.student?.photoUrl}
               university={a.student?.university}
               cgpa={a.student?.cgpa}
               appliedOn={new Date(a.createdAt).toLocaleDateString()}

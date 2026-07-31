@@ -51,7 +51,7 @@ const getApplicantsForJob = async (req, res) => {
     }
 
     const applicants = await Application.find({ job: req.params.jobId })
-      .populate("student", "name email university cgpa")
+      .populate("student", "name email university cgpa photoUrl")
       .sort({ createdAt: -1 });
     res.json(applicants);
   } catch (err) {
