@@ -155,6 +155,16 @@ const getRecruiterStats = async (req, res) => {
   }
 };
 
+// @route  GET /api/jobs/categories   (all distinct categories actually in use, for filter dropdowns)
+const getJobCategories = async (req, res) => {
+  try {
+    const categories = await Job.distinct("category", { status: "Active" });
+    res.json(categories.sort());
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch categories", error: err.message });
+  }
+};
+
 module.exports = {
   createJob,
   getJobs,
@@ -163,4 +173,5 @@ module.exports = {
   updateJobStatus,
   getRecommendedJobs,
   getRecruiterStats,
+  getJobCategories,
 };

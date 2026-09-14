@@ -109,9 +109,31 @@ export default function PostListingPage() {
             <label className="block text-[13px] font-medium mb-1.5" style={{ ...fontBody, color: COLORS.textDark }}>
               Category
             </label>
-            <select name="category" value={form.category} onChange={handleChange} className={fieldClass} style={inputStyle}>
+            <select
+              value={CATEGORIES.includes(form.category) ? form.category : "__custom__"}
+              onChange={(e) => {
+                if (e.target.value === "__custom__") {
+                  setForm({ ...form, category: "" });
+                } else {
+                  setForm({ ...form, category: e.target.value });
+                }
+              }}
+              className={fieldClass}
+              style={inputStyle}
+            >
               {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+              <option value="__custom__">Other (specify below)</option>
             </select>
+            {(!CATEGORIES.includes(form.category)) && (
+              <input
+                name="category"
+                value={form.category}
+                onChange={handleChange}
+                placeholder="Enter custom category"
+                className={fieldClass + " mt-2"}
+                style={inputStyle}
+              />
+            )}
           </div>
           <div>
             <label className="block text-[13px] font-medium mb-1.5" style={{ ...fontBody, color: COLORS.textDark }}>

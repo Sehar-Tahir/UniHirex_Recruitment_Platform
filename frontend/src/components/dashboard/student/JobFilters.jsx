@@ -1,8 +1,15 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { COLORS, fontBody } from "../../../theme";
-import { CATEGORIES, TYPES, EXPERIENCE_LEVELS } from "../../../data/mockJobs";
+import { TYPES, EXPERIENCE_LEVELS } from "../../../data/mockJobs";
+import { getJobCategories } from "../../../api/jobs";
 
 export default function JobFilters({ filters, setFilters }) {
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    getJobCategories().then(setCategories).catch(() => {});
+  }, []);
+
   const handleChange = (key) => (e) => setFilters({ ...filters, [key]: e.target.value });
 
   const selectStyle = {
@@ -23,7 +30,7 @@ export default function JobFilters({ filters, setFilters }) {
 
       <select value={filters.category} onChange={handleChange("category")} className="px-3 py-2.5 rounded-lg border-[1.5px] text-[13.5px] outline-none" style={selectStyle}>
         <option value="">All Categories</option>
-        {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+        {categories.map((c) => <option key={c} value={c}>{c}</option>)}
       </select>
 
       <select value={filters.type} onChange={handleChange("type")} className="px-3 py-2.5 rounded-lg border-[1.5px] text-[13.5px] outline-none" style={selectStyle}>

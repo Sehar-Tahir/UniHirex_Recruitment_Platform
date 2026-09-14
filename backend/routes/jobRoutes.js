@@ -8,6 +8,7 @@ const {
   updateJobStatus,
   getRecommendedJobs,
   getRecruiterStats,
+  getJobCategories,
 } = require("../controllers/jobController");
 
 const router = express.Router();
@@ -15,6 +16,7 @@ const router = express.Router();
 // Public/student browsing — no login required to view listings
 router.get("/", getJobs);
 router.get("/recommended", getRecommendedJobs);
+router.get("/categories", getJobCategories);
 
 // IMPORTANT: these specific routes must come BEFORE "/:id" below,
 // otherwise Express would think "recruiter" is a job ID and never reach these.
