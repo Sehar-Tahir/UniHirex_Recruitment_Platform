@@ -47,9 +47,8 @@ const getJobs = async (req, res) => {
     if (experienceLevel) filter.experienceLevel = experienceLevel;
     if (location) filter.location = { $regex: location, $options: "i" };
 
-    const { minSalary, maxSalary } = req.query;
+    const { minSalary } = req.query;
     if (minSalary) filter.salaryMax = { $gte: Number(minSalary) };
-    if (maxSalary) filter.salaryMin = { $lte: Number(maxSalary) };
 
     const { page, limit, skip } = getPaginationParams(req.query);
 
