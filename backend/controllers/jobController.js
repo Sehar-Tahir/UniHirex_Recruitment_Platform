@@ -5,7 +5,7 @@ const Application = require("../models/Application");
 // @route  POST /api/jobs   (recruiter only)
 const createJob = async (req, res) => {
   try {
-    const { title, category, type, location, salary, experienceLevel, description, requirements } = req.body;
+    const { title, category, type, location, salary, salaryMin, salaryMax, experienceLevel, description, requirements } = req.body;
 
     if (!title || !category || !type || !location || !experienceLevel || !description) {
       return res.status(400).json({ message: "Missing required fields" });
@@ -17,6 +17,8 @@ const createJob = async (req, res) => {
       type,
       location,
       salary,
+      salaryMin: salaryMin || 0,
+      salaryMax: salaryMax || 0,
       experienceLevel,
       description,
       requirements: requirements || [],
@@ -42,7 +44,7 @@ const getJobs = async (req, res) => {
         { company: { $regex: search, $options: "i" } },
       ];
     }
-    if (category) filter.category = category;
+    if (category) filter.category = { $regex: category, $options: "i" };
     if (type) filter.type = type;
     if (experienceLevel) filter.experienceLevel = experienceLevel;
     if (location) filter.location = { $regex: location, $options: "i" };

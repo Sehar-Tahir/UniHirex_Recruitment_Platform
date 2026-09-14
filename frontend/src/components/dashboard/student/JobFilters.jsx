@@ -28,10 +28,33 @@ export default function JobFilters({ filters, setFilters }) {
         style={selectStyle}
       />
 
-      <select value={filters.category} onChange={handleChange("category")} className="px-3 py-2.5 rounded-lg border-[1.5px] text-[13.5px] outline-none" style={selectStyle}>
-        <option value="">All Categories</option>
-        {categories.map((c) => <option key={c} value={c}>{c}</option>)}
-      </select>
+      <div className="flex flex-col gap-2">
+        <select
+          value={categories.includes(filters.category) || filters.category === "" ? filters.category : "__custom__"}
+          onChange={(e) => {
+            if (e.target.value === "__custom__") {
+              setFilters({ ...filters, category: " " }); // non-empty so the text input shows, trimmed before search anyway
+            } else {
+              setFilters({ ...filters, category: e.target.value });
+            }
+          }}
+          className="px-3 py-2.5 rounded-lg border-[1.5px] text-[13.5px] outline-none"
+          style={selectStyle}
+        >
+          <option value="">All Categories</option>
+          {categories.map((c) => <option key={c} value={c}>{c}</option>)}
+          <option value="__custom__">Search a specific category...</option>
+        </select>
+        {!categories.includes(filters.category) && filters.category !== "" && (
+          <input
+            value={filters.category.trim()}
+            onChange={handleChange("category")}
+            placeholder="Type a category"
+            className="px-3.5 py-2.5 rounded-lg border-[1.5px] text-[14px] outline-none"
+            style={selectStyle}
+          />
+        )}
+      </div>
 
       <select value={filters.type} onChange={handleChange("type")} className="px-3 py-2.5 rounded-lg border-[1.5px] text-[13.5px] outline-none" style={selectStyle}>
         <option value="">All Types</option>
