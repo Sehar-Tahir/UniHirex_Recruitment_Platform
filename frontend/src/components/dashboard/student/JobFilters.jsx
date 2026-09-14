@@ -43,6 +43,26 @@ export default function JobFilters({ filters, setFilters }) {
         className="w-40 px-3.5 py-2.5 rounded-lg border-[1.5px] text-[14px] outline-none"
         style={selectStyle}
       />
+
+      <div className="flex items-center gap-2">
+        <input
+          type="number"
+          placeholder="Min salary"
+          value={filters.minSalary}
+          onChange={handleChange("minSalary")}
+          className="w-28 px-3.5 py-2.5 rounded-lg border-[1.5px] text-[14px] outline-none"
+          style={selectStyle}
+        />
+        <span style={{ color: COLORS.textMuted }}>–</span>
+        <input
+          type="number"
+          placeholder="Max salary"
+          value={filters.maxSalary}
+          onChange={handleChange("maxSalary")}
+          className="w-28 px-3.5 py-2.5 rounded-lg border-[1.5px] text-[14px] outline-none"
+          style={selectStyle}
+        />
+      </div>
     </div>
   );
 }

@@ -10,7 +10,7 @@ import Pagination from "../../components/Pagination";
 
 export default function JobsListPage({ mode = "jobs" }) {
   const { token } = useAuth();
-  const [filters, setFilters] = useState({ search: "", category: "", type: "", experienceLevel: "", location: "" });
+  const [filters, setFilters] = useState({ search: "", category: "", type: "", experienceLevel: "", location: "", minSalary: "", maxSalary: "" });
   const [savedIds, setSavedIds] = useState([]);
   const [jobs, setJobs] = useState([]);
   const [page, setPage] = useState(1);

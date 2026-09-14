@@ -16,7 +16,8 @@ export default function PostListingPage() {
     category: CATEGORIES[0],
     type: TYPES[0],
     location: "",
-    salary: "",
+    salaryMin: "",
+    salaryMax: "",
     experienceLevel: EXPERIENCE_LEVELS[0],
     description: "",
   });
@@ -41,6 +42,9 @@ export default function PostListingPage() {
     if (!form.title.trim()) errs.title = "Title is required";
     if (!form.location.trim()) errs.location = "Location is required";
     if (!form.description.trim()) errs.description = "Description is required";
+    if (form.salaryMin && form.salaryMax && Number(form.salaryMin) > Number(form.salaryMax)) {
+      errs.salary = "Minimum salary can't be greater than maximum";
+    }
     return errs;
   };
 
@@ -53,7 +57,23 @@ export default function PostListingPage() {
 
     setLoading(true);
     try {
-      await createJob({ ...form, requirements }, token);
+      const salaryDisplay =
+        form.salaryMin && form.salaryMax
+          ? `PKR ${Number(form.salaryMin).toLocaleString()} - ${Number(form.salaryMax).toLocaleString()}/mo`
+          : form.salaryMin
+          ? `PKR ${Number(form.salaryMin).toLocaleString()}+/mo`
+          : "Not specified";
+
+      await createJob(
+        {
+          ...form,
+          salary: salaryDisplay,
+          salaryMin: Number(form.salaryMin) || 0,
+          salaryMax: Number(form.salaryMax) || Number(form.salaryMin) || 0,
+          requirements,
+        },
+        token
+      );
       toast.success("Listing published successfully!");
       navigate("/recruiter/listings");
     } catch (err) {
@@ -113,9 +133,30 @@ export default function PostListingPage() {
           </div>
           <div>
             <label className="block text-[13px] font-medium mb-1.5" style={{ ...fontBody, color: COLORS.textDark }}>
-              Salary
+              Salary Range (PKR/month)
             </label>
-            <input name="salary" value={form.salary} onChange={handleChange} placeholder="e.g. PKR 40,000/mo" className={fieldClass} style={inputStyle} />
+            <div className="flex items-center gap-2">
+              <input
+                name="salaryMin"
+                type="number"
+                value={form.salaryMin}
+                onChange={handleChange}
+                placeholder="Min"
+                className={fieldClass}
+                style={inputStyle}
+              />
+              <span style={{ color: COLORS.textMuted }}>–</span>
+              <input
+                name="salaryMax"
+                type="number"
+                value={form.salaryMax}
+                onChange={handleChange}
+                placeholder="Max"
+                className={fieldClass}
+                style={inputStyle}
+              />
+            </div>
+            {errors.salary && <p className="text-[13px] mt-1" style={{ color: "#DC2626" }}>{errors.salary}</p>}
           </div>
         </div>
 
