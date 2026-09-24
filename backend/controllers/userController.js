@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const { getPaginationParams, buildPaginatedResponse } = require("../utils/paginate");
 
 // @route  GET /api/users/me
 const getMyProfile = async (req, res) => {
@@ -65,10 +66,17 @@ const getCandidates = async (req, res) => {
     }
     if (skill) filter.skills = skill;
 
-    const candidates = await User.find(filter).select(
-      "name email university department semester cgpa skills projects, photoUrl, resumeUrl"
-    );
-    res.json(candidates);
+    const { page, limit, skip } = getPaginationParams(req.query);
+
+    const [candidates, total] = await Promise.all([
+      User.find(filter)
+        .select("name email university department semester cgpa skills projects photoUrl resumeUrl")
+        .skip(skip)
+        .limit(limit),
+      User.countDocuments(filter),
+    ]);
+
+    res.json(buildPaginatedResponse(candidates, total, page, limit));
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch candidates", error: err.message });
   }

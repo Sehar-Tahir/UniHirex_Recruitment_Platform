@@ -1,12 +1,30 @@
 const User = require("../models/User");
 const Job = require("../models/Job");
 const { createNotification } = require("./notificationController");
+const { getPaginationParams, buildPaginatedResponse } = require("../utils/paginate");
 
 // @route  GET /api/admin/users
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().select("-password").sort({ createdAt: -1 });
-    res.json(users);
+    const { search, role } = req.query;
+    const filter = {};
+
+    if (role && role !== "All") filter.role = role.toLowerCase();
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    const { page, limit, skip } = getPaginationParams(req.query, 10);
+
+    const [users, total] = await Promise.all([
+      User.find(filter).select("-password").sort({ createdAt: -1 }).skip(skip).limit(limit),
+      User.countDocuments(filter),
+    ]);
+
+    res.json(buildPaginatedResponse(users, total, page, limit));
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch users", error: err.message });
   }
@@ -69,8 +87,25 @@ const createAdmin = async (req, res) => {
 // @route  GET /api/admin/jobs  (ALL jobs regardless of status — unlike the public browse endpoint which only shows Active ones)
 const getAllJobsForAdmin = async (req, res) => {
   try {
-    const jobs = await Job.find().populate("postedBy", "name companyName").sort({ createdAt: -1 });
-    res.json(jobs);
+    const { search, status } = req.query;
+    const filter = {};
+
+    if (status && status !== "All") filter.status = status;
+    if (search) {
+      filter.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { company: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    const { page, limit, skip } = getPaginationParams(req.query, 10);
+
+    const [jobs, total] = await Promise.all([
+      Job.find(filter).populate("postedBy", "name companyName").sort({ createdAt: -1 }).skip(skip).limit(limit),
+      Job.countDocuments(filter),
+    ]);
+
+    res.json(buildPaginatedResponse(jobs, total, page, limit));
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch jobs", error: err.message });
   }

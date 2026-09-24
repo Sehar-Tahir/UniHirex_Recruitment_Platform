@@ -3,12 +3,16 @@ import { COLORS, fontHead, fontBody } from "../../theme";
 import CandidateCard from "../../components/dashboard/recruiter/CandidateCard";
 import { getCandidates } from "../../api/users";
 import { useAuth } from "../../context/AuthContext";
+import Pagination from "../../components/Pagination";
 
 export default function SearchCandidatesPage() {
   const { token } = useAuth();
   const [search, setSearch] = useState("");
   const [skillFilter, setSkillFilter] = useState("");
   const [candidates, setCandidates] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCandidates, setTotalCandidates] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -17,8 +21,10 @@ export default function SearchCandidatesPage() {
       setLoading(true);
       setError("");
       try {
-        const data = await getCandidates({ search, skill: skillFilter }, token);
-        setCandidates(data);
+        const result = await getCandidates({ search, skill: skillFilter, page }, token);
+        setCandidates(result.data);
+        setTotalPages(result.totalPages);
+        setTotalCandidates(result.total);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -28,7 +34,11 @@ export default function SearchCandidatesPage() {
 
     const debounce = setTimeout(fetchCandidates, 350);
     return () => clearTimeout(debounce);
-  }, [search, skillFilter, token]);
+  }, [search, skillFilter, page, token]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [search, skillFilter]);
 
   const allSkills = useMemo(() => {
     const set = new Set();
@@ -44,7 +54,7 @@ export default function SearchCandidatesPage() {
         Search Candidates
       </h1>
       <p className="text-[14.5px] mb-6" style={{ ...fontBody, color: COLORS.textMuted }}>
-        {loading ? "Searching..." : `${candidates.length} candidate${candidates.length === 1 ? "" : "s"} found`}
+        {loading ? "Searching..." : `${totalCandidates} candidate${totalCandidates === 1 ? "" : "s"} found`}
       </p>
 
       <div className="border border-[#ECEEF3] rounded-2xl p-5 bg-white mb-6 flex flex-wrap gap-3">
@@ -91,6 +101,8 @@ export default function SearchCandidatesPage() {
           No candidates match your filters.
         </p>
       )}
+
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
     </div>
   );
 }

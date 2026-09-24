@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { COLORS, fontHead, fontBody } from "../../theme";
 import toast from "react-hot-toast";
 import { getAllUsers, approveUser, toggleUserStatus, createAdmin } from "../../api/admin";
 import { useAuth } from "../../context/AuthContext";
 import UserRow from "../../components/dashboard/admin/UserRow";
 import CreateAdminModal from "../../components/dashboard/admin/CreateAdminModal";
+import Pagination from "../../components/Pagination";
 
 const ROLE_TABS = ["All", "Student", "Recruiter"];
 
@@ -15,23 +16,33 @@ export default function ManageUsersPage() {
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState("All");
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalUsers, setTotalUsers] = useState(0);
   const [showCreateAdmin, setShowCreateAdmin] = useState(false);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await getAllUsers(token);
-      setUsers(data);
+      const result = await getAllUsers({ search, role: activeTab, page }, token);
+      setUsers(result.data);
+      setTotalPages(result.totalPages);
+      setTotalUsers(result.total);
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [token, search, activeTab, page]);
 
   useEffect(() => {
-    fetchUsers();
+    const debounce = setTimeout(fetchUsers, 300);
+    return () => clearTimeout(debounce);
   }, [fetchUsers]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [search, activeTab]);
 
   const handleApprove = async (id) => {
     try {
@@ -66,17 +77,6 @@ export default function ManageUsersPage() {
     }
   };
 
-  const filtered = useMemo(() => {
-    return users.filter((u) => {
-      const matchesTab = activeTab === "All" || u.role === activeTab.toLowerCase();
-      const matchesSearch =
-        !search ||
-        u.name.toLowerCase().includes(search.toLowerCase()) ||
-        u.email.toLowerCase().includes(search.toLowerCase());
-      return matchesTab && matchesSearch;
-    });
-  }, [users, activeTab, search]);
-
   return (
     <div>
       <div className="flex items-center justify-between mb-1">
@@ -92,7 +92,7 @@ export default function ManageUsersPage() {
         </button>
       </div>
       <p className="text-[14.5px] mb-6" style={{ ...fontBody, color: COLORS.textMuted }}>
-        {loading ? "Loading..." : `${filtered.length} of ${users.length} users`}
+        {loading ? "Loading..." : `${totalUsers} total users`}
       </p>
 
       {error && (
@@ -131,8 +131,8 @@ export default function ManageUsersPage() {
       </div>
 
       <div className="border border-[#ECEEF3] rounded-2xl p-6 bg-white">
-        {filtered.length > 0 ? (
-          filtered.map((u) => (
+        {users.length > 0 ? (
+          users.map((u) => (
             <UserRow key={u._id} {...u} id={u._id} onToggleStatus={handleToggleStatus} onApprove={handleApprove} />
           ))
         ) : (
@@ -143,6 +143,8 @@ export default function ManageUsersPage() {
           )
         )}
       </div>
+
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
 
       {showCreateAdmin && (
         <CreateAdminModal onClose={() => setShowCreateAdmin(false)} onSubmit={handleCreateAdmin} />

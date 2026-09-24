@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { COLORS, fontHead, fontBody } from "../../theme";
 import toast from "react-hot-toast";
 import { getAllJobsForAdmin } from "../../api/admin";
 import { updateJobStatus } from "../../api/jobs";
 import { useAuth } from "../../context/AuthContext";
 import AdminListingRow from "../../components/dashboard/admin/AdminListingRow";
+import Pagination from "../../components/Pagination";
 
 const STATUS_TABS = ["All", "Active", "Flagged", "Closed"];
 
@@ -15,22 +16,32 @@ export default function ManageJobsPage() {
   const [error, setError] = useState("");
   const [statusTab, setStatusTab] = useState("All");
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalListings, setTotalListings] = useState(0);
 
   const fetchListings = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await getAllJobsForAdmin(token);
-      setListings(data);
+      const result = await getAllJobsForAdmin({ search, status: statusTab, page }, token);
+      setListings(result.data);
+      setTotalPages(result.totalPages);
+      setTotalListings(result.total);
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [token, search, statusTab, page]);
 
   useEffect(() => {
-    fetchListings();
+    const debounce = setTimeout(fetchListings, 300);
+    return () => clearTimeout(debounce);
   }, [fetchListings]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [search, statusTab]);
 
   const handleSetStatus = async (id, status) => {
     try {
@@ -43,24 +54,13 @@ export default function ManageJobsPage() {
     }
   };
 
-  const filtered = useMemo(() => {
-    return listings.filter((l) => {
-      const matchesStatus = statusTab === "All" || l.status === statusTab;
-      const matchesSearch =
-        !search ||
-        l.title.toLowerCase().includes(search.toLowerCase()) ||
-        l.company.toLowerCase().includes(search.toLowerCase());
-      return matchesStatus && matchesSearch;
-    });
-  }, [listings, statusTab, search]);
-
   return (
     <div>
       <h1 className="text-[24px] font-bold mb-1" style={{ ...fontHead, color: COLORS.textDark }}>
         Manage Jobs
       </h1>
       <p className="text-[14.5px] mb-6" style={{ ...fontBody, color: COLORS.textMuted }}>
-        {loading ? "Loading..." : `${filtered.length} of ${listings.length} listings platform-wide`}
+        {loading ? "Loading..." : `${totalListings} listings platform-wide`}
       </p>
 
       {error && (
@@ -99,8 +99,8 @@ export default function ManageJobsPage() {
       </div>
 
       <div className="border border-[#ECEEF3] rounded-2xl p-6 bg-white">
-        {filtered.length > 0 ? (
-          filtered.map((l) => (
+        {listings.length > 0 ? (
+          listings.map((l) => (
             <AdminListingRow
               key={l._id}
               id={l._id}
@@ -120,6 +120,8 @@ export default function ManageJobsPage() {
           )
         )}
       </div>
+
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
     </div>
   );
 }
