@@ -1,6 +1,7 @@
 const Application = require("../models/Application");
 const Job = require("../models/Job");
 const { createNotification } = require("./notificationController");
+const { getPaginationParams, buildPaginatedResponse } = require("../utils/paginate");
 
 // @route  POST /api/applications   (student only)
 const applyToJob = async (req, res) => {
@@ -31,10 +32,18 @@ const applyToJob = async (req, res) => {
 // @route  GET /api/applications/mine   (student — their own applications, with job details)
 const getMyApplications = async (req, res) => {
   try {
-    const applications = await Application.find({ student: req.user._id })
-      .populate("job", "title company type")
-      .sort({ createdAt: -1 });
-    res.json(applications);
+    const { status } = req.query;
+    const filter = { student: req.user._id };
+    if (status && status !== "All") filter.status = status;
+
+    const { page, limit, skip } = getPaginationParams(req.query, 10);
+
+    const [applications, total] = await Promise.all([
+      Application.find(filter).populate("job", "title company type").sort({ createdAt: -1 }).skip(skip).limit(limit),
+      Application.countDocuments(filter),
+    ]);
+
+    res.json(buildPaginatedResponse(applications, total, page, limit));
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch applications", error: err.message });
   }
@@ -50,10 +59,18 @@ const getApplicantsForJob = async (req, res) => {
       return res.status(403).json({ message: "You can only view applicants for your own listings" });
     }
 
-    const applicants = await Application.find({ job: req.params.jobId })
-      .populate("student", "name email university cgpa photoUrl")
-      .sort({ createdAt: -1 });
-    res.json(applicants);
+    const { page, limit, skip } = getPaginationParams(req.query, 10);
+
+    const [applicants, total] = await Promise.all([
+      Application.find({ job: req.params.jobId })
+        .populate("student", "name email university cgpa photoUrl")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit),
+      Application.countDocuments({ job: req.params.jobId }),
+    ]);
+
+    res.json(buildPaginatedResponse(applicants, total, page, limit));
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch applicants", error: err.message });
   }

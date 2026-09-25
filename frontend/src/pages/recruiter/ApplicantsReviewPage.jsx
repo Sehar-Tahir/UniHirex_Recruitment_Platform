@@ -6,6 +6,7 @@ import { getApplicantsForJob, updateApplicationStatus } from "../../api/applicat
 import { getJobById } from "../../api/jobs";
 import { useAuth } from "../../context/AuthContext";
 import ApplicantReviewRow from "../../components/dashboard/recruiter/ApplicantReviewRow";
+import Pagination from "../../components/Pagination";
 
 export default function ApplicantsReviewPage() {
   const { id } = useParams();
@@ -13,24 +14,29 @@ export default function ApplicantsReviewPage() {
   const { token } = useAuth();
   const [job, setJob] = useState(null);
   const [applicants, setApplicants] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalApplicants, setTotalApplicants] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const [jobData, applicantsData] = await Promise.all([
+      const [jobData, applicantsResult] = await Promise.all([
         getJobById(id),
-        getApplicantsForJob(id, token),
+        getApplicantsForJob(id, page, token),
       ]);
       setJob(jobData);
-      setApplicants(applicantsData);
+      setApplicants(applicantsResult.data);
+      setTotalPages(applicantsResult.totalPages);
+      setTotalApplicants(applicantsResult.total);
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  }, [id, token]);
+  }, [id, page, token]);
 
   useEffect(() => {
     fetchData();
@@ -63,7 +69,7 @@ export default function ApplicantsReviewPage() {
         Applicants {job ? `- ${job.title}` : ""}
       </h1>
       <p className="text-[14.5px] mb-6" style={{ ...fontBody, color: COLORS.textMuted }}>
-        {loading ? "Loading..." : `${applicants.length} applicant${applicants.length === 1 ? "" : "s"}`}
+        {loading ? "Loading..." : `${totalApplicants} applicant${totalApplicants === 1 ? "" : "s"}`}
       </p>
 
       {error && (
@@ -96,6 +102,8 @@ export default function ApplicantsReviewPage() {
           )
         )}
       </div>
+
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
     </div>
   );
 }

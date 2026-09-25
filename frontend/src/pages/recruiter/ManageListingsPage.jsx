@@ -5,24 +5,30 @@ import toast from "react-hot-toast";
 import { getMyJobs, updateJobStatus } from "../../api/jobs";
 import { useAuth } from "../../context/AuthContext";
 import ListingRow from "../../components/dashboard/recruiter/ListingRow";
+import Pagination from "../../components/Pagination";
 
 export default function ManageListingsPage() {
   const { token } = useAuth();
   const [listings, setListings] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalListings, setTotalListings] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   const fetchListings = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await getMyJobs(token);
-      setListings(data);
+      const result = await getMyJobs(page, token);
+      setListings(result.data);
+      setTotalPages(result.totalPages);
+      setTotalListings(result.total);
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [page, token]);
 
   useEffect(() => {
     fetchListings();
@@ -54,7 +60,7 @@ export default function ManageListingsPage() {
         </Link>
       </div>
       <p className="text-[14.5px] mb-6" style={{ ...fontBody, color: COLORS.textMuted }}>
-        {loading ? "Loading..." : `${listings.length} total listings`}
+        {loading ? "Loading..." : `${totalListings} total listings`}
       </p>
 
       {error && (
@@ -84,6 +90,8 @@ export default function ManageListingsPage() {
           )
         )}
       </div>
+
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
     </div>
   );
 }

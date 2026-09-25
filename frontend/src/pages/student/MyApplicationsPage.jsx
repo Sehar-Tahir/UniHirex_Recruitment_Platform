@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { COLORS, fontHead, fontBody } from "../../theme";
 import ApplicationRow from "../../components/dashboard/student/ApplicationRow";
 import { getMyApplications } from "../../api/applications";
 import { useAuth } from "../../context/AuthContext";
+import Pagination from "../../components/Pagination";
 
 const TABS = ["All", "Under Review", "Shortlisted", "Rejected"];
 
@@ -10,14 +11,18 @@ export default function MyApplicationsPage() {
   const { token } = useAuth();
   const [activeTab, setActiveTab] = useState("All");
   const [applications, setApplications] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchApplications = async () => {
+      setLoading(true);
       try {
-        const data = await getMyApplications(token);
-        setApplications(data);
+        const result = await getMyApplications({ status: activeTab, page }, token);
+        setApplications(result.data);
+        setTotalPages(result.totalPages);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -25,15 +30,11 @@ export default function MyApplicationsPage() {
       }
     };
     fetchApplications();
-  }, [token]);
+  }, [token, activeTab, page]);
 
-  const filtered = useMemo(() => {
-    if (activeTab === "All") return applications;
-    return applications.filter((a) => a.status === activeTab);
-  }, [applications, activeTab]);
-
-  const countFor = (status) =>
-    status === "All" ? applications.length : applications.filter((a) => a.status === status).length;
+  useEffect(() => {
+    setPage(1);
+  }, [activeTab]);
 
   return (
     <div>
@@ -58,7 +59,7 @@ export default function MyApplicationsPage() {
                 color: active ? "#fff" : COLORS.textMuted,
               }}
             >
-              {tab} ({countFor(tab)})
+              {tab}
             </button>
           );
         })}
@@ -75,8 +76,8 @@ export default function MyApplicationsPage() {
           <p className="text-[14px] text-center py-8" style={{ ...fontBody, color: COLORS.textMuted }}>
             Loading...
           </p>
-        ) : filtered.length > 0 ? (
-          filtered.map((app) => (
+        ) : applications.length > 0 ? (
+          applications.map((app) => (
             <ApplicationRow
               key={app._id}
               title={app.job?.title}
@@ -91,6 +92,8 @@ export default function MyApplicationsPage() {
           </p>
         )}
       </div>
+
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
     </div>
   );
 }

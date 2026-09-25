@@ -17,7 +17,7 @@ export const getJobCategories = () => request("/jobs/categories");
 
 export const createJob = (payload, token) => request("/jobs", { method: "POST", body: payload, token });
 
-export const getMyJobs = (token) => request("/jobs/recruiter/mine", { token });
+export const getMyJobs = (page, token) => request(`/jobs/recruiter/mine?page=${page}`, { token });
 
 export const getRecruiterStats = (token) => request("/jobs/recruiter/stats", { token });
 

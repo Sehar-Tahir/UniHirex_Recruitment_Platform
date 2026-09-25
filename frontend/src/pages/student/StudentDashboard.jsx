@@ -21,15 +21,15 @@ export default function StudentDashboard() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const [profileData, jobsData, applicationsData, notificationsData] = await Promise.all([
+        const [profileData, jobsData, applicationsResult, notificationsData] = await Promise.all([
           getMyProfile(token),
           getRecommendedJobs(),
-          getMyApplications(token),
+          getMyApplications({ limit: 3 }, token),
           getMyNotifications(token),
         ]);
         setProfile(profileData);
         setRecommendedJobs(jobsData);
-        setRecentApplications(applicationsData.slice(0, 3));
+        setRecentApplications(applicationsResult.data);
         setNotifications(notificationsData.slice(0, 4));
       } catch {
         // dashboard widgets fail gracefully — page still renders with what succeeded

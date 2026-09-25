@@ -79,8 +79,14 @@ const getJobById = async (req, res) => {
 // @route  GET /api/jobs/recruiter/mine   (recruiter only — their own listings)
 const getMyJobs = async (req, res) => {
   try {
-    const jobs = await Job.find({ postedBy: req.user._id }).sort({ createdAt: -1 });
-    res.json(jobs);
+    const { page, limit, skip } = getPaginationParams(req.query, 10);
+
+    const [jobs, total] = await Promise.all([
+      Job.find({ postedBy: req.user._id }).sort({ createdAt: -1 }).skip(skip).limit(limit),
+      Job.countDocuments({ postedBy: req.user._id }),
+    ]);
+
+    res.json(buildPaginatedResponse(jobs, total, page, limit));
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch your listings", error: err.message });
   }
