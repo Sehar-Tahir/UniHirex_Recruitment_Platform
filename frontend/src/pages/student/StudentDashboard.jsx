@@ -25,12 +25,12 @@ export default function StudentDashboard() {
           getMyProfile(token),
           getRecommendedJobs(),
           getMyApplications({ limit: 3 }, token),
-          getMyNotifications(token),
+          getMyNotifications(1, token),
         ]);
         setProfile(profileData);
         setRecommendedJobs(jobsData);
         setRecentApplications(applicationsResult.data);
-        setNotifications(notificationsData.slice(0, 4));
+        setNotifications(notificationsData.data.slice(0, 4));
       } catch {
         // dashboard widgets fail gracefully — page still renders with what succeeded
       } finally {

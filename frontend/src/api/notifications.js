@@ -1,6 +1,6 @@
 import request from "./client";
 
-export const getMyNotifications = (token) => request("/notifications/mine", { token });
+export const getMyNotifications = (page, token) => request(`/notifications/mine?page=${page}`, { token });
 
 export const markAsRead = (id, token) => request(`/notifications/${id}/read`, { method: "PATCH", token });
 

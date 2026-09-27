@@ -1,10 +1,18 @@
 const Notification = require("../models/Notification");
 
+const { getPaginationParams, buildPaginatedResponse } = require("../utils/paginate");
+
 // @route  GET /api/notifications/mine
 const getMyNotifications = async (req, res) => {
   try {
-    const notifications = await Notification.find({ user: req.user._id }).sort({ createdAt: -1 });
-    res.json(notifications);
+    const { page, limit, skip } = getPaginationParams(req.query, 10);
+
+    const [notifications, total] = await Promise.all([
+      Notification.find({ user: req.user._id }).sort({ createdAt: -1 }).skip(skip).limit(limit),
+      Notification.countDocuments({ user: req.user._id }),
+    ]);
+
+    res.json(buildPaginatedResponse(notifications, total, page, limit));
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch notifications", error: err.message });
   }

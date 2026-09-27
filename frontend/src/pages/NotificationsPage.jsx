@@ -3,6 +3,7 @@ import { COLORS, fontHead, fontBody } from "../theme";
 import NotificationCard from "../components/dashboard/NotificationCard";
 import { getMyNotifications, markAsRead, markAllAsRead } from "../api/notifications";
 import { useAuth } from "../context/AuthContext";
+import Pagination from "../components/Pagination";
 
 function timeAgo(dateString) {
   const seconds = Math.floor((Date.now() - new Date(dateString)) / 1000);
@@ -18,18 +19,21 @@ function timeAgo(dateString) {
 export default function NotificationsPage() {
   const { token } = useAuth();
   const [notifications, setNotifications] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
 
   const fetchNotifications = useCallback(async () => {
     try {
-      const data = await getMyNotifications(token);
-      setNotifications(data);
+      const result = await getMyNotifications(page, token);
+      setNotifications(result.data);
+      setTotalPages(result.totalPages);
     } catch {
       // fails gracefully
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [page, token]);
 
   useEffect(() => {
     fetchNotifications();
@@ -40,7 +44,7 @@ export default function NotificationsPage() {
     try {
       await markAsRead(id, token);
     } catch {
-      fetchNotifications(); // re-sync with server if the optimistic update was wrong
+      fetchNotifications();
     }
   };
 
@@ -72,7 +76,7 @@ export default function NotificationsPage() {
         )}
       </div>
       <p className="text-[14.5px] mb-6" style={{ ...fontBody, color: COLORS.textMuted }}>
-        {loading ? "Loading..." : unreadCount > 0 ? `${unreadCount} unread` : "You're all caught up"}
+        {loading ? "Loading..." : unreadCount > 0 ? `${unreadCount} unread on this page` : "You're all caught up"}
       </p>
 
       {notifications.length > 0 ? (
@@ -86,6 +90,8 @@ export default function NotificationsPage() {
           </p>
         )
       )}
+
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
     </div>
   );
 }

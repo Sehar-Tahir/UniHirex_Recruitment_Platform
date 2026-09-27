@@ -26,8 +26,8 @@ export default function Topbar({ onMenuClick }) {
   useEffect(() => {
     const fetchUnread = async () => {
       try {
-        const data = await getMyNotifications(token);
-        setUnreadCount(data.filter((n) => !n.read).length);
+        const result = await getMyNotifications(1, token);
+        setUnreadCount(result.data.filter((n) => !n.read).length);
       } catch {
         // silently ignore — badge is a nice-to-have
       }
