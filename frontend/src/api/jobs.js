@@ -13,6 +13,8 @@ export const getJobById = (id) => request(`/jobs/${id}`);
 
 export const getRecommendedJobs = () => request("/jobs/recommended");
 
+export const getJobMatchScore = (jobId, token) => request(`/jobs/${jobId}/match-score`, { token });
+
 export const getJobCategories = () => request("/jobs/categories");
 
 export const createJob = (payload, token) => request("/jobs", { method: "POST", body: payload, token });

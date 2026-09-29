@@ -1,4 +1,13 @@
 const Job = require("../models/Job");
+const User = require("../models/User");
+const { createNotification } = require("./notificationController");
+
+const getMatchScore = require("../utils/matchScore");
+
+// Escapes special regex characters so a requirement like "C++" doesn't break the pattern
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 const { getPaginationParams, buildPaginatedResponse } = require("../utils/paginate");
 const Application = require("../models/Application");
 
@@ -25,6 +34,21 @@ const createJob = async (req, res) => {
       postedBy: req.user._id,
       company: req.user.companyName || req.user.name,
     });
+
+    // Notify students whose skills overlap with this job's requirements
+    if (requirements && requirements.length > 0) {
+      const requirementPatterns = requirements.map((r) => new RegExp(`^${escapeRegex(r)}$`, "i"));
+      const matchingStudents = await User.find({
+        role: "student",
+        skills: { $in: requirementPatterns },
+      }).select("_id");
+
+      await Promise.all(
+        matchingStudents.map((student) =>
+          createNotification(student._id, `New job matches your skills: ${job.title} at ${job.company}`)
+        )
+      );
+    }
 
     res.status(201).json(job);
   } catch (err) {
@@ -173,6 +197,19 @@ const getJobCategories = async (req, res) => {
   }
 };
 
+// @route  GET /api/jobs/:id/match-score   (student only — AI-computed fit between their skills and this job)
+const getJobMatchScore = async (req, res) => {
+  try {
+    const job = await Job.findById(req.params.id);
+    if (!job) return res.status(404).json({ message: "Job not found" });
+
+    const result = await getMatchScore(req.user.skills, job.requirements);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to compute match score", error: err.message });
+  }
+};
+
 module.exports = {
   createJob,
   getJobs,
@@ -182,4 +219,5 @@ module.exports = {
   getRecommendedJobs,
   getRecruiterStats,
   getJobCategories,
+  getJobMatchScore,
 };

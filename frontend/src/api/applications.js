@@ -17,3 +17,6 @@ export const getApplicantsForJob = (jobId, page, token) =>
 
 export const updateApplicationStatus = (id, status, token) =>
   request(`/applications/${id}/status`, { method: "PATCH", body: { status }, token });
+
+export const getCandidateMatchScore = (applicationId, token) =>
+  request(`/applications/${applicationId}/candidate-match`, { token });

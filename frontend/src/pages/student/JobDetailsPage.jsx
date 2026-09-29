@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { COLORS, fontHead, fontBody } from "../../theme";
 import toast from "react-hot-toast";
-import { getJobById } from "../../api/jobs";
+import { getJobById, getJobMatchScore } from "../../api/jobs";
 import { applyToJob } from "../../api/applications";
 import { useAuth } from "../../context/AuthContext";
+import MatchScoreBadge from "../../components/MatchScoreBadge";
 
 export default function JobDetailsPage() {
   const { id } = useParams();
@@ -15,6 +16,9 @@ export default function JobDetailsPage() {
   const [applied, setApplied] = useState(false);
   const [applyError, setApplyError] = useState("");
   const [applying, setApplying] = useState(false);
+  const [matchLoading, setMatchLoading] = useState(true);
+  const [matchScore, setMatchScore] = useState(null);
+  const [matchExplanation, setMatchExplanation] = useState("");
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -29,6 +33,22 @@ export default function JobDetailsPage() {
     };
     fetchJob();
   }, [id]);
+
+  useEffect(() => {
+    const fetchMatchScore = async () => {
+      setMatchLoading(true);
+      try {
+        const result = await getJobMatchScore(id, token);
+        setMatchScore(result.matchScore);
+        setMatchExplanation(result.explanation);
+      } catch {
+        // fails gracefully — badge just won't show
+      } finally {
+        setMatchLoading(false);
+      }
+    };
+    fetchMatchScore();
+  }, [id, token]);
 
   const handleApply = async () => {
     setApplying(true);
@@ -86,6 +106,10 @@ export default function JobDetailsPage() {
         <p className="text-[13.5px] mb-6" style={{ ...fontBody, color: COLORS.textMuted }}>
           {job.location} · {job.salary} · {job.experienceLevel}
         </p>
+
+        <div className="mb-6">
+          <MatchScoreBadge loading={matchLoading} score={matchScore} explanation={matchExplanation} />
+        </div>
 
         <h3 className="text-[15px] font-semibold mb-2" style={{ ...fontHead, color: COLORS.textDark }}>
           Description

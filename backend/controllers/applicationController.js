@@ -2,6 +2,7 @@ const Application = require("../models/Application");
 const Job = require("../models/Job");
 const { createNotification } = require("./notificationController");
 const { getPaginationParams, buildPaginatedResponse } = require("../utils/paginate");
+const getMatchScore = require("../utils/matchScore");
 
 // @route  POST /api/applications   (student only)
 const applyToJob = async (req, res) => {
@@ -107,4 +108,31 @@ const updateApplicationStatus = async (req, res) => {
   }
 };
 
-module.exports = { applyToJob, getMyApplications, getApplicantsForJob, updateApplicationStatus };
+// @route  GET /api/applications/:id/candidate-match   (recruiter — must own the related job — AI fit score for this applicant)
+const getCandidateMatchScore = async (req, res) => {
+  try {
+    const application = await Application.findById(req.params.id)
+      .populate("student", "skills")
+      .populate("job", "requirements postedBy");
+
+    if (!application) return res.status(404).json({ message: "Application not found" });
+
+    const isOwner = application.job.postedBy.toString() === req.user._id.toString();
+    if (!isOwner && req.user.role !== "admin") {
+      return res.status(403).json({ message: "You can only view match scores for your own listings" });
+    }
+
+    const result = await getMatchScore(application.student.skills, application.job.requirements);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to compute match score", error: err.message });
+  }
+};
+
+module.exports = {
+  applyToJob,
+  getMyApplications,
+  getApplicantsForJob,
+  updateApplicationStatus,
+  getCandidateMatchScore,
+};

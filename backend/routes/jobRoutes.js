@@ -9,6 +9,7 @@ const {
   getRecommendedJobs,
   getRecruiterStats,
   getJobCategories,
+  getJobMatchScore,
 } = require("../controllers/jobController");
 
 const router = express.Router();
@@ -24,6 +25,7 @@ router.get("/recruiter/mine", protect, authorize("recruiter"), getMyJobs);
 router.get("/recruiter/stats", protect, authorize("recruiter"), getRecruiterStats);
 
 router.get("/:id", getJobById);
+router.get("/:id/match-score", protect, authorize("student"), getJobMatchScore);
 
 router.post("/", protect, authorize("recruiter"), createJob);
 router.patch("/:id/status", protect, authorize("recruiter", "admin"), updateJobStatus);
