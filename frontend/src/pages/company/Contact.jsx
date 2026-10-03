@@ -28,7 +28,7 @@ export default function Contact() {
           View the project on GitHub →
         </a>
         <a
-          href="https://sehar-portfolio.vercel.app"
+          href="https://sehar-portfolio-site.vercel.app"
           target="_blank"
           rel="noreferrer"
           className="font-semibold"
