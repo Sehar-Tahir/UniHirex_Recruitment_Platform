@@ -1,19 +1,71 @@
 
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { COLORS, fontHead, fontBody } from "../../theme";
 import NodeGraph from "./NodeGraph";
 import LiveCounter from "./LiveCounter";
 
-const STATS = [
-  { value: 342, suffix: "+", label: "Students Registered" },
-  { value: 48, suffix: "+", label: "Companies hiring" },
-  { value: 76, suffix: "", label: "Live listings" },
-  { value: 98, suffix: "%", label: "Satisfaction" },
-];
+// const STATS = [
+//   { value: 342, suffix: "+", label: "Students Registered" },
+//   { value: 48, suffix: "+", label: "Companies hiring" },
+//   { value: 76, suffix: "", label: "Live listings" },
+//   { value: 98, suffix: "%", label: "Satisfaction" },
+// ];
+
+
 
 export default function Hero() {
+
+  const [stats, setStats] = useState({
+    students: 0,
+    companies: 0,
+    activeJobs: 0,
+    applications: 0,
+  });
+  useEffect(() => {
+  const fetchStats = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/stats`);
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch stats");
+      }
+
+      const data = await response.json();
+
+      setStats(data);
+    } catch (error) {
+      console.error("Failed to load stats:", error);
+    }
+  };
+
+  fetchStats();
+}, []);
+
+const STATS = [
+  {
+    value: stats.students,
+    suffix: "+",
+    label: "Students Registered",
+  },
+  {
+    value: stats.companies,
+    suffix: "+",
+    label: "Companies",
+  },
+  {
+    value: stats.activeJobs,
+    suffix: "+",
+    label: "Active Jobs",
+  },
+  {
+    value: stats.applications,
+    suffix: "+",
+    label: "Applications",
+  },
+];
+
   return (
     <header
       className="relative overflow-hidden text-white"
