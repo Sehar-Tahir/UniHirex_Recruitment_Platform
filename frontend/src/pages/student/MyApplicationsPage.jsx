@@ -84,6 +84,7 @@ export default function MyApplicationsPage() {
               company={app.job?.company}
               status={app.status}
               appliedOn={new Date(app.createdAt).toLocaleDateString()}
+              interviewInvite={app.interviewInvite}
             />
           ))
         ) : (
