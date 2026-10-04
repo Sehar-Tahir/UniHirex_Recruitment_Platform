@@ -61,7 +61,7 @@ export default function Sidebar({ role, open, onClose }) {
         <div className="flex items-center justify-between mb-10 px-3">
           <Link to="/" className="flex items-center gap-2.5 font-bold text-lg text-white" style={fontBody}>
             <LogoMark size={30} dark />
-            UniHirex
+            <span style={{ marginTop: "6px" }}>UniHirex</span>
           </Link>
           <button onClick={onClose} className="lg:hidden" aria-label="Close menu">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="2">

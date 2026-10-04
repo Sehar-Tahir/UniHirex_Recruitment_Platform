@@ -20,3 +20,6 @@ export const updateApplicationStatus = (id, status, token) =>
 
 export const getCandidateMatchScore = (applicationId, token) =>
   request(`/applications/${applicationId}/candidate-match`, { token });
+
+export const sendInterviewInvite = (applicationId, payload, token) =>
+  request(`/applications/${applicationId}/invite-interview`, { method: "POST", body: payload, token });

@@ -9,6 +9,12 @@ const applicationSchema = new mongoose.Schema(
       enum: ["Under Review", "Shortlisted", "Rejected"],
       default: "Under Review",
     },
+    interviewInvite: {
+      dateTime: { type: Date },
+      location: { type: String, trim: true }, // address, or a video call link
+      message: { type: String, trim: true },
+      sentAt: { type: Date },
+    },
   },
   { timestamps: true }
 );

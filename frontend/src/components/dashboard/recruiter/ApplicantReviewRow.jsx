@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import { COLORS, fontBody } from "../../../theme";
-import { getCandidateMatchScore } from "../../../api/applications";
+import { getCandidateMatchScore, sendInterviewInvite } from "../../../api/applications";
 import { useAuth } from "../../../context/AuthContext";
 import MatchScoreBadge from "../../MatchScoreBadge";
+import InterviewInviteModal from "./InterviewInviteModal";
 
 const STATUS_STYLES = {
   "Under Review": { bg: "#FFF6E5", color: "#B45309" },
@@ -20,6 +22,19 @@ export default function ApplicantReviewRow({ id, studentId, studentName, photoUr
   const [matchLoading, setMatchLoading] = useState(false);
   const [matchScore, setMatchScore] = useState(null);
   const [matchExplanation, setMatchExplanation] = useState("");
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const [inviteSent, setInviteSent] = useState(false);
+
+  const handleSendInvite = async (form) => {
+    try {
+      await sendInterviewInvite(id, form, token);
+      toast.success("Interview invitation sent!");
+      setInviteSent(true);
+      setShowInviteModal(false);
+    } catch (err) {
+      toast.error(err.message);
+    }
+  };
 
   const handleCheckMatch = async () => {
     setMatchChecked(true);
@@ -73,6 +88,16 @@ export default function ApplicantReviewRow({ id, studentId, studentName, photoUr
                   ✨ Check AI Match →
                 </button>
               )}
+              {status === "Shortlisted" && (
+                <button
+                  onClick={() => setShowInviteModal(true)}
+                  disabled={inviteSent}
+                  className="text-[13px] font-semibold disabled:opacity-50"
+                  style={{ ...fontBody, color: inviteSent ? COLORS.textMuted : COLORS.primary }}
+                >
+                  {inviteSent ? "✓ Invite Sent" : "📅 Invite to Interview"}
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -108,6 +133,14 @@ export default function ApplicantReviewRow({ id, studentId, studentName, photoUr
 
       {matchChecked && (
         <MatchScoreBadge loading={matchLoading} score={matchScore} explanation={matchExplanation} />
+      )}
+
+      {showInviteModal && (
+        <InterviewInviteModal
+          studentName={studentName}
+          onClose={() => setShowInviteModal(false)}
+          onSubmit={handleSendInvite}
+        />
       )}
     </div>
   );

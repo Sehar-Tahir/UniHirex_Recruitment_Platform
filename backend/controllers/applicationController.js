@@ -129,10 +129,56 @@ const getCandidateMatchScore = async (req, res) => {
   }
 };
 
+// @route  POST /api/applications/:id/invite-interview   (recruiter — must own the related job, applicant must be Shortlisted)
+const sendInterviewInvite = async (req, res) => {
+  try {
+    const { dateTime, location, message } = req.body;
+
+    if (!dateTime || !location) {
+      return res.status(400).json({ message: "Date/time and location are required" });
+    }
+
+    const application = await Application.findById(req.params.id).populate("job").populate("student", "name");
+    if (!application) return res.status(404).json({ message: "Application not found" });
+
+    const isOwner = application.job.postedBy.toString() === req.user._id.toString();
+    if (!isOwner && req.user.role !== "admin") {
+      return res.status(403).json({ message: "You can only manage applicants for your own listings" });
+    }
+
+    if (application.status !== "Shortlisted") {
+      return res.status(400).json({ message: "Only shortlisted applicants can be invited to interview" });
+    }
+
+    application.interviewInvite = {
+      dateTime,
+      location,
+      message: message || "",
+      sentAt: new Date(),
+    };
+    await application.save();
+
+    const formattedDate = new Date(dateTime).toLocaleString("en-US", {
+      dateStyle: "medium",
+      timeStyle: "short",
+    });
+
+    await createNotification(
+      application.student._id,
+      `Interview invitation for ${application.job.title}: ${formattedDate} at ${location}`
+    );
+
+    res.json({ message: "Interview invitation sent", application });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to send interview invitation", error: err.message });
+  }
+};
+
 module.exports = {
   applyToJob,
   getMyApplications,
   getApplicantsForJob,
   updateApplicationStatus,
   getCandidateMatchScore,
+  sendInterviewInvite,
 };

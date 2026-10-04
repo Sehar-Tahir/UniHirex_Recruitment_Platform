@@ -6,6 +6,7 @@ const {
   getApplicantsForJob,
   updateApplicationStatus,
   getCandidateMatchScore,
+  sendInterviewInvite,
 } = require("../controllers/applicationController");
 
 const router = express.Router();
@@ -15,5 +16,6 @@ router.get("/mine", protect, authorize("student"), getMyApplications);
 router.get("/job/:jobId", protect, authorize("recruiter", "admin"), getApplicantsForJob);
 router.patch("/:id/status", protect, authorize("recruiter", "admin"), updateApplicationStatus);
 router.get("/:id/candidate-match", protect, authorize("recruiter", "admin"), getCandidateMatchScore);
+router.post("/:id/invite-interview", protect, authorize("recruiter", "admin"), sendInterviewInvite);
 
 module.exports = router;
