@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { COLORS, fontBody } from "../../../theme";
 
-export default function ListingRow({ id, title, type, status, postedOn, onClose }) {
+export default function ListingRow({ id, title, type, status, postedOn, applicantCount, onClose }) {
   const navigate = useNavigate();
 
   return (
@@ -22,7 +22,7 @@ export default function ListingRow({ id, title, type, status, postedOn, onClose 
           className="text-[13.5px] font-semibold"
           style={{ ...fontBody, color: COLORS.primary }}
         >
-          View Applicants
+          View Applicants ({applicantCount ?? 0})
         </button>
 
         <span

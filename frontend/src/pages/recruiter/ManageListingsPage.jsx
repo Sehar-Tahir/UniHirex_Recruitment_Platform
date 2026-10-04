@@ -79,6 +79,7 @@ export default function ManageListingsPage() {
               type={l.type}
               status={l.status}
               postedOn={new Date(l.createdAt).toLocaleDateString()}
+              applicantCount={l.applicantCount}
               onClose={handleClose}
             />
           ))

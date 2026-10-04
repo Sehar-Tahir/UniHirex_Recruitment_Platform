@@ -103,6 +103,7 @@ const getJobById = async (req, res) => {
 // @route  GET /api/jobs/recruiter/mine   (recruiter only — their own listings)
 const getMyJobs = async (req, res) => {
   try {
+    const Application = require("../models/Application");
     const { page, limit, skip } = getPaginationParams(req.query, 10);
 
     const [jobs, total] = await Promise.all([
@@ -110,7 +111,15 @@ const getMyJobs = async (req, res) => {
       Job.countDocuments({ postedBy: req.user._id }),
     ]);
 
-    res.json(buildPaginatedResponse(jobs, total, page, limit));
+    // Attach a real applicant count to each listing
+    const jobsWithCounts = await Promise.all(
+      jobs.map(async (job) => {
+        const applicantCount = await Application.countDocuments({ job: job._id });
+        return { ...job.toObject(), applicantCount };
+      })
+    );
+
+    res.json(buildPaginatedResponse(jobsWithCounts, total, page, limit));
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch your listings", error: err.message });
   }
