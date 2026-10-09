@@ -15,6 +15,7 @@ const ICONS = {
   list: <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />,
   usersSearch: <><circle cx="9" cy="8" r="3" /><path d="M3 20c0-3 2.5-5 6-5s6 2 6 5" /><circle cx="17.5" cy="15.5" r="2.5" /><path d="M21 19l-1.5-1.5" /></>,
   users: <><circle cx="8" cy="9" r="3" /><circle cx="16" cy="9" r="3" /><path d="M2 20c0-3 2.5-5 6-5s6 2 6 5M14 15c3 0 5 2 5 5" /></>,
+  mic: <><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5 11a7 7 0 0 0 14 0M12 18v3" /></>,
 };
 
 const NAV_LINKS = {
@@ -24,6 +25,8 @@ const NAV_LINKS = {
     { to: "/student/jobs", label: "Browse Jobs", icon: "briefcase" },
     { to: "/student/internships", label: "Internships", icon: "bookmark" },
     { to: "/student/applications", label: "My Applications", icon: "fileCheck" },
+    { to: "/student/interview-coach", label: "AI Interview Coach", icon: "mic" },
+    { to: "/student/interview-history", label: "Interview History", icon: "list" },
     { to: "/student/notifications", label: "Notifications", icon: "bell" },
   ],
   recruiter: [

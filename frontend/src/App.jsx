@@ -24,6 +24,10 @@ import StudentProfile from "./pages/student/StudentProfile";
 import JobsListPage from "./pages/student/JobsListPage";
 import JobDetailsPage from "./pages/student/JobDetailsPage";
 import MyApplicationsPage from "./pages/student/MyApplicationsPage";
+import InterviewSetup from "./pages/student/InterviewSetup";
+import InterviewRoom from "./pages/student/InterviewRoom";
+import InterviewReport from "./pages/student/InterviewReport";
+import InterviewHistory from "./pages/student/InterviewHistory";
 
 import RecruiterDashboard from "./pages/recruiter/RecruiterDashboard";
 import CompanyProfilePage from "./pages/recruiter/CompanyProfilePage";
@@ -56,68 +60,72 @@ const App = () => {
     <>
       <AuthProvider>
         <Toaster position="top-right" toastOptions={{ style: { fontFamily: "'Inter', sans-serif", fontSize: "14px" } }} />
-      <div style={{ ...fontBody, color: COLORS.textDark, background: "#fff" }} className="overflow-x-hidden">
-       <ScrollToTop />
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/admin-login" element={<AdminLogin />} />
-          <Route path="/verify-email" element={<VerifyEmail />} />
-          <Route path="/verify-email/:token" element={<VerifyEmailToken />} />
-          
-          <Route path="/reset-password/:token" element={<ResetPassword />} />
-          <Route path="/forget-password" element={<ForgetPassword />} />
-          <Route path="/pending-verification" element={<PendingVerification />} />
-          
-          <Route element={<ProtectedRoute allowedRoles={["student"]} />}>
-            <Route element={<DashboardLayout />}>
-              <Route path="/student/dashboard" element={<StudentDashboard />} />
-              <Route path="/student/profile" element={<StudentProfile />} />
-              <Route path="/student/jobs" element={<JobsListPage mode="jobs" />} />
-              <Route path="/student/jobs/:id" element={<JobDetailsPage />} />
-              <Route path="/student/internships" element={<JobsListPage mode="internships" />} />
-              <Route path="/student/applications" element={<MyApplicationsPage />} />
-              <Route path="/student/notifications" element={<NotificationsPage />} />
+        <div style={{ ...fontBody, color: COLORS.textDark, background: "#fff" }} className="overflow-x-hidden">
+          <ScrollToTop />
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/admin-login" element={<AdminLogin />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />
+            <Route path="/verify-email/:token" element={<VerifyEmailToken />} />
+
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
+            <Route path="/forget-password" element={<ForgetPassword />} />
+            <Route path="/pending-verification" element={<PendingVerification />} />
+
+            <Route element={<ProtectedRoute allowedRoles={["student"]} />}>
+              <Route element={<DashboardLayout />}>
+                <Route path="/student/dashboard" element={<StudentDashboard />} />
+                <Route path="/student/profile" element={<StudentProfile />} />
+                <Route path="/student/jobs" element={<JobsListPage mode="jobs" />} />
+                <Route path="/student/jobs/:id" element={<JobDetailsPage />} />
+                <Route path="/student/internships" element={<JobsListPage mode="internships" />} />
+                <Route path="/student/applications" element={<MyApplicationsPage />} />
+                <Route path="/student/notifications" element={<NotificationsPage />} />
+                <Route path="/student/interview-coach" element={<InterviewSetup />} />
+                <Route path="/student/interview-room/:id" element={<InterviewRoom />} />
+                <Route path="/student/interview-report/:id" element={<InterviewReport />} />
+                <Route path="/student/interview-history" element={<InterviewHistory />} />
+              </Route>
             </Route>
-          </Route>
 
-          <Route element={<ProtectedRoute allowedRoles={["recruiter"]} />}>
-            <Route element={<DashboardLayout />}>
-              <Route path="/recruiter/dashboard" element={<RecruiterDashboard />} />
-              <Route path="/recruiter/company" element={<CompanyProfilePage />} />
-              <Route path="/recruiter/post-listing" element={<PostListingPage />} />
-              <Route path="/recruiter/listings" element={<ManageListingsPage />} />
-              <Route path="/recruiter/listings/:id/applicants" element={<ApplicantsReviewPage />} />
-              <Route path="/recruiter/candidates" element={<SearchCandidatesPage />} />
-               <Route path="/recruiter/candidates/:id" element={<CandidateDetailsPage />} />
-              <Route path="/recruiter/notifications" element={<NotificationsPage />} />
+            <Route element={<ProtectedRoute allowedRoles={["recruiter"]} />}>
+              <Route element={<DashboardLayout />}>
+                <Route path="/recruiter/dashboard" element={<RecruiterDashboard />} />
+                <Route path="/recruiter/company" element={<CompanyProfilePage />} />
+                <Route path="/recruiter/post-listing" element={<PostListingPage />} />
+                <Route path="/recruiter/listings" element={<ManageListingsPage />} />
+                <Route path="/recruiter/listings/:id/applicants" element={<ApplicantsReviewPage />} />
+                <Route path="/recruiter/candidates" element={<SearchCandidatesPage />} />
+                <Route path="/recruiter/candidates/:id" element={<CandidateDetailsPage />} />
+                <Route path="/recruiter/notifications" element={<NotificationsPage />} />
+              </Route>
             </Route>
-          </Route>
 
-          <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
-            <Route element={<DashboardLayout />}>
-              <Route path="/admin/dashboard" element={<AdminDashboard />} />
-              <Route path="/admin/users" element={<ManageUsersPage />} />
-              <Route path="/admin/jobs" element={<ManageJobsPage />} />
-              <Route path="/admin/profile" element={<AdminProfilePage />} />
-              <Route path="/admin/notifications" element={<NotificationsPage />} />
+            <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+              <Route element={<DashboardLayout />}>
+                <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                <Route path="/admin/users" element={<ManageUsersPage />} />
+                <Route path="/admin/jobs" element={<ManageJobsPage />} />
+                <Route path="/admin/profile" element={<AdminProfilePage />} />
+                <Route path="/admin/notifications" element={<NotificationsPage />} />
+              </Route>
             </Route>
-          </Route>
 
-          <Route path="/unauthorized" element={<Unauthorized />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/careers" element={<Careers />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms-of-service" element={<TermsOfService />} />
-          <Route path="/cookie-policy" element={<CookiePolicy />} />
-          <Route path="*" element={<NotFound />} />
+            <Route path="/unauthorized" element={<Unauthorized />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/careers" element={<Careers />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="/cookie-policy" element={<CookiePolicy />} />
+            <Route path="*" element={<NotFound />} />
 
-        </Routes>
-      </div>
-    </AuthProvider>
+          </Routes>
+        </div>
+      </AuthProvider>
     </>
   )
 }

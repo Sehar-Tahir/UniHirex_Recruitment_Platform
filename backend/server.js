@@ -1,9 +1,4 @@
 require("dotenv").config();
-// const express = require("express");
-// const cors = require("cors");
-// const connectDB = require("./config/db");
-
-// const app = express();
 
 const express = require("express");
 const cors = require("cors");
@@ -44,6 +39,7 @@ app.use("/api/applications", require("./routes/applicationRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/notifications", require("./routes/notificationRoutes"));
 app.use("/api/upload", require("./routes/uploadRoutes"));
+app.use("/api/interviews", require("./routes/interviewRoutes"));
 app.use("/api/stats", statsRoutes);
 
 // Catches any error thrown/passed to next() anywhere in the app and logs the real detail
