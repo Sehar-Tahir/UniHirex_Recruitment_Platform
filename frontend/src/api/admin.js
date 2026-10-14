@@ -27,3 +27,8 @@ export const getAdminStats = (token) => request("/admin/stats", { token });
 
 export const createAdmin = (payload, token) =>
   request("/admin/create-admin", { method: "POST", body: payload, token });
+
+export const getUserAiQuota = (id, token) => request(`/admin/users/${id}/ai-quota`, { token });
+
+export const updateUserAiLimits = (id, payload, token) =>
+  request(`/admin/users/${id}/ai-limits`, { method: "PATCH", body: payload, token });

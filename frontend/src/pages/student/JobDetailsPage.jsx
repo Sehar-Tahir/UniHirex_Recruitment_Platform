@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { COLORS, fontHead, fontBody } from "../../theme";
 import toast from "react-hot-toast";
 import { getJobById, getJobMatchScore } from "../../api/jobs";
@@ -109,6 +109,13 @@ export default function JobDetailsPage() {
 
         <div className="mb-6">
           <MatchScoreBadge loading={matchLoading} score={matchScore} explanation={matchExplanation} />
+          <Link
+            to={`/student/resume-analyzer?jobId=${id}`}
+            className="inline-block mt-3 text-[13px] font-semibold"
+            style={{ ...fontBody, color: COLORS.primary }}
+          >
+            ✨ Check my resume against this job →
+          </Link>
         </div>
 
         <h3 className="text-[15px] font-semibold mb-2" style={{ ...fontHead, color: COLORS.textDark }}>

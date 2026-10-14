@@ -5,6 +5,7 @@ import { getAllUsers, approveUser, toggleUserStatus, createAdmin } from "../../a
 import { useAuth } from "../../context/AuthContext";
 import UserRow from "../../components/dashboard/admin/UserRow";
 import CreateAdminModal from "../../components/dashboard/admin/CreateAdminModal";
+import AiAccessModal from "../../components/dashboard/admin/AiAccessModal";
 import Pagination from "../../components/Pagination";
 
 const ROLE_TABS = ["All", "Student", "Recruiter"];
@@ -20,6 +21,7 @@ export default function ManageUsersPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);
   const [showCreateAdmin, setShowCreateAdmin] = useState(false);
+  const [aiUser, setAiUser] = useState(null);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -133,7 +135,14 @@ export default function ManageUsersPage() {
       <div className="border border-[#ECEEF3] rounded-2xl p-6 bg-white">
         {users.length > 0 ? (
           users.map((u) => (
-            <UserRow key={u._id} {...u} id={u._id} onToggleStatus={handleToggleStatus} onApprove={handleApprove} />
+            <UserRow
+              key={u._id}
+              {...u}
+              id={u._id}
+              onToggleStatus={handleToggleStatus}
+              onApprove={handleApprove}
+              onManageAi={() => setAiUser(u)}
+            />
           ))
         ) : (
           !loading && (
@@ -149,6 +158,8 @@ export default function ManageUsersPage() {
       {showCreateAdmin && (
         <CreateAdminModal onClose={() => setShowCreateAdmin(false)} onSubmit={handleCreateAdmin} />
       )}
+
+      {aiUser && <AiAccessModal user={aiUser} onClose={() => setAiUser(null)} />}
     </div>
   );
 }

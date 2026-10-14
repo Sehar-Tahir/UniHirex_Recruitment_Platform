@@ -28,6 +28,9 @@ import InterviewSetup from "./pages/student/InterviewSetup";
 import InterviewRoom from "./pages/student/InterviewRoom";
 import InterviewReport from "./pages/student/InterviewReport";
 import InterviewHistory from "./pages/student/InterviewHistory";
+import ResumeAnalyzer from "./pages/student/ResumeAnalyzer";
+import ResumeReportPage from "./pages/student/ResumeReportPage";
+import ResumeHistory from "./pages/student/ResumeHistory";
 
 import RecruiterDashboard from "./pages/recruiter/RecruiterDashboard";
 import CompanyProfilePage from "./pages/recruiter/CompanyProfilePage";
@@ -87,6 +90,9 @@ const App = () => {
                 <Route path="/student/interview-room/:id" element={<InterviewRoom />} />
                 <Route path="/student/interview-report/:id" element={<InterviewReport />} />
                 <Route path="/student/interview-history" element={<InterviewHistory />} />
+                <Route path="/student/resume-analyzer" element={<ResumeAnalyzer />} />
+<Route path="/student/resume-history" element={<ResumeHistory />} />
+<Route path="/student/resume-analysis/:id" element={<ResumeReportPage />} />
               </Route>
             </Route>
 

@@ -8,6 +8,7 @@ const {
   getAllJobsForAdmin,
   getAdminStats,
 } = require("../controllers/adminController");
+const { getUserAiQuota, updateUserAiLimits } = require("../controllers/adminAiController");
 
 const router = express.Router();
 
@@ -17,6 +18,8 @@ router.use(protect, authorize("admin"));
 router.get("/users", getAllUsers);
 router.patch("/users/:id/approve", approveUser);
 router.patch("/users/:id/toggle-status", toggleUserStatus);
+router.get("/users/:id/ai-quota", getUserAiQuota);
+router.patch("/users/:id/ai-limits", updateUserAiLimits);
 router.post("/create-admin", createAdmin);
 router.get("/jobs", getAllJobsForAdmin);
 router.get("/stats", getAdminStats);

@@ -1,0 +1,1 @@
+export const scoreColor = (s) => (s >= 70 ? "#15803D" : s >= 40 ? "#B45309" : "#B91C1C");

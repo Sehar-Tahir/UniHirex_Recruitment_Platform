@@ -56,6 +56,16 @@ const userSchema = new mongoose.Schema(
    savedJobs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Job" }],
     savedCandidates: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     isEmailVerified: { type: Boolean, default: false },
+    // AI feature limits. Only an admin can change these (the profile update route doesn't allow them).
+    aiLimits: {
+      interviews: { type: Number },
+      resumeAnalyses: { type: Number },
+    },
+    aiUsage: {
+      interviewsUsed: { type: Number, default: 0 },
+      resumeAnalysesUsed: { type: Number, default: 0 },
+    },
+    aiAccessRequestedAt: { type: Date },
     emailVerificationToken: { type: String, select: false },
     emailVerificationExpires: { type: Date, select: false },
     resetPasswordToken: { type: String, select: false },

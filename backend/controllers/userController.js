@@ -1,5 +1,7 @@
 const User = require("../models/User");
 const { getPaginationParams, buildPaginatedResponse } = require("../utils/paginate");
+const { getQuota } = require("../utils/aiQuota");
+const { createNotification } = require("./notificationController");
 
 // @route  GET /api/users/me
 const getMyProfile = async (req, res) => {
@@ -133,6 +135,42 @@ const toggleSavedCandidate = async (req, res) => {
   }
 };
 
+// @route  GET /api/users/me/ai-quota   (student only)
+const getMyAiQuota = async (req, res) => {
+  res.json(getQuota(req.user));
+};
+
+const AI_FEATURE_LABELS = { interviews: "AI Interview Coach", resumeAnalyses: "AI Resume Analyzer" };
+
+// @route  POST /api/users/me/ai-quota/request   (student only — ask the admins for more AI access)
+const requestAiAccess = async (req, res) => {
+  try {
+    const label = AI_FEATURE_LABELS[req.body.feature] || "AI features";
+
+    const last = req.user.aiAccessRequestedAt;
+    if (last && Date.now() - new Date(last).getTime() < 24 * 60 * 60 * 1000) {
+      return res
+        .status(429)
+        .json({ message: "You already sent a request recently. Please wait for an admin to respond." });
+    }
+
+    const admins = await User.find({ role: "admin" }).select("_id");
+    await Promise.all(
+      admins.map((admin) =>
+        createNotification(
+          admin._id,
+          `${req.user.name} (${req.user.email}) used their free limit and requested more access to the ${label}.`
+        )
+      )
+    );
+
+    await User.updateOne({ _id: req.user._id }, { $set: { aiAccessRequestedAt: new Date() } });
+    res.json({ message: "Your request was sent to the admin." });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to send request", error: err.message });
+  }
+};
+
 module.exports = {
   getMyProfile,
   updateMyProfile,
@@ -140,4 +178,6 @@ module.exports = {
   getCandidateById,
   toggleSavedJob,
   toggleSavedCandidate,
+  getMyAiQuota,
+  requestAiAccess,
 };

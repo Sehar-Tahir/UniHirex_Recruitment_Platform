@@ -2,9 +2,13 @@ const liveClient = require("../config/geminiLive");
 const Interview = require("../models/Interview");
 const analyzeInterview = require("../utils/analyzeInterview");
 const { getPaginationParams, buildPaginatedResponse } = require("../utils/paginate");
+const { reserveSlot, refundSlot, getQuota } = require("../utils/aiQuota");
 
 const CONCLUSION_PHRASE = "This concludes our interview session. Thank you for your time.";
 const CONCLUSION_MARKER = "this concludes our interview session";
+const MAX_CONNECTION_ATTEMPTS = 3;
+const INTERVIEW_QUOTA_MESSAGE =
+  "You've used all of your free AI interviews. You can request more access from an admin.";
 
 function buildSystemInstruction({ role, level, type, questionCount }) {
   return `You are a professional interviewer conducting a realistic, spoken mock interview.
@@ -37,6 +41,11 @@ const createInterview = async (req, res) => {
         .json({ message: "Role, level, type, and a question count between 1 and 10 are required" });
     }
 
+    const quota = getQuota(req.user);
+    if (quota.interviews.remaining <= 0) {
+      return res.status(403).json({ message: INTERVIEW_QUOTA_MESSAGE, code: "QUOTA_EXCEEDED" });
+    }
+
     const interview = await Interview.create({
       student: req.user._id,
       role: role.trim(),
@@ -53,6 +62,7 @@ const createInterview = async (req, res) => {
 
 // @route  POST /api/interviews/:id/ephemeral-token   (student only — must own this interview)
 const createEphemeralToken = async (req, res) => {
+  let reserved = false;
   try {
     const interview = await Interview.findById(req.params.id);
     if (!interview) return res.status(404).json({ message: "Interview not found" });
@@ -63,6 +73,21 @@ const createEphemeralToken = async (req, res) => {
 
     if (interview.status === "Completed") {
       return res.status(400).json({ message: "This interview has already been completed" });
+    }
+
+    if ((interview.tokenMints || 0) >= MAX_CONNECTION_ATTEMPTS) {
+      return res.status(429).json({
+        message: "This interview has used all of its connection attempts. Please create a new one.",
+      });
+    }
+
+    // The first time a session starts for this interview, it uses one of the student's slots.
+    const isFirstStart = !interview.startedAt;
+    if (isFirstStart) {
+      reserved = await reserveSlot(req.user._id, "interviews");
+      if (!reserved) {
+        return res.status(403).json({ message: INTERVIEW_QUOTA_MESSAGE, code: "QUOTA_EXCEEDED" });
+      }
     }
 
     const systemInstruction = buildSystemInstruction({
@@ -88,8 +113,13 @@ const createEphemeralToken = async (req, res) => {
       },
     });
 
+    interview.tokenMints = (interview.tokenMints || 0) + 1;
+    if (isFirstStart) interview.startedAt = new Date();
+    await interview.save();
+
     res.json({ token: token.name, model: process.env.GEMINI_LIVE_MODEL });
   } catch (err) {
+    if (reserved) await refundSlot(req.user._id, "interviews").catch(() => {});
     console.error("Failed to create ephemeral token:", err.message);
     res.status(500).json({ message: "Failed to start interview session", error: err.message });
   }

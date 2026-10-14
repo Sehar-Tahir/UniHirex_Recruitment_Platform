@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { COLORS, fontHead, fontBody } from "../../theme";
 import toast from "react-hot-toast";
-import { createInterview } from "../../api/interviews";
+   import { createInterview } from "../../api/interviews";
+   import { getMyAiQuota } from "../../api/users";
+   import AiQuotaBanner from "../../components/AiQuotaBanner";
 import { useAuth } from "../../context/AuthContext";
 
 const LEVELS = ["Junior", "Mid", "Senior"];
@@ -19,9 +21,14 @@ export default function InterviewSetup() {
     questionCount: 5,
   });
   const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
+     const [loading, setLoading] = useState(false);
+     const [quota, setQuota] = useState(null);
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+     useEffect(() => {
+       getMyAiQuota(token).then(setQuota).catch(() => {});
+     }, [token]);
+
+     const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const validate = () => {
     const errs = {};
@@ -58,7 +65,9 @@ export default function InterviewSetup() {
         Practice a real voice-based interview, tailored to the role you're preparing for.
       </p>
 
-      <form onSubmit={handleSubmit} className="border border-[#ECEEF3] rounded-2xl p-7 bg-white flex flex-col gap-5">
+         <AiQuotaBanner feature="interviews" quota={quota} />
+
+         <form onSubmit={handleSubmit} className="border border-[#ECEEF3] rounded-2xl p-7 bg-white flex flex-col gap-5">
         <div>
           <label className="block text-[13px] font-medium mb-1.5" style={{ ...fontBody, color: COLORS.textDark }}>
             Job Role
@@ -110,7 +119,7 @@ export default function InterviewSetup() {
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || (quota && quota.interviews.remaining <= 0)}
           className="w-full py-3.5 rounded-[10px] font-semibold text-[15px] text-white mt-2 disabled:opacity-60"
           style={{ ...fontBody, background: COLORS.accent }}
         >

@@ -22,4 +22,9 @@ export const toggleSavedJob = (jobId, token) =>
 export const toggleSavedCandidate = (candidateId, token) =>
   request(`/users/me/saved-candidates/${candidateId}`, { method: "PATCH", token });
 
+export const getMyAiQuota = (token) => request("/users/me/ai-quota", { token });
+
+export const requestAiAccess = (feature, token) =>
+  request("/users/me/ai-quota/request", { method: "POST", body: { feature }, token });
+
 
