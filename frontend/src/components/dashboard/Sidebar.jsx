@@ -17,6 +17,7 @@ const ICONS = {
   users: <><circle cx="8" cy="9" r="3" /><circle cx="16" cy="9" r="3" /><path d="M2 20c0-3 2.5-5 6-5s6 2 6 5M14 15c3 0 5 2 5 5" /></>,
   mic: <><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5 11a7 7 0 0 0 14 0M12 18v3" /></>,
   fileText: <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6M8 13h8M8 17h5" /></>,
+  chart: <path d="M4 20V11M10 20V5M16 20v-8M22 20H2" />,
 };
 
 const NAV_LINKS = {
@@ -46,6 +47,7 @@ const NAV_LINKS = {
     { to: "/admin/users", label: "Manage Users", icon: "users" },
     { to: "/admin/jobs", label: "Manage Jobs", icon: "briefcase" },
     { to: "/admin/notifications", label: "Notifications", icon: "bell" },
+    { to: "/admin/analytics", label: "Analytics", icon: "chart" },
   ],
 };
 

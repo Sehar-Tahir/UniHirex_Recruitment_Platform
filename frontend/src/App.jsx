@@ -44,6 +44,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import ManageUsersPage from "./pages/admin/ManageUsersPage";
 import ManageJobsPage from "./pages/admin/ManageJobsPage";
 import AdminProfilePage from "./pages/admin/AdminProfilePage";
+import AdminAnalytics from "./pages/admin/AdminAnalytics";
 
 import NotFound from "./pages/NotFound";
 import Unauthorized from "./pages/Unauthorized";
@@ -116,6 +117,7 @@ const App = () => {
                 <Route path="/admin/jobs" element={<ManageJobsPage />} />
                 <Route path="/admin/profile" element={<AdminProfilePage />} />
                 <Route path="/admin/notifications" element={<NotificationsPage />} />
+              <Route path="/admin/analytics" element={<AdminAnalytics />} />
               </Route>
             </Route>
 

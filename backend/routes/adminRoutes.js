@@ -9,6 +9,12 @@ const {
   getAdminStats,
 } = require("../controllers/adminController");
 const { getUserAiQuota, updateUserAiLimits } = require("../controllers/adminAiController");
+const {
+  getOverview,
+  getGrowth,
+  getJobsAnalytics,
+  getAiAnalytics,
+} = require("../controllers/analyticsController");
 
 const router = express.Router();
 
@@ -23,5 +29,10 @@ router.patch("/users/:id/ai-limits", updateUserAiLimits);
 router.post("/create-admin", createAdmin);
 router.get("/jobs", getAllJobsForAdmin);
 router.get("/stats", getAdminStats);
+
+router.get("/analytics/overview", getOverview);
+router.get("/analytics/growth", getGrowth);
+router.get("/analytics/jobs", getJobsAnalytics);
+router.get("/analytics/ai", getAiAnalytics);
 
 module.exports = router;
