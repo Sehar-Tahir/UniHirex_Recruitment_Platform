@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { COLORS, fontHead, fontBody } from "../../theme";
 import toast from "react-hot-toast";
+import { COLORS, fontHead, fontBody } from "../../theme";
 import ProfileHeaderCard from "../../components/dashboard/student/ProfileHeaderCard";
+import LinksCard from "../../components/dashboard/student/LinksCard";
 import SkillsCard from "../../components/dashboard/student/SkillsCard";
 import ProjectsCard from "../../components/dashboard/student/ProjectsCard";
 import CertificationsCard from "../../components/dashboard/student/CertificationsCard";
@@ -13,31 +14,26 @@ export default function StudentProfile() {
   const { token, updateUser } = useAuth();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [loadError, setLoadError] = useState("");
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const data = await getMyProfile(token);
-        setProfile(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProfile();
+    getMyProfile(token)
+      .then(setProfile)
+      .catch((err) => setLoadError(err.message))
+      .finally(() => setLoading(false));
   }, [token]);
 
+  // Returns true if the save worked, false if it failed
   const saveUpdate = async (updates) => {
     try {
       const updated = await updateMyProfile(updates, token);
       setProfile(updated);
       updateUser({ name: updated.name, photoUrl: updated.photoUrl });
       toast.success("Profile updated successfully!");
+      return true;
     } catch (err) {
-      setError(err.message);
       toast.error(err.message);
+      return false;
     }
   };
 
@@ -48,11 +44,7 @@ export default function StudentProfile() {
   }
 
   if (!profile) {
-    return (
-      <p style={{ color: "#DC2626" }}>
-        {error || "Failed to load profile."}
-      </p>
-    );
+    return <p style={{ color: "#DC2626" }}>{loadError || "Failed to load profile."}</p>;
   }
 
   return (
@@ -64,19 +56,12 @@ export default function StudentProfile() {
         Keep your profile updated to get better job matches.
       </p>
 
-      {error && (
-        <p className="text-[13.5px] mb-4" style={{ color: "#DC2626" }}>
-          {error}
-        </p>
-      )}
-
-      <div className="flex flex-col gap-6">
-        <ProfileHeaderCard profile={profile} onSave={saveUpdate} />
-        <SkillsCard skills={profile.skills || []} onChange={updateField("skills")} />
-        <ProjectsCard projects={profile.projects || []} onChange={updateField("projects")} />
-        <CertificationsCard certifications={profile.certifications || []} onChange={updateField("certifications")} />
-        <ResumeCard resumeUrl={profile.resumeUrl} onChange={updateField("resumeUrl")} />
-      </div>
+      <ProfileHeaderCard profile={profile} onSave={saveUpdate} />
+      <LinksCard profile={profile} onSave={saveUpdate} />
+      <SkillsCard skills={profile.skills || []} onChange={updateField("skills")} />
+      <ProjectsCard projects={profile.projects || []} onChange={updateField("projects")} />
+      <CertificationsCard certifications={profile.certifications || []} onChange={updateField("certifications")} />
+      <ResumeCard resumeUrl={profile.resumeUrl} onChange={updateField("resumeUrl")} />
     </div>
   );
 }

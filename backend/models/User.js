@@ -41,7 +41,8 @@ const userSchema = new mongoose.Schema(
       {
         title: String,
         description: String,
-        link: String,
+        link: String, // GitHub / source link
+        liveLink: String,
       },
     ],
     certifications: [
@@ -52,6 +53,11 @@ const userSchema = new mongoose.Schema(
       },
     ],
     resumeUrl: { type: String, default: "" },
+    portfolioUrl: { type: String, trim: true, default: "" },
+    socialLinks: {
+      linkedin: { type: String, trim: true, default: "" },
+      github: { type: String, trim: true, default: "" },
+    },
     photoUrl: { type: String, default: "" },
    savedJobs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Job" }],
     savedCandidates: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],

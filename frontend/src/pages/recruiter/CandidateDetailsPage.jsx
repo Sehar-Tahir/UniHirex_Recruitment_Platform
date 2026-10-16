@@ -3,7 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { COLORS, fontHead, fontBody } from "../../theme";
 import { getCandidateById } from "../../api/users";
 import { useAuth } from "../../context/AuthContext";
-import { useSavedCandidates } from "../../hooks/useSavedCandidates";
+   import { useSavedCandidates } from "../../hooks/useSavedCandidates";
+   import { ProfileLinkButtons, ProjectLinks } from "../../components/ProfileLinks";
 
 export default function CandidateDetailsPage() {
   const { id } = useParams();
@@ -78,7 +79,9 @@ export default function CandidateDetailsPage() {
           </div>
         </div>
 
-        <h3 className="text-[15px] font-semibold mb-2" style={{ ...fontHead, color: COLORS.textDark }}>Skills</h3>
+        <ProfileLinkButtons portfolioUrl={candidate.portfolioUrl} socialLinks={candidate.socialLinks} />
+
+           <h3 className="text-[15px] font-semibold mb-2" style={{ ...fontHead, color: COLORS.textDark }}>Skills</h3>
         <div className="flex flex-wrap gap-2 mb-6">
           {(candidate.skills || []).length > 0 ? (
             candidate.skills.map((s) => (
@@ -97,7 +100,11 @@ export default function CandidateDetailsPage() {
             candidate.projects.map((p) => (
               <div key={p._id} className="p-4 rounded-xl border border-[#ECEEF3]">
                 <p className="text-[14px] font-semibold mb-1" style={{ ...fontBody, color: COLORS.textDark }}>{p.title}</p>
-                <p className="text-[13.5px]" style={{ ...fontBody, color: COLORS.textMuted }}>{p.description}</p>
+                <p className="text-[13.5px]" style={{ ...fontBody, color: COLORS.textMuted }}>   
+                  <ProfileLinkButtons portfolioUrl={candidate.portfolioUrl} socialLinks={candidate.socialLinks} />
+                     {p.description}</p>
+                   <ProjectLinks project={p} />
+           {/* <h3 className="text-[15px] font-semibold mb-2" style={{ ...fontHead, color: COLORS.textDark }}>Skills</h3> */}
               </div>
             ))
           ) : (

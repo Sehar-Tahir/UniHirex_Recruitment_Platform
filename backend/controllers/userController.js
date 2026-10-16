@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const { getPaginationParams, buildPaginatedResponse } = require("../utils/paginate");
 const { getQuota } = require("../utils/aiQuota");
+const { sanitizeProfileFields, flattenForSet } = require("../utils/profileValidation");
 const { createNotification } = require("./notificationController");
 
 // @route  GET /api/users/me
@@ -32,16 +33,26 @@ const getMyProfile = async (req, res) => {
 // @route  PATCH /api/users/me
 const updateMyProfile = async (req, res) => {
   try {
-    const allowedFields = [
-      "name", "phone", "university", "department", "semester", "cgpa",
-      "skills", "projects", "certifications", "resumeUrl", "photoUrl",
-      "companyName", "industry", "website", "logoUrl",
-    ];
+    // Phone, university, department, semester, CGPA, links, skills and projects are validated and cleaned
+    const checked = sanitizeProfileFields(req.body);
+    if (checked.error) return res.status(400).json({ message: checked.error });
 
-    const updates = {};
-    allowedFields.forEach((field) => {
+    const updates = flattenForSet(checked.values);
+
+    if (req.body.name !== undefined) {
+      const name = String(req.body.name).trim().slice(0, 100);
+      if (!name) return res.status(400).json({ message: "Name can't be empty" });
+      updates.name = name;
+    }
+
+    // Fields that don't need special validation
+    ["certifications", "resumeUrl", "photoUrl", "companyName", "industry", "website", "logoUrl"].forEach((field) => {
       if (req.body[field] !== undefined) updates[field] = req.body[field];
     });
+
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({ message: "Nothing to update" });
+    }
 
     const user = await User.findByIdAndUpdate(req.user._id, updates, {
       returnDocument: "after",
@@ -72,7 +83,7 @@ const getCandidates = async (req, res) => {
 
     const [candidates, total] = await Promise.all([
       User.find(filter)
-        .select("name email university department semester cgpa skills projects photoUrl resumeUrl")
+        .select("name email university department semester cgpa skills projects photoUrl resumeUrl portfolioUrl socialLinks")
         .skip(skip)
         .limit(limit),
       User.countDocuments(filter),
@@ -88,7 +99,7 @@ const getCandidates = async (req, res) => {
 const getCandidateById = async (req, res) => {
   try {
     const candidate = await User.findOne({ _id: req.params.id, role: "student" }).select(
-      "name email university department semester cgpa skills projects photoUrl resumeUrl"
+      "name email university department semester cgpa skills projects photoUrl resumeUrl portfolioUrl socialLinks"
     );
     if (!candidate) return res.status(404).json({ message: "Candidate not found" });
     res.json(candidate);
