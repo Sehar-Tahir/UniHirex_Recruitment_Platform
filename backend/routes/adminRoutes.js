@@ -9,6 +9,7 @@ const {
   getAdminStats,
 } = require("../controllers/adminController");
 const { getUserAiQuota, updateUserAiLimits } = require("../controllers/adminAiController");
+const { getDeletionSummary, deleteUserAccount } = require("../controllers/adminDeleteController");
 const {
   getOverview,
   getGrowth,
@@ -26,6 +27,8 @@ router.patch("/users/:id/approve", approveUser);
 router.patch("/users/:id/toggle-status", toggleUserStatus);
 router.get("/users/:id/ai-quota", getUserAiQuota);
 router.patch("/users/:id/ai-limits", updateUserAiLimits);
+router.get("/users/:id/deletion-summary", getDeletionSummary);
+router.post("/users/:id/delete", deleteUserAccount);
 router.post("/create-admin", createAdmin);
 router.get("/jobs", getAllJobsForAdmin);
 router.get("/stats", getAdminStats);

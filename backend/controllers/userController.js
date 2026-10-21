@@ -46,7 +46,7 @@ const updateMyProfile = async (req, res) => {
     }
 
     // Fields that don't need special validation
-    ["certifications", "resumeUrl", "photoUrl", "companyName", "industry", "website", "logoUrl"].forEach((field) => {
+    ["certifications", "photoUrl", "companyName", "industry", "website", "logoUrl"].forEach((field) => {
       if (req.body[field] !== undefined) updates[field] = req.body[field];
     });
 

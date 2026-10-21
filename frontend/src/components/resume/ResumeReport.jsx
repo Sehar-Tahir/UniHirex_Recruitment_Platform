@@ -138,7 +138,8 @@ export default function ResumeReport({ analysis, onToggleApplied, onDelete }) {
         <p className="text-[12.5px]" style={{ ...fontBody, color: COLORS.textMuted }}>
           Analyzed on {new Date(analysis.createdAt).toLocaleDateString()}
           {analysis.targetRole ? ` · Target role: ${analysis.targetRole}` : ""}
-          {analysis.version ? ` · Resume v${analysis.version}` : ""}
+          {analysis.resumeLabel ? ` · Resume: ${analysis.resumeLabel}` : ""}
+          {analysis.version ? ` · v${analysis.version}` : ""}
         </p>
         <button onClick={onDelete} className="text-[12.5px] font-semibold" style={{ ...fontBody, color: "#B91C1C" }}>
           Delete this analysis

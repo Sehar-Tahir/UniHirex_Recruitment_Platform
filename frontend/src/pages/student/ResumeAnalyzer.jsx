@@ -3,11 +3,12 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { COLORS, fontHead, fontBody } from "../../theme";
 import { analyzeResume } from "../../api/resumeAnalysis";
-   import { getMyProfile, updateMyProfile, getMyAiQuota } from "../../api/users";
-   import AiQuotaBanner from "../../components/AiQuotaBanner";
+import { getMyResumes } from "../../api/resumes";
+import { getMyAiQuota } from "../../api/users";
 import { getJobById } from "../../api/jobs";
-import { uploadFile } from "../../api/upload";
 import { useAuth } from "../../context/AuthContext";
+import { safeUrl } from "../../utils/links";
+import AiQuotaBanner from "../../components/AiQuotaBanner";
 
 export default function ResumeAnalyzer() {
   const { token } = useAuth();
@@ -15,24 +16,28 @@ export default function ResumeAnalyzer() {
   const [searchParams] = useSearchParams();
   const jobId = searchParams.get("jobId");
 
-  const [resumeUrl, setResumeUrl] = useState(null); // null = still checking, "" = none uploaded
-  const [uploading, setUploading] = useState(false);
+  const [resumes, setResumes] = useState(null); // null = still loading
+  const [resumeId, setResumeId] = useState("");
   const [targetRole, setTargetRole] = useState("");
   const [jobDescription, setJobDescription] = useState("");
-     const [analyzing, setAnalyzing] = useState(false);
-     const [quota, setQuota] = useState(null);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [quota, setQuota] = useState(null);
 
   useEffect(() => {
-    getMyProfile(token)
-      .then((profile) => setResumeUrl(profile.resumeUrl || ""))
-      .catch(() => setResumeUrl("")); // treat a failed check as "none" so the page stays usable
+    getMyResumes(token)
+      .then((data) => {
+        setResumes(data.resumes);
+        const preferred = data.resumes.find((r) => r.isDefault) || data.resumes[0];
+        setResumeId(preferred ? preferred._id : "");
+      })
+      .catch(() => setResumes([])); // treat a failed load as "none" so the page stays usable
   }, [token]);
 
-     useEffect(() => {
-       getMyAiQuota(token).then(setQuota).catch(() => {});
-     }, [token]);
+  useEffect(() => {
+    getMyAiQuota(token).then(setQuota).catch(() => {});
+  }, [token]);
 
-     // Arriving from a job page: pre-fill the role and job description
+  // Arriving from a job page: pre-fill the role and job description
   useEffect(() => {
     if (!jobId) return;
     getJobById(jobId)
@@ -46,35 +51,16 @@ export default function ResumeAnalyzer() {
       .catch(() => {});
   }, [jobId]);
 
-  const handleUpload = async (e) => {
-    const file = e.target.files[0];
-    e.target.value = "";
-    if (!file) return;
-
-    const name = file.name.toLowerCase();
-    if (!name.endsWith(".pdf") && !name.endsWith(".docx")) {
-      toast.error("Please upload a PDF or DOCX file. Older .doc files can't be analyzed.");
-      return;
-    }
-
-    setUploading(true);
-    try {
-      const url = await uploadFile(file, "resume", token);
-      await updateMyProfile({ resumeUrl: url }, token);
-      setResumeUrl(url);
-      toast.success("New resume uploaded and saved to your profile.");
-    } catch (err) {
-      toast.error(err.message);
-    } finally {
-      setUploading(false);
-    }
-  };
+  const selected = resumes ? resumes.find((r) => r._id === resumeId) : null;
+  const selectedLink = selected ? safeUrl(selected.url) : null;
+  const quotaExhausted = quota ? quota.resumeAnalyses.remaining <= 0 : false;
 
   const handleAnalyze = async () => {
+    if (!selected) return;
     setAnalyzing(true);
     try {
       const result = await analyzeResume(
-        { targetRole: targetRole.trim(), jobDescription: jobDescription.trim() },
+        { resumeId: selected._id, targetRole: targetRole.trim(), jobDescription: jobDescription.trim() },
         token
       );
       toast.success("Resume analyzed!");
@@ -93,11 +79,7 @@ export default function ResumeAnalyzer() {
         <h1 className="text-[24px] font-bold" style={{ ...fontHead, color: COLORS.textDark }}>
           AI Resume Analyzer
         </h1>
-        <Link
-          to="/student/resume-history"
-          className="text-[13.5px] font-semibold mt-2"
-          style={{ ...fontBody, color: COLORS.primary }}
-        >
+        <Link to="/student/resume-history" className="text-[13.5px] font-semibold mt-2" style={{ ...fontBody, color: COLORS.primary }}>
           Past analyses →
         </Link>
       </div>
@@ -105,36 +87,54 @@ export default function ResumeAnalyzer() {
         Get specific, actionable feedback on your resume, and see how it matches a job.
       </p>
 
-         <AiQuotaBanner feature="resumeAnalyses" quota={quota} />
+      <AiQuotaBanner feature="resumeAnalyses" quota={quota} />
 
-         <div className="border border-[#ECEEF3] rounded-2xl p-6 bg-white">
+      <div className="border border-[#ECEEF3] rounded-2xl p-6 bg-white">
         <label className="block text-[13px] font-medium mb-1.5" style={{ ...fontBody, color: COLORS.textDark }}>
-          Your resume
+          Resume to analyze
         </label>
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-5 rounded-xl px-4 py-3" style={{ background: "#FAFBFE" }}>
-          {resumeUrl ? (
-            <a
-              href={resumeUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="text-[13.5px] font-semibold"
-              style={{ ...fontBody, color: COLORS.primary }}
+
+        {resumes === null ? (
+          <p className="text-[13.5px] mb-5" style={{ ...fontBody, color: COLORS.textMuted }}>
+            Checking your resumes...
+          </p>
+        ) : resumes.length === 0 ? (
+          <div className="rounded-xl px-4 py-3 mb-5" style={{ background: "#FFF6E5" }}>
+            <p className="text-[13.5px]" style={{ ...fontBody, color: "#B45309" }}>
+              You haven't added a resume yet.{" "}
+              <Link to="/student/profile" className="font-semibold underline">
+                Add one on your profile
+              </Link>{" "}
+              first.
+            </p>
+          </div>
+        ) : (
+          <div className="mb-5">
+            <select
+              value={resumeId}
+              onChange={(e) => setResumeId(e.target.value)}
+              className={`${fieldClass} bg-white mb-2`}
+              style={{ ...fontBody, borderColor: "#D7DEF5" }}
             >
-              📄 View current resume
-            </a>
-          ) : (
-            <span className="text-[13.5px]" style={{ ...fontBody, color: resumeUrl === null ? COLORS.textMuted : "#B45309" }}>
-              {resumeUrl === null ? "Checking..." : "No resume uploaded yet."}
-            </span>
-          )}
-          <label
-            className="text-[13px] font-semibold cursor-pointer"
-            style={{ ...fontBody, color: uploading ? COLORS.textMuted : COLORS.accent }}
-          >
-            {uploading ? "Uploading..." : resumeUrl ? "Upload a new version" : "Upload resume (PDF or DOCX)"}
-            <input type="file" accept=".pdf,.docx" className="hidden" onChange={handleUpload} disabled={uploading} />
-          </label>
-        </div>
+              {resumes.map((r) => (
+                <option key={r._id} value={r._id}>
+                  {r.label}
+                  {r.isDefault ? " (default)" : ""}
+                </option>
+              ))}
+            </select>
+            <div className="flex flex-wrap gap-4">
+              {selectedLink && (
+                <a href={selectedLink} target="_blank" rel="noopener noreferrer" className="text-[13px] font-semibold" style={{ ...fontBody, color: COLORS.primary }}>
+                  📄 View this resume ↗
+                </a>
+              )}
+              <Link to="/student/profile" className="text-[13px] font-semibold" style={{ ...fontBody, color: COLORS.accent }}>
+                Manage resumes →
+              </Link>
+            </div>
+          </div>
+        )}
 
         <label className="block text-[13px] font-medium mb-1.5" style={{ ...fontBody, color: COLORS.textDark }}>
           Target role (optional)
@@ -153,11 +153,7 @@ export default function ResumeAnalyzer() {
             Job description (optional - paste one to see how well your resume matches it)
           </label>
           {jobDescription && (
-            <button
-              onClick={() => setJobDescription("")}
-              className="text-[12px] font-semibold"
-              style={{ ...fontBody, color: COLORS.textMuted }}
-            >
+            <button onClick={() => setJobDescription("")} className="text-[12px] font-semibold" style={{ ...fontBody, color: COLORS.textMuted }}>
               Clear
             </button>
           )}
@@ -177,7 +173,7 @@ export default function ResumeAnalyzer() {
 
         <button
           onClick={handleAnalyze}
-          disabled={analyzing || !resumeUrl || (quota && quota.resumeAnalyses.remaining <= 0)}
+          disabled={analyzing || !selected || quotaExhausted}
           className="px-6 py-3 rounded-lg font-semibold text-[14.5px] text-white disabled:opacity-60"
           style={{ ...fontBody, background: COLORS.accent }}
         >
@@ -191,8 +187,8 @@ export default function ResumeAnalyzer() {
         )}
 
         <p className="text-[12px] mt-4" style={{ ...fontBody, color: COLORS.textMuted }}>
-          Your resume is processed by Google's Gemini AI to generate this report. Only you can see your reports, and
-          you can delete any of them. AI feedback is a guide, not a guarantee. Use your own judgment.
+          Your resume is processed by Google's Gemini AI to generate this report. Only you can see your reports, and you
+          can delete any of them. AI feedback is a guide, not a guarantee. Use your own judgment.
         </p>
       </div>
     </div>

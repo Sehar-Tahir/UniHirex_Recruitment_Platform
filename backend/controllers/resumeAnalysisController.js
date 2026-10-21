@@ -6,13 +6,32 @@ const { reserveSlot, refundSlot } = require("../utils/aiQuota");
 
 const RESUME_QUOTA_MESSAGE =
   "You've used all of your free resume analyses. You can request more access from an admin.";
+const LEGACY_LABEL = "My Resume";
 
-// @route  POST /api/resume-analysis   (student only — analyze their current uploaded resume)
+// Works out which resume to analyze: the one the student picked, or their default
+function pickResume(user, resumeId) {
+  const resumes = user.resumes || [];
+  if (resumeId) {
+    const chosen = resumes.find((r) => r._id.toString() === String(resumeId));
+    return chosen ? { url: chosen.url, label: chosen.label || LEGACY_LABEL } : null;
+  }
+  const fallback = resumes.find((r) => r.isDefault) || resumes[0];
+  if (fallback) return { url: fallback.url, label: fallback.label || LEGACY_LABEL };
+  // Older accounts that haven't been migrated yet only have resumeUrl
+  return user.resumeUrl ? { url: user.resumeUrl, label: LEGACY_LABEL } : null;
+}
+
+// @route  POST /api/resume-analysis   (student only)   body: { resumeId?, targetRole?, jobDescription? }
 const createAnalysis = async (req, res) => {
   let reserved = false;
   try {
-    if (!req.user.resumeUrl) {
-      return res.status(400).json({ message: "Please upload your resume first." });
+    const resume = pickResume(req.user, req.body.resumeId);
+    if (!resume) {
+      return res.status(400).json({
+        message: req.body.resumeId
+          ? "That resume wasn't found. Please choose another one."
+          : "Please add a resume to your profile first.",
+      });
     }
 
     const targetRole = String(req.body.targetRole || "").trim().slice(0, 100);
@@ -20,7 +39,7 @@ const createAnalysis = async (req, res) => {
 
     let content;
     try {
-      content = await getResumeContent(req.user.resumeUrl);
+      content = await getResumeContent(resume.url);
     } catch (err) {
       return res.status(400).json({ message: err.message });
     }
@@ -44,11 +63,15 @@ const createAnalysis = async (req, res) => {
       });
     }
 
-    // Version = which resume FILE this is. Re-analyzing the same file keeps its version.
+    // Progress and versions are tracked per resume name, so a DevOps resume is never compared with a Full Stack one.
+    // Analyses made before multiple resumes existed have no label and count as "My Resume".
+    const labelFilter = resume.label === LEGACY_LABEL ? { $in: [LEGACY_LABEL, "", null] } : resume.label;
+    const scope = { student: req.user._id, resumeLabel: labelFilter };
+
     const [previousAnalysis, sameFile, highest] = await Promise.all([
-      ResumeAnalysis.findOne({ student: req.user._id }).sort({ createdAt: -1 }),
-      ResumeAnalysis.findOne({ student: req.user._id, resumeUrl: req.user.resumeUrl }).select("version"),
-      ResumeAnalysis.findOne({ student: req.user._id }).sort({ version: -1 }).select("version"),
+      ResumeAnalysis.findOne(scope).sort({ createdAt: -1 }),
+      ResumeAnalysis.findOne({ ...scope, resumeUrl: resume.url }).select("version"),
+      ResumeAnalysis.findOne(scope).sort({ version: -1 }).select("version"),
     ]);
     const version = sameFile?.version || (highest?.version || 0) + 1;
 
@@ -68,7 +91,8 @@ const createAnalysis = async (req, res) => {
     const saved = await ResumeAnalysis.create({
       student: req.user._id,
       targetRole,
-      resumeUrl: req.user.resumeUrl,
+      resumeUrl: resume.url,
+      resumeLabel: resume.label,
       version,
       previous,
       ...analysis,

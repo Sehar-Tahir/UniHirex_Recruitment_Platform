@@ -92,6 +92,7 @@ export default function SearchCandidatesPage() {
             department={c.department}
             skills={c.skills || []}
             cgpa={c.cgpa}
+            photoUrl={c.photoUrl}
           />
         ))}
       </div>

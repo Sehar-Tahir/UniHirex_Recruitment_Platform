@@ -32,3 +32,8 @@ export const getUserAiQuota = (id, token) => request(`/admin/users/${id}/ai-quot
 
 export const updateUserAiLimits = (id, payload, token) =>
   request(`/admin/users/${id}/ai-limits`, { method: "PATCH", body: payload, token });
+
+export const getDeletionSummary = (id, token) => request(`/admin/users/${id}/deletion-summary`, { token });
+
+export const deleteUserAccount = (id, confirmEmail, token) =>
+  request(`/admin/users/${id}/delete`, { method: "POST", body: { confirmEmail }, token });

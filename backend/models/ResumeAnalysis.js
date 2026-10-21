@@ -5,6 +5,7 @@ const resumeAnalysisSchema = new mongoose.Schema(
     student: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     targetRole: { type: String, trim: true, default: "" },
     resumeUrl: { type: String },
+    resumeLabel: { type: String, trim: true, default: "" },
     version: { type: Number },
     hadJobDescription: { type: Boolean, default: false },
 

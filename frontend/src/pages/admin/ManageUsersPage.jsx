@@ -5,7 +5,8 @@ import { getAllUsers, approveUser, toggleUserStatus, createAdmin } from "../../a
 import { useAuth } from "../../context/AuthContext";
 import UserRow from "../../components/dashboard/admin/UserRow";
 import CreateAdminModal from "../../components/dashboard/admin/CreateAdminModal";
-import AiAccessModal from "../../components/dashboard/admin/AiAccessModal";
+   import AiAccessModal from "../../components/dashboard/admin/AiAccessModal";
+   import DeleteAccountModal from "../../components/dashboard/admin/DeleteAccountModal";
 import Pagination from "../../components/Pagination";
 
 const ROLE_TABS = ["All", "Student", "Recruiter"];
@@ -22,6 +23,7 @@ export default function ManageUsersPage() {
   const [totalUsers, setTotalUsers] = useState(0);
   const [showCreateAdmin, setShowCreateAdmin] = useState(false);
   const [aiUser, setAiUser] = useState(null);
+  const [deleteUser, setDeleteUser] = useState(null);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -141,7 +143,8 @@ export default function ManageUsersPage() {
               id={u._id}
               onToggleStatus={handleToggleStatus}
               onApprove={handleApprove}
-              onManageAi={() => setAiUser(u)}
+                 onManageAi={() => setAiUser(u)}
+                 onDelete={() => setDeleteUser(u)}
             />
           ))
         ) : (
@@ -159,7 +162,19 @@ export default function ManageUsersPage() {
         <CreateAdminModal onClose={() => setShowCreateAdmin(false)} onSubmit={handleCreateAdmin} />
       )}
 
-      {aiUser && <AiAccessModal user={aiUser} onClose={() => setAiUser(null)} />}
+         {aiUser && <AiAccessModal user={aiUser} onClose={() => setAiUser(null)} />}
+
+         {deleteUser && (
+           <DeleteAccountModal
+             user={deleteUser}
+             onClose={() => setDeleteUser(null)}
+             onDeleted={() => {
+               setDeleteUser(null);
+               if (users.length === 1 && page > 1) setPage(page - 1);
+               else fetchUsers();
+             }}
+           />
+         )}
     </div>
   );
 }

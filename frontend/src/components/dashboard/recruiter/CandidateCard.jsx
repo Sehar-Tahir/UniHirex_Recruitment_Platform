@@ -2,8 +2,9 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { COLORS, fontHead, fontBody } from "../../../theme";
 import { useSavedCandidates } from "../../../hooks/useSavedCandidates";
+import Avatar from "../../Avatar";
 
-export default function CandidateCard({ id, name, university, department, skills, cgpa }) {
+export default function CandidateCard({ id, name, photoUrl, university, department, skills = [], cgpa }) {
   const navigate = useNavigate();
   const { isSaved, toggleSave } = useSavedCandidates();
   const saved = isSaved(id);
@@ -15,12 +16,7 @@ export default function CandidateCard({ id, name, university, department, skills
     >
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div
-            className="w-11 h-11 rounded-full flex items-center justify-center font-semibold text-white shrink-0"
-            style={{ background: COLORS.primary }}
-          >
-            {name?.[0]?.toUpperCase()}
-          </div>
+          <Avatar name={name} photoUrl={photoUrl} sizeClass="w-11 h-11" />
           <div>
             <h4 className="text-[14.5px] font-semibold" style={{ ...fontHead, color: COLORS.textDark }}>
               {name}
@@ -31,7 +27,10 @@ export default function CandidateCard({ id, name, university, department, skills
           </div>
         </div>
         <button
-          onClick={(e) => { e.stopPropagation(); toggleSave(id); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleSave(id);
+          }}
           className="text-[18px] shrink-0"
           style={{ color: saved ? COLORS.accent : "#CBD5E1" }}
           title={saved ? "Unsave" : "Save candidate"}

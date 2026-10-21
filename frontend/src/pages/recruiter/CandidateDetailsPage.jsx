@@ -4,6 +4,7 @@ import { COLORS, fontHead, fontBody } from "../../theme";
 import { getCandidateById } from "../../api/users";
 import { useAuth } from "../../context/AuthContext";
    import { useSavedCandidates } from "../../hooks/useSavedCandidates";
+import Avatar from "../../components/Avatar";
    import { ProfileLinkButtons, ProjectLinks } from "../../components/ProfileLinks";
 
 export default function CandidateDetailsPage() {
@@ -52,12 +53,7 @@ export default function CandidateDetailsPage() {
 
       <div className="border border-[#ECEEF3] rounded-2xl p-7 bg-white">
         <div className="flex items-center gap-4 mb-6">
-          <div
-            className="w-16 h-16 rounded-full flex items-center justify-center font-semibold text-2xl text-white shrink-0"
-            style={{ background: COLORS.primary }}
-          >
-            {candidate.name[0].toUpperCase()}
-          </div>
+          <Avatar name={candidate.name} photoUrl={candidate.photoUrl} sizeClass="w-16 h-16" textClass="text-2xl" />
           <div>
             <h1 className="text-[20px] font-bold" style={{ ...fontHead, color: COLORS.textDark }}>
               {candidate.name}

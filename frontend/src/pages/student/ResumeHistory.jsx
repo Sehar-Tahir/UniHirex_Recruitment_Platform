@@ -99,6 +99,7 @@ export default function ResumeHistory() {
                 </p>
                 <p className="text-[13px]" style={{ ...fontBody, color: COLORS.textMuted }}>
                   {new Date(a.createdAt).toLocaleDateString()}
+                  {a.resumeLabel ? ` · Resume: ${a.resumeLabel}` : ""}
                   {a.hadJobDescription ? " · Matched to a job description" : ""}
                 </p>
               </div>

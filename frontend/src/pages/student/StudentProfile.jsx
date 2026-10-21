@@ -6,7 +6,7 @@ import LinksCard from "../../components/dashboard/student/LinksCard";
 import SkillsCard from "../../components/dashboard/student/SkillsCard";
 import ProjectsCard from "../../components/dashboard/student/ProjectsCard";
 import CertificationsCard from "../../components/dashboard/student/CertificationsCard";
-import ResumeCard from "../../components/dashboard/student/ResumeCard";
+import ResumesCard from "../../components/dashboard/student/ResumesCard";
 import { getMyProfile, updateMyProfile } from "../../api/users";
 import { useAuth } from "../../context/AuthContext";
 
@@ -61,7 +61,7 @@ export default function StudentProfile() {
       <SkillsCard skills={profile.skills || []} onChange={updateField("skills")} />
       <ProjectsCard projects={profile.projects || []} onChange={updateField("projects")} />
       <CertificationsCard certifications={profile.certifications || []} onChange={updateField("certifications")} />
-      <ResumeCard resumeUrl={profile.resumeUrl} onChange={updateField("resumeUrl")} />
+      <ResumesCard />
     </div>
   );
 }

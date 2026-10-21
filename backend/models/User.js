@@ -52,7 +52,16 @@ const userSchema = new mongoose.Schema(
         year: String,
       },
     ],
-    resumeUrl: { type: String, default: "" },
+    resumeUrl: { type: String, default: "" }, // always mirrors the DEFAULT resume's link (older features still read this)
+    resumes: [
+      {
+        label: { type: String, trim: true, maxlength: 60 },
+        url: { type: String, required: true },
+        fileName: { type: String, trim: true, maxlength: 150 },
+        isDefault: { type: Boolean, default: false },
+        uploadedAt: { type: Date, default: Date.now },
+      },
+    ],
     portfolioUrl: { type: String, trim: true, default: "" },
     socialLinks: {
       linkedin: { type: String, trim: true, default: "" },

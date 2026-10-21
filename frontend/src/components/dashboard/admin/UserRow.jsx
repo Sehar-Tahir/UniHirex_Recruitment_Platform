@@ -7,7 +7,18 @@ const STATUS_STYLES = {
   Suspended: { bg: "#FBEAEA", color: "#B91C1C" },
 };
 
-export default function UserRow({ id, name, email, role, status, createdAt, onToggleStatus, onApprove, onManageAi }) {
+export default function UserRow({
+  id,
+  name,
+  email,
+  role,
+  status,
+  createdAt,
+  onToggleStatus,
+  onApprove,
+  onManageAi,
+  onDelete,
+}) {
   const statusStyle = STATUS_STYLES[status] || STATUS_STYLES.Suspended;
 
   return (
@@ -71,6 +82,16 @@ export default function UserRow({ id, name, email, role, status, createdAt, onTo
             }}
           >
             {status === "Active" ? "Suspend" : "Activate"}
+          </button>
+        )}
+
+        {(role === "student" || role === "recruiter") && (
+          <button
+            onClick={onDelete}
+            className="text-[12.5px] font-semibold whitespace-nowrap px-2.5 py-1 rounded-full"
+            style={{ ...fontBody, color: "#fff", background: "#B91C1C" }}
+          >
+            Delete
           </button>
         )}
       </div>
