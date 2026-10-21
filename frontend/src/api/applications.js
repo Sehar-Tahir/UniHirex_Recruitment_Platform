@@ -1,7 +1,9 @@
 import request from "./client";
 
-export const applyToJob = (jobId, token) =>
-  request("/applications", { method: "POST", body: { jobId }, token });
+export const applyToJob = (jobId, details, token) =>
+  request("/applications", { method: "POST", body: { jobId, ...details }, token });
+
+export const checkApplied = (jobId, token) => request(`/applications/check/${jobId}`, { token });
 
 export const getMyApplications = (filters = {}, token) => {
   const params = new URLSearchParams();
@@ -14,6 +16,8 @@ export const getMyApplications = (filters = {}, token) => {
 
 export const getApplicantsForJob = (jobId, page, token) =>
   request(`/applications/job/${jobId}?page=${page}`, { token });
+
+export const getApplicationById = (id, token) => request(`/applications/${id}`, { token });
 
 export const updateApplicationStatus = (id, status, token) =>
   request(`/applications/${id}/status`, { method: "PATCH", body: { status }, token });

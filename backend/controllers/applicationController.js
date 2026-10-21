@@ -4,31 +4,6 @@ const { createNotification } = require("./notificationController");
 const { getPaginationParams, buildPaginatedResponse } = require("../utils/paginate");
 const getMatchScore = require("../utils/matchScore");
 
-// @route  POST /api/applications   (student only)
-const applyToJob = async (req, res) => {
-  try {
-    const { jobId } = req.body;
-    if (!jobId) return res.status(400).json({ message: "jobId is required" });
-
-    const job = await Job.findById(jobId);
-    if (!job) return res.status(404).json({ message: "Job not found" });
-    if (job.status !== "Active") {
-      return res.status(400).json({ message: "This listing is no longer accepting applications" });
-    }
-
-    const application = await Application.create({ student: req.user._id, job: jobId });
-
-    // Notify the recruiter who posted this job
-    await createNotification(job.postedBy, `${req.user.name} applied to your listing: ${job.title}`);
-
-    res.status(201).json(application);
-  } catch (err) {
-    if (err.code === 11000) {
-      return res.status(409).json({ message: "You've already applied to this job" });
-    }
-    res.status(500).json({ message: "Failed to submit application", error: err.message });
-  }
-};
 
 // @route  GET /api/applications/mine   (student — their own applications, with job details)
 const getMyApplications = async (req, res) => {
@@ -122,7 +97,8 @@ const getCandidateMatchScore = async (req, res) => {
       return res.status(403).json({ message: "You can only view match scores for your own listings" });
     }
 
-    const result = await getMatchScore(application.student.skills, application.job.requirements);
+    const sharedSkills = application.snapshot?.sharedAt ? application.snapshot.skills : null;
+    const result = await getMatchScore(sharedSkills || application.student.skills, application.job.requirements);
     res.json(result);
   } catch (err) {
     res.status(500).json({ message: "Failed to compute match score", error: err.message });
@@ -175,7 +151,6 @@ const sendInterviewInvite = async (req, res) => {
 };
 
 module.exports = {
-  applyToJob,
   getMyApplications,
   getApplicantsForJob,
   updateApplicationStatus,

@@ -39,6 +39,7 @@ import ManageListingsPage from "./pages/recruiter/ManageListingsPage";
 import ApplicantsReviewPage from "./pages/recruiter/ApplicantsReviewPage";
 import SearchCandidatesPage from "./pages/recruiter/SearchCandidatesPage";
 import CandidateDetailsPage from "./pages/recruiter/CandidateDetailsPage";
+import ApplicationDetailsPage from "./pages/recruiter/ApplicationDetailsPage";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ManageUsersPage from "./pages/admin/ManageUsersPage";
@@ -104,6 +105,7 @@ const App = () => {
                 <Route path="/recruiter/post-listing" element={<PostListingPage />} />
                 <Route path="/recruiter/listings" element={<ManageListingsPage />} />
                 <Route path="/recruiter/listings/:id/applicants" element={<ApplicantsReviewPage />} />
+                <Route path="/recruiter/applications/:id" element={<ApplicationDetailsPage />} />
                 <Route path="/recruiter/candidates" element={<SearchCandidatesPage />} />
                 <Route path="/recruiter/candidates/:id" element={<CandidateDetailsPage />} />
                 <Route path="/recruiter/notifications" element={<NotificationsPage />} />

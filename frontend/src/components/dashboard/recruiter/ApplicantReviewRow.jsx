@@ -13,7 +13,8 @@ const STATUS_STYLES = {
   "Rejected": { bg: "#FBEAEA", color: "#B91C1C" },
 };
 
-export default function ApplicantReviewRow({ id, studentId, studentName, photoUrl, university, cgpa, appliedOn, status, onUpdateStatus }) {
+// export default function ApplicantReviewRow({ id, studentId, studentName, photoUrl, university, cgpa, appliedOn, status, onUpdateStatus }) {
+export default function ApplicantReviewRow({ id, studentName, photoUrl, university, cgpa, appliedOn, status, onUpdateStatus }) {
   const navigate = useNavigate();
   const { token } = useAuth();
   const style = STATUS_STYLES[status] || { bg: "#F1F5F9", color: COLORS.textMuted };
@@ -69,15 +70,22 @@ export default function ApplicantReviewRow({ id, studentId, studentName, photoUr
               {studentName}
             </p>
             <p className="text-[13px] mb-1" style={{ ...fontBody, color: COLORS.textMuted }}>
-              {university || "University not set"} · CGPA {cgpa || "—"} · Applied {appliedOn}
+              {university || "University not set"} · CGPA {cgpa || "-"} · Applied {appliedOn}
             </p>
             <div className="flex items-center gap-4">
-              <button
+              {/* <button
                 onClick={() => navigate(`/recruiter/candidates/${studentId}`)}
                 className="text-[13px] font-semibold"
                 style={{ ...fontBody, color: COLORS.primary }}
               >
                 View Profile →
+              </button> */}
+              <button
+                onClick={() => navigate(`/recruiter/applications/${id}`)}
+                className="text-[13px] font-semibold"
+                style={{ ...fontBody, color: COLORS.primary }}
+              >
+                View Application →
               </button>
               {!matchChecked && (
                 <button

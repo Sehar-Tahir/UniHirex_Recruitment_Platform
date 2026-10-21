@@ -11,9 +11,31 @@ const applicationSchema = new mongoose.Schema(
     },
     interviewInvite: {
       dateTime: { type: Date },
-      location: { type: String, trim: true }, // address, or a video call link
+      location: { type: String, trim: true },
       message: { type: String, trim: true },
       sentAt: { type: Date },
+    },
+    // A copy of what the student chose to share when applying. Later profile edits never change it.
+    // Applications made before this existed have no sharedAt, which is how the app tells them apart.
+    snapshot: {
+      name: { type: String, trim: true },
+      email: { type: String, trim: true },
+      phone: { type: String, trim: true, default: "" },
+      university: { type: String, trim: true, default: "" },
+      department: { type: String, trim: true, default: "" },
+      semester: { type: String, trim: true, default: "" },
+      cgpa: { type: String, trim: true, default: "" },
+      skills: [{ type: String }],
+      projects: [{ title: String, description: String, link: String, liveLink: String }],
+      certifications: [{ name: String, issuer: String, year: String }],
+      portfolioUrl: { type: String, trim: true, default: "" },
+      socialLinks: {
+        linkedin: { type: String, trim: true, default: "" },
+        github: { type: String, trim: true, default: "" },
+      },
+      resume: { label: String, url: String, fileName: String },
+      coverNote: { type: String, trim: true, default: "" },
+      sharedAt: { type: Date },
     },
   },
   { timestamps: true }

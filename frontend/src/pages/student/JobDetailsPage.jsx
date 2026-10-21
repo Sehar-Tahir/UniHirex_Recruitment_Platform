@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { COLORS, fontHead, fontBody } from "../../theme";
-import toast from "react-hot-toast";
 import { getJobById, getJobMatchScore } from "../../api/jobs";
-import { applyToJob } from "../../api/applications";
+import { checkApplied } from "../../api/applications";
 import { useAuth } from "../../context/AuthContext";
 import MatchScoreBadge from "../../components/MatchScoreBadge";
+import ApplyModal from "../../components/dashboard/student/ApplyModal";
 
 export default function JobDetailsPage() {
   const { id } = useParams();
@@ -14,8 +14,7 @@ export default function JobDetailsPage() {
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [applied, setApplied] = useState(false);
-  const [applyError, setApplyError] = useState("");
-  const [applying, setApplying] = useState(false);
+  const [showApply, setShowApply] = useState(false);
   const [matchLoading, setMatchLoading] = useState(true);
   const [matchScore, setMatchScore] = useState(null);
   const [matchExplanation, setMatchExplanation] = useState("");
@@ -42,7 +41,7 @@ export default function JobDetailsPage() {
         setMatchScore(result.matchScore);
         setMatchExplanation(result.explanation);
       } catch {
-        // fails gracefully — badge just won't show
+        // fails gracefully, the badge just won't show
       } finally {
         setMatchLoading(false);
       }
@@ -50,20 +49,12 @@ export default function JobDetailsPage() {
     fetchMatchScore();
   }, [id, token]);
 
-  const handleApply = async () => {
-    setApplying(true);
-    setApplyError("");
-    try {
-      await applyToJob(id, token);
-      setApplied(true);
-      toast.success("Application submitted successfully!");
-    } catch (err) {
-      setApplyError(err.message);
-      toast.error(err.message);
-    } finally {
-      setApplying(false);
-    }
-  };
+  // So the button is right after a refresh, and nobody fills in the form just to be told they already applied
+  useEffect(() => {
+    checkApplied(id, token)
+      .then((result) => setApplied(result.applied))
+      .catch(() => {});
+  }, [id, token]);
 
   if (loading) {
     return <p className="text-[14px]" style={{ ...fontBody, color: COLORS.textMuted }}>Loading...</p>;
@@ -76,6 +67,8 @@ export default function JobDetailsPage() {
       </p>
     );
   }
+
+  const closed = !!job.status && job.status !== "Active";
 
   return (
     <div className="max-w-180">
@@ -129,28 +122,33 @@ export default function JobDetailsPage() {
           Requirements
         </h3>
         <ul className="mb-7 list-disc pl-5">
-          {job.requirements.map((req) => (
+          {(job.requirements || []).map((req) => (
             <li key={req} className="text-[14.5px] mb-1" style={{ ...fontBody, color: COLORS.textMuted }}>
               {req}
             </li>
           ))}
         </ul>
 
-        {applyError && (
-          <p className="text-[13.5px] mb-3" style={{ color: "#DC2626" }}>
-            {applyError}
-          </p>
-        )}
-
         <button
-          onClick={handleApply}
-          disabled={applied || applying}
+          onClick={() => setShowApply(true)}
+          disabled={applied || closed}
           className="px-6 py-3 rounded-lg font-semibold text-[14.5px] text-white disabled:opacity-60"
-          style={{ ...fontBody, background: applied ? "#94A3B8" : COLORS.accent }}
+          style={{ ...fontBody, background: applied || closed ? "#94A3B8" : COLORS.accent }}
         >
-          {applied ? "Applied ✓" : applying ? "Applying..." : "Apply Now"}
+          {applied ? "Applied ✓" : closed ? "Listing closed" : "Apply Now"}
         </button>
       </div>
+
+      {showApply && (
+        <ApplyModal
+          job={job}
+          onClose={() => setShowApply(false)}
+          onApplied={() => {
+            setApplied(true);
+            setShowApply(false);
+          }}
+        />
+      )}
     </div>
   );
 }

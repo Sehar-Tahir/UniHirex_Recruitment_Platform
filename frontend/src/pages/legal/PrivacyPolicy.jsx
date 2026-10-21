@@ -71,8 +71,8 @@ export default function PrivacyPolicy() {
       <Section title="Who can see your information">
         <Bullets
           items={[
-            "Recruiters: UniHirex exists to connect students with employers, so recruiters who have been approved by an admin can search and view student profiles. This includes your name, email address, photo, university, department, semester, CGPA, skills, projects and their links, portfolio and social links, and your default resume. They can see this even if you have not applied to their listing. We do not show your phone number in candidate search or on candidate profiles.",
-            "When you apply: the recruiter who posted that listing can see your application and its status.",
+            "Recruiters: UniHirex exists to connect students with employers, so recruiters who have been approved by an admin can search and view student profiles. This includes your name, email address, photo, university, department, semester, CGPA, skills, projects and their links, portfolio and social links, and your default resume. They can see this even if you have not applied to their listing. We do not show your phone number in candidate search or on candidate profiles. If you choose to share it when you apply, the recruiter of that listing can see it.",
+            "When you apply: you review and choose what to share, including which resume to attach. The recruiter who posted that listing can see those details, your cover note, and your application's status. We keep a copy of what you shared, so later changes to your profile do not change an application you have already sent.",
             "Students can see job listings and the company details that recruiters add.",
             "Admins: platform administrators can see account information in order to moderate the platform and help users.",
           ]}
