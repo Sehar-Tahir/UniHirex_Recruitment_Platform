@@ -108,7 +108,16 @@ const getCandidateMatchScore = async (req, res) => {
 // @route  POST /api/applications/:id/invite-interview   (recruiter — must own the related job, applicant must be Shortlisted)
 const sendInterviewInvite = async (req, res) => {
   try {
-    const { dateTime, location, message } = req.body;
+    const { location, message } = req.body;
+
+    // The form sends a time with no timezone. UniHirex runs on Pakistan time (UTC+5, no daylight saving),
+    // so read it as that, whatever timezone the server itself is in.
+    const rawDateTime = String(req.body.dateTime || "");
+    const hasZone = /(Z|[+-]\d{2}:?\d{2})$/.test(rawDateTime);
+    const dateTime = rawDateTime ? new Date(hasZone ? rawDateTime : `${rawDateTime}+05:00`) : null;
+    if (dateTime && Number.isNaN(dateTime.getTime())) {
+      return res.status(400).json({ message: "That date and time isn't valid" });
+    }
 
     if (!dateTime || !location) {
       return res.status(400).json({ message: "Date/time and location are required" });
@@ -137,11 +146,12 @@ const sendInterviewInvite = async (req, res) => {
     const formattedDate = new Date(dateTime).toLocaleString("en-US", {
       dateStyle: "medium",
       timeStyle: "short",
+      timeZone: "Asia/Karachi",
     });
 
     await createNotification(
       application.student._id,
-      `Interview invitation for ${application.job.title}: ${formattedDate} at ${location}`
+      `Interview invitation for ${application.job.title}: ${formattedDate} (PKT) at ${location}`
     );
 
     res.json({ message: "Interview invitation sent", application });

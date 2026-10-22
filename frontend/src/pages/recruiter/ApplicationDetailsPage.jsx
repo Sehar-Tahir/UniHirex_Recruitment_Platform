@@ -7,6 +7,7 @@ import { useAuth } from "../../context/AuthContext";
 import { safeUrl } from "../../utils/links";
 import Avatar from "../../components/Avatar";
 import { ProfileLinkButtons, ProjectLinks } from "../../components/ProfileLinks";
+import InterviewInviteSection from "../../components/dashboard/recruiter/InterviewInviteSection";
 
 const STATUS_STYLES = {
   "Under Review": { bg: "#FFF6E5", color: "#B45309" },
@@ -142,6 +143,14 @@ export default function ApplicationDetailsPage() {
           )}
         </div>
       </div>
+
+      {application.status === "Shortlisted" && (
+        <InterviewInviteSection
+          application={application}
+          studentName={hasSnapshot ? s.name : student?.name}
+          onSent={(invite) => setApplication((prev) => ({ ...prev, interviewInvite: invite }))}
+        />
+      )}
 
       {!hasSnapshot ? (
         <div className="rounded-2xl px-5 py-4" style={{ background: "#FFF6E5" }}>
