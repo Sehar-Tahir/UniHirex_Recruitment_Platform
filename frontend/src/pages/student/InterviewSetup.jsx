@@ -1,19 +1,31 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { COLORS, fontHead, fontBody } from "../../theme";
 import toast from "react-hot-toast";
-   import { createInterview } from "../../api/interviews";
-   import { getMyAiQuota } from "../../api/users";
-   import AiQuotaBanner from "../../components/AiQuotaBanner";
+import { createInterview } from "../../api/interviews";
+import { getMyAiQuota } from "../../api/users";
+import { getJobById } from "../../api/jobs";
+import AiQuotaBanner from "../../components/AiQuotaBanner";
 import { useAuth } from "../../context/AuthContext";
 
 const LEVELS = ["Junior", "Mid", "Senior"];
 const TYPES = ["Technical", "HR", "Behavioral", "Mixed", "Role Specific"];
 const QUESTION_OPTIONS = Array.from({ length: 10 }, (_, i) => i + 1);
 
+// Maps a listing's experience level onto the interview levels
+function levelFor(experienceLevel) {
+  const text = String(experienceLevel || "").toLowerCase();
+  if (text.includes("senior")) return "Senior";
+  if (text.includes("mid")) return "Mid";
+  return "Junior";
+}
+
 export default function InterviewSetup() {
   const { token } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const jobId = searchParams.get("jobId");
+
   const [form, setForm] = useState({
     role: "",
     level: "Junior",
@@ -21,14 +33,32 @@ export default function InterviewSetup() {
     questionCount: 5,
   });
   const [errors, setErrors] = useState({});
-     const [loading, setLoading] = useState(false);
-     const [quota, setQuota] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [quota, setQuota] = useState(null);
+  const [practiceJob, setPracticeJob] = useState(null);
 
-     useEffect(() => {
-       getMyAiQuota(token).then(setQuota).catch(() => {});
-     }, [token]);
+  useEffect(() => {
+    getMyAiQuota(token).then(setQuota).catch(() => {});
+  }, [token]);
 
-     const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  // Arriving from a job page: load the job and pre-fill the form
+  useEffect(() => {
+    if (!jobId) return;
+    getJobById(jobId)
+      .then((job) => {
+        if (job.status && job.status !== "Active") return; // closed listings can't be practiced for
+        setPracticeJob({ _id: job._id, title: job.title, company: job.company });
+        setForm((prev) => ({
+          ...prev,
+          role: job.title,
+          level: levelFor(job.experienceLevel),
+          type: "Role Specific",
+        }));
+      })
+      .catch(() => {});
+  }, [jobId]);
+
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const validate = () => {
     const errs = {};
@@ -44,7 +74,14 @@ export default function InterviewSetup() {
 
     setLoading(true);
     try {
-      const interview = await createInterview({ ...form, questionCount: Number(form.questionCount) }, token);
+      const interview = await createInterview(
+        {
+          ...form,
+          questionCount: Number(form.questionCount),
+          jobId: practiceJob ? practiceJob._id : undefined,
+        },
+        token
+      );
       navigate(`/student/interview-room/${interview._id}`);
     } catch (err) {
       toast.error(err.message);
@@ -65,9 +102,29 @@ export default function InterviewSetup() {
         Practice a real voice-based interview, tailored to the role you're preparing for.
       </p>
 
-         <AiQuotaBanner feature="interviews" quota={quota} />
+      <AiQuotaBanner feature="interviews" quota={quota} />
 
-         <form onSubmit={handleSubmit} className="border border-[#ECEEF3] rounded-2xl p-7 bg-white flex flex-col gap-5">
+      {practiceJob && (
+        <div
+          className="rounded-xl px-4 py-3 mb-5 flex flex-wrap items-center justify-between gap-3"
+          style={{ background: "#F8ECF1" }}
+        >
+          <p className="text-[13.5px]" style={{ ...fontBody, color: COLORS.accent }}>
+            Practicing for <strong>{practiceJob.title}</strong> at {practiceJob.company}. The interviewer will focus on
+            this job's requirements.
+          </p>
+          <button
+            type="button"
+            onClick={() => setPracticeJob(null)}
+            className="text-[13px] font-semibold"
+            style={{ ...fontBody, color: COLORS.textMuted }}
+          >
+            Make it a general interview
+          </button>
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="border border-[#ECEEF3] rounded-2xl p-7 bg-white flex flex-col gap-5">
         <div>
           <label className="block text-[13px] font-medium mb-1.5" style={{ ...fontBody, color: COLORS.textDark }}>
             Job Role

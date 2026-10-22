@@ -109,6 +109,16 @@ export default function JobDetailsPage() {
           >
             ✨ Check my resume against this job →
           </Link>
+          <Link
+            to={`/student/interview-coach?jobId=${id}`}
+            className="block w-fit mt-2 text-[13px] font-semibold"
+            style={{ ...fontBody, color: COLORS.accent }}
+          >
+            🎤 Practice an interview for this job →{" "}
+            <span className="font-normal" style={{ color: COLORS.textMuted }}>
+              (uses 1 of your AI interviews)
+            </span>
+          </Link>
         </div>
 
         <h3 className="text-[15px] font-semibold mb-2" style={{ ...fontHead, color: COLORS.textDark }}>

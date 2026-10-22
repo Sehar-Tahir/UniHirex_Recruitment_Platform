@@ -29,6 +29,7 @@ const interviewSchema = new mongoose.Schema(
     recommendation: { type: String },
 
     status: { type: String, enum: ["In Progress", "Completed", "Abandoned"], default: "In Progress" },
+    relatedJob: { type: mongoose.Schema.Types.ObjectId, ref: "Job" }, // set when practicing for a specific job
     startedAt: { type: Date }, // set when the live session first starts; this is when a quota slot is used
     tokenMints: { type: Number, default: 0 }, // how many times a live connection was started for this interview
   },
