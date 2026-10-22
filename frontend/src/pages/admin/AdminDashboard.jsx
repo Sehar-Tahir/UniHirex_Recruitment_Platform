@@ -27,7 +27,7 @@ export default function AdminDashboard() {
         const data = await getAdminStats(token);
         setStats(data);
       } catch {
-        // dashboard fails gracefully — page still renders without stats
+        // dashboard fails gracefully - page still renders without stats
       } finally {
         setLoading(false);
       }
@@ -45,10 +45,10 @@ export default function AdminDashboard() {
       </p>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-        <AdminStatCard label="Total Students" value={loading ? "—" : stats?.totalStudents ?? 0} />
-        <AdminStatCard label="Total Recruiters" value={loading ? "—" : stats?.totalRecruiters ?? 0} />
-        <AdminStatCard label="Total Listings" value={loading ? "—" : stats?.totalListings ?? 0} />
-        <AdminStatCard label="Total Applications" value={loading ? "—" : stats?.totalApplications ?? 0} />
+        <AdminStatCard label="Total Students" value={loading ? "-" : stats?.totalStudents ?? 0} />
+        <AdminStatCard label="Total Recruiters" value={loading ? "-" : stats?.totalRecruiters ?? 0} />
+        <AdminStatCard label="Total Listings" value={loading ? "-" : stats?.totalListings ?? 0} />
+        <AdminStatCard label="Total Applications" value={loading ? "-" : stats?.totalApplications ?? 0} />
       </div>
 
       <div className="border border-[#ECEEF3] rounded-2xl p-6 bg-white">

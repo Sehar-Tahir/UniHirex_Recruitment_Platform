@@ -29,7 +29,7 @@ export default function Topbar({ onMenuClick }) {
         const result = await getMyNotifications(1, token);
         setUnreadCount(result.data.filter((n) => !n.read).length);
       } catch {
-        // silently ignore — badge is a nice-to-have
+        // silently ignore - badge is a nice-to-have
       }
     };
     fetchUnread();

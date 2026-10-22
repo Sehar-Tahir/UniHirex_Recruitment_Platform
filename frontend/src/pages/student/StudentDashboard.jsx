@@ -32,7 +32,7 @@ export default function StudentDashboard() {
         setRecentApplications(applicationsResult.data);
         setNotifications(notificationsData.data.slice(0, 4));
       } catch {
-        // dashboard widgets fail gracefully — page still renders with what succeeded
+        // dashboard widgets fail gracefully - page still renders with what succeeded
       } finally {
         setLoading(false);
       }

@@ -42,6 +42,7 @@ app.use("/api/upload", require("./routes/uploadRoutes"));
 app.use("/api/interviews", require("./routes/interviewRoutes"));
 app.use("/api/stats", statsRoutes);
 app.use("/api/resume-analysis", require("./routes/resumeAnalysisRoutes"));
+app.use("/api/public", require("./routes/publicRoutes"));
 
 // Catches any error thrown/passed to next() anywhere in the app and logs the real detail
 app.use((err, req, res, next) => {

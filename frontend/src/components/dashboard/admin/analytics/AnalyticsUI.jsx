@@ -98,7 +98,7 @@ export function Tile({ label, value, note, tone }) {
         {label}
       </p>
       <p className="text-[24px] font-bold leading-tight" style={{ ...fontHead, color: style.color }}>
-        {value ?? "—"}
+        {value ?? "-"}
       </p>
       {note && (
         <p className="text-[12px] mt-1" style={{ ...fontBody, color: COLORS.textMuted }}>

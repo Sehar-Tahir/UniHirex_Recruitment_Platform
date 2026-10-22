@@ -59,7 +59,7 @@ export default function CandidateDetailsPage() {
               {candidate.name}
             </h1>
             <p className="text-[13.5px]" style={{ ...fontBody, color: COLORS.textMuted }}>
-              {candidate.department || "Department not set"} · {candidate.university || "University not set"} · {candidate.semester || "—"} Semester
+              {candidate.department || "Department not set"} · {candidate.university || "University not set"} · {candidate.semester || "-"} Semester
             </p>
           </div>
         </div>
@@ -71,7 +71,7 @@ export default function CandidateDetailsPage() {
           </div>
           <div>
             <p className="text-[12.5px] font-medium mb-1" style={{ ...fontBody, color: COLORS.textMuted }}>CGPA</p>
-            <p className="text-[14px] font-medium" style={{ ...fontBody, color: COLORS.textDark }}>{candidate.cgpa || "—"}</p>
+            <p className="text-[14px] font-medium" style={{ ...fontBody, color: COLORS.textDark }}>{candidate.cgpa || "-"}</p>
           </div>
         </div>
 

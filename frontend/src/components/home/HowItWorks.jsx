@@ -1,3 +1,4 @@
+
 import React from "react";
 import { COLORS } from "../../theme";
 import SectionHead from "./SectionHead";
@@ -6,24 +7,22 @@ import Step from "./Step";
 const STEPS = [
   {
     title: "Build your profile",
-    desc: "Add education, skills, certifications, and projects, your professional story in one place.",
+    desc: "Add your education, skills, certifications and projects with GitHub and live links, then save up to 5 named resumes.",
     accent: "blue",
   },
   {
-    // title: "Get discovered",
-    // desc: "Recruiters search by skill, university, and CGPA to find candidates like you.",
-    title: "Upload Resume",
-    desc: "Upload your resume to get discovered by recruiters searching for candidates like you.",
+    title: "Sharpen it with AI",
+    desc: "Get your resume scored, fix ATS problems, and practice voice interviews with an AI coach.",
     accent: "burgundy",
   },
   {
-    title: "Apply with one click",
-    desc: "Browse jobs and internships, filter by location or salary, and apply straight from your profile.",
+    title: "Apply with confidence",
+    desc: "See your job fit score, review exactly what the company will receive, choose your resume, then apply.",
     accent: "blue",
   },
   {
     title: "Track and get hired",
-    desc: "Follow every application's status and respond to interview invites the moment they arrive.",
+    desc: "Follow every application's status and get notified when you're shortlisted or invited to interview.",
     accent: "filled",
   },
 ];
@@ -42,8 +41,8 @@ export default function HowItWorks() {
       <div className="max-w-295 mx-auto px-5 md:px-8">
         <SectionHead
           kicker="The journey"
-          title="From profile to placement!"
-          desc="UniHirex is built around the order students actually move through when applying for jobs and internships. Here's how it works."
+          title="From profile to placement"
+          desc="UniHirex follows the order students actually move through when they go for a job or internship."
         />
         <div className="relative grid md:grid-cols-4 gap-10 md:gap-0">
           <div
@@ -51,17 +50,18 @@ export default function HowItWorks() {
             style={{ background: "#E7EAF3" }}
           >
             <div
-              className="h-full w-1/4 animate-[flowRight_3s_linear_infinite]"
+              className="h-full w-1/4 flow-bar"
               style={{ background: `linear-gradient(to right, transparent, ${COLORS.primary}, transparent)` }}
             />
           </div>
           <style>{`
+            .flow-bar { animation: flowRight 3s linear infinite; }
             @keyframes flowRight {
               0% { transform: translateX(-100%); }
               100% { transform: translateX(400%); }
             }
             @media (prefers-reduced-motion: reduce) {
-              .animate-\\[flowRight_3s_linear_infinite\\] { animation: none; }
+              .flow-bar { animation: none; }
             }
           `}</style>
           {STEPS.map((s, i) => (

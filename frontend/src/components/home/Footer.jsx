@@ -8,6 +8,7 @@ const COLUMNS = [
     title: "Platform",
     links: [
       ["How it works", "#how"],
+      ["AI tools", "#ai"],
       ["For students", "#students"],
       ["For recruiters", "#recruiters"],
       ["Features", "#features"],

@@ -210,7 +210,7 @@ export default function ResumeReport({ analysis, onToggleApplied, onDelete }) {
               <SubHead>Education</SubHead>
               {parsed.education.map((e, i) => (
                 <p key={i} className="text-[13.5px] mb-1" style={{ ...fontBody, color: COLORS.textDark }}>
-                  {[e.degree, e.institution].filter(Boolean).join(" — ")}
+                  {[e.degree, e.institution].filter(Boolean).join(" - ")}
                   {e.period ? ` (${e.period})` : ""}
                 </p>
               ))}
@@ -233,7 +233,7 @@ export default function ResumeReport({ analysis, onToggleApplied, onDelete }) {
               {parsed.projects.map((p, i) => (
                 <p key={i} className="text-[13.5px] mb-1.5" style={{ ...fontBody, color: COLORS.textDark }}>
                   <strong>{p.name}</strong>
-                  {p.description ? ` — ${p.description}` : ""}
+                  {p.description ? ` - ${p.description}` : ""}
                 </p>
               ))}
             </>

@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 export default function AuthLayout({ title, subtitle, children }) {
   return (
     <div className="min-h-screen flex">
-      {/* Left branding panel — hidden on mobile */}
+      {/* Left branding panel - hidden on mobile */}
       <div
         className="hidden lg:flex lg:w-[42%] flex-col justify-between p-12 text-white relative overflow-hidden"
         style={{ background: "#0A0E27" }}

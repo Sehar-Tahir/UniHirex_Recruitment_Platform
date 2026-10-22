@@ -33,7 +33,7 @@ function Field({ label, className = "", children }) {
 function Value({ children }) {
   return (
     <p className="text-[14.5px] font-medium" style={{ ...fontBody, color: COLORS.textDark }}>
-      {children || "—"}
+      {children || "-"}
     </p>
   );
 }

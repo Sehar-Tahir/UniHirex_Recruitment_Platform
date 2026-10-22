@@ -26,7 +26,7 @@ export default function ResumeHistory() {
         setTotal(result.total);
         setRecentScores(result.recentScores || []);
       } catch {
-        // fails gracefully — the page just shows the empty state
+        // fails gracefully - the page just shows the empty state
       } finally {
         setLoading(false);
       }

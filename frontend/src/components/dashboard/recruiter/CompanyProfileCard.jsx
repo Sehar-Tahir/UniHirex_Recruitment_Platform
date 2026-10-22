@@ -29,7 +29,7 @@ export default function CompanyProfileCard({ company, onSave }) {
     try {
       const url = await uploadFile(file, "logo", token);
       setForm((prev) => ({ ...prev, logoUrl: url }));
-      toast.success("Logo uploaded — click Save to apply");
+      toast.success("Logo uploaded - click Save to apply");
     } catch (err) {
       toast.error(err.message);
     } finally {

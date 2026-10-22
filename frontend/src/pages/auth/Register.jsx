@@ -9,7 +9,9 @@ import { registerUser } from "../../api/auth";
 
 export default function Register() {
   const navigate = useNavigate();
-  const [role, setRole] = useState("student");
+  const [role, setRole] = useState(
+    new URLSearchParams(window.location.search).get("role") === "recruiter" ? "recruiter" : "student"
+  );
   const [form, setForm] = useState({ name: "", email: "", password: "", confirmPassword: "", companyName: "" });
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");

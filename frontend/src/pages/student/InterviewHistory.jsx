@@ -28,7 +28,7 @@ export default function InterviewHistory() {
         setTotal(result.total);
         setRecentScores(result.recentScores || []);
       } catch {
-        // fails gracefully — page just shows the empty state
+        // fails gracefully - page just shows the empty state
       } finally {
         setLoading(false);
       }

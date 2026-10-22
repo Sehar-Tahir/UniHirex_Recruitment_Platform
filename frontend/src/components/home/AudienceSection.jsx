@@ -1,3 +1,4 @@
+
 import React from "react";
 import SectionHead from "./SectionHead";
 import AudienceCard from "./AudienceCard";
@@ -16,11 +17,12 @@ export default function AudienceSection() {
             theme="student"
             badge="For students"
             title="Turn your degree into momentum"
-            desc="A living profile that grows with you — skills, certifications, and real projects, ready the moment a recruiter looks."
+            desc="One profile that holds your skills, projects, links and resumes, plus AI tools that get you ready before you apply."
             items={[
-              "Upload your resume, photo, and academic record",
-              "Browse and filter jobs by location, type, and salary",
-              "Track every application from one dashboard",
+              "Build a profile with projects, GitHub and live links, and up to 5 resumes",
+              "Practice voice interviews and get your resume scored by AI",
+              "Apply with full control over what the company sees",
+              "Track every application and interview invitation",
             ]}
             ctaLabel="Create student profile"
             ctaVariant="outline"
@@ -31,15 +33,16 @@ export default function AudienceSection() {
             theme="recruiter"
             badge="For recruiters"
             title="Hire from the next graduating class"
-            desc="Search verified student profiles by skill and university, then manage shortlists and listings from one place."
+            desc="Search student profiles, review exactly what each applicant shared, and move good candidates forward quickly."
             items={[
               "Post jobs and internships in minutes",
-              "Search candidates by skill, CGPA, or department",
-              "Shortlist and manage applications in one pipeline",
+              "Search students by skill, CGPA, or department",
+              "Review each application with an AI fit score on request",
+              "Shortlist and invite to interview from one page",
             ]}
             ctaLabel="Post your first job"
             ctaVariant="primary"
-            ctaTo="/register"
+            ctaTo="/register?role=recruiter"
           />
         </div>
       </div>

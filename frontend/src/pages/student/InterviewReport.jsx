@@ -58,7 +58,7 @@ export default function InterviewReport() {
       <div className="border border-[#ECEEF3] rounded-2xl p-7 bg-white mb-6 text-center">
         <p className="text-[13px] font-medium mb-2" style={{ ...fontBody, color: COLORS.textMuted }}>Overall Score</p>
         <p className="text-[42px] font-bold" style={{ ...fontHead, color: COLORS.primary }}>
-          {interview.overallScore ?? "—"}<span className="text-[20px]">/100</span>
+          {interview.overallScore ?? "-"}<span className="text-[20px]">/100</span>
         </p>
       </div>
 

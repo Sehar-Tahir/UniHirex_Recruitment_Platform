@@ -1,10 +1,23 @@
+
+
 import React from "react";
 import { COLORS, fontBody } from "../../theme";
 
-const COMPANIES = ["NovaTech", "BrightPath", "Vector Labs", "Northbridge", "Skyline Co.", "ByteForge", "PixelWorks"];
+const ITEMS = [
+  "AI Interview Coach",
+  "AI Resume Analyzer",
+  "AI Job Fit Score",
+  "Multiple resumes",
+  "Resume Analysis",
+  "Interview Practice",
+  "Smart applications",
+  "Interview invitations",
+  "Candidate search",
+  "Application tracking",
+];
 
 export default function TrustStrip() {
-  const loopItems = [...COMPANIES, ...COMPANIES];
+  const loopItems = [...ITEMS, ...ITEMS];
 
   return (
     <div className="border-b border-[#EEF0F4] py-7 overflow-hidden">
@@ -13,18 +26,21 @@ export default function TrustStrip() {
           className="text-[12px] font-medium tracking-wider uppercase whitespace-nowrap shrink-0"
           style={{ ...fontBody, color: COLORS.textMuted }}
         >
-          Live on the platform
+          Inside UniHirex
         </span>
 
-        <div className="relative flex-1 overflow-hidden" style={{ maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)" }}>
-          <div className="flex gap-12 w-max animate-[marquee_22s_linear_infinite]">
-            {loopItems.map((c, i) => (
+        <div
+          className="relative flex-1 overflow-hidden"
+          style={{ maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)" }}
+        >
+          <div className="flex gap-12 w-max marquee-track">
+            {loopItems.map((item, i) => (
               <span
                 key={i}
-                className="font-bold text-base opacity-50 whitespace-nowrap"
+                className="font-semibold text-[15px] opacity-60 whitespace-nowrap"
                 style={{ fontFamily: "'Poppins', sans-serif", color: COLORS.textDark }}
               >
-                {c}
+                {item}
               </span>
             ))}
           </div>
@@ -32,12 +48,13 @@ export default function TrustStrip() {
       </div>
 
       <style>{`
+        .marquee-track { animation: marquee 32s linear infinite; }
         @keyframes marquee {
           from { transform: translateX(0); }
           to { transform: translateX(-50%); }
         }
         @media (prefers-reduced-motion: reduce) {
-          .animate-\\[marquee_22s_linear_infinite\\] { animation: none; }
+          .marquee-track { animation: none; }
         }
       `}</style>
     </div>

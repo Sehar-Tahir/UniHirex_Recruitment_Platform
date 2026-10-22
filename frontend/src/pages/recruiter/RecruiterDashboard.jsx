@@ -34,10 +34,10 @@ export default function RecruiterDashboard() {
       </p>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-        <StatCard label="Active Listings" value={loading ? "—" : stats?.activeListings ?? 0} />
-        <StatCard label="Total Applicants" value={loading ? "—" : stats?.totalApplicants ?? 0} />
-        <StatCard label="Shortlisted" value={loading ? "—" : stats?.shortlisted ?? 0} accent />
-        <StatCard label="New This Week" value={loading ? "—" : stats?.newThisWeek ?? 0} />
+        <StatCard label="Active Listings" value={loading ? "-" : stats?.activeListings ?? 0} />
+        <StatCard label="Total Applicants" value={loading ? "-" : stats?.totalApplicants ?? 0} />
+        <StatCard label="Shortlisted" value={loading ? "-" : stats?.shortlisted ?? 0} accent />
+        <StatCard label="New This Week" value={loading ? "-" : stats?.newThisWeek ?? 0} />
       </div>
 
       <div className="border border-[#ECEEF3] rounded-2xl p-6 bg-white">

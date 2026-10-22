@@ -33,7 +33,7 @@ function Row({ label, children }) {
         {label}
       </p>
       <p className="text-[14.5px] font-medium" style={{ ...fontBody, color: COLORS.textDark }}>
-        {children || "—"}
+        {children || "-"}
       </p>
     </div>
   );

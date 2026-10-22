@@ -25,7 +25,7 @@ export default function JobsListPage({ mode = "jobs" }) {
         const profile = await getMyProfile(token);
         setSavedIds(profile.savedJobs || []);
       } catch {
-        // silently ignore — saved-state is a nice-to-have, not critical path
+        // silently ignore - saved-state is a nice-to-have, not critical path
       }
     };
     fetchSaved();
@@ -66,7 +66,7 @@ export default function JobsListPage({ mode = "jobs" }) {
     return () => clearTimeout(debounce);
   }, [filters, mode, page]);
 
-  // Reset to page 1 whenever filters change — otherwise you could be stuck on
+  // Reset to page 1 whenever filters change - otherwise you could be stuck on
   // "page 4" of a filtered result set that only has 1 page
   useEffect(() => {
     setPage(1);

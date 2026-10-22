@@ -276,9 +276,9 @@ export default function AdminAnalytics() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
               <Tile label="Interviews started" value={ai.data.interviews.started} />
               <Tile label="Interviews completed" value={ai.data.interviews.completed} />
-              <Tile label="Avg interview score" value={ai.data.interviews.avgScore ?? "—"} />
+              <Tile label="Avg interview score" value={ai.data.interviews.avgScore ?? "-"} />
               <Tile label="Resume analyses" value={ai.data.resume.analyses} />
-              <Tile label="Avg resume score" value={ai.data.resume.avgScore ?? "—"} />
+              <Tile label="Avg resume score" value={ai.data.resume.avgScore ?? "-"} />
               <Tile label="At interview limit" value={ai.data.atLimit.interviews} tone={ai.data.atLimit.interviews > 0 ? "warn" : undefined} note="students" />
               <Tile label="At resume limit" value={ai.data.atLimit.resumeAnalyses} tone={ai.data.atLimit.resumeAnalyses > 0 ? "warn" : undefined} note="students" />
               <Tile label="Access requests" value={ai.data.requests.last7Days} tone={ai.data.requests.last7Days > 0 ? "warn" : undefined} note="last 7 days" />

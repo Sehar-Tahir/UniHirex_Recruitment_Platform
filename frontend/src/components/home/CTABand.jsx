@@ -24,7 +24,7 @@ export default function CTABand() {
             Your career starts with one profile
           </h2>
           <p className="text-base mb-8 text-white/70" style={fontBody}>
-            Join thousands of students and recruiters already connecting on UniHirex.
+            Create a free profile and start applying, or post your first listing in minutes.
           </p>
           <div className="flex flex-wrap justify-center gap-3.5">
             <Button variant="white" to="/register">Create your profile</Button>
