@@ -330,12 +330,18 @@ export default function AIShowcase() {
 
         <div className="grid lg:grid-cols-[1fr_1.05fr] gap-10 lg:gap-14 items-center">
           <div>
-            <span
+            {/* <span
               className="inline-block text-xs font-bold tracking-wide uppercase px-3.5 py-1.5 rounded-full mb-4 text-white"
               style={{ ...fontBody, background: isRecruiter ? COLORS.accent : COLORS.primary }}
             >
               {active.audience}
-            </span>
+            </span> */}
+            <span
+  className="block sm:inline-block mx-auto sm:mx-0 text-center text-xs font-bold  tracking-wide uppercase px-3.5 md:py-1.5 py-3.5 rounded-full mb-4 text-white"
+  style={{ ...fontBody, background: isRecruiter ? COLORS.accent : COLORS.primary }}
+>
+  {active.audience}
+</span>
             <h3 className="text-2xl md:text-[28px] font-semibold mb-3 leading-snug" style={{ ...fontHead, color: COLORS.textDark }}>
               {active.title}
             </h3>
@@ -350,9 +356,16 @@ export default function AIShowcase() {
                 </li>
               ))}
             </ul>
-            <Button variant="primary" to={active.cta.to}>
+            {/* <Button variant="primary" to={active.cta.to}>
               {active.cta.label} →
-            </Button>
+            </Button> */}
+            <Button 
+  variant="primary" 
+  to={active.cta.to} 
+  className="w-full sm:w-auto text-center justify-center"
+>
+  {active.cta.label} →
+</Button>
           </div>
 
           <div key={active.id}>

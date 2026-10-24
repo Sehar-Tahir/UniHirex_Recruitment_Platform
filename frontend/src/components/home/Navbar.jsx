@@ -75,7 +75,7 @@ export default function Navbar() {
       </div>
 
       {open && (
-        <div className="lg:hidden px-5 pb-5 flex flex-col gap-4 bg-white border-t border-[#EEF0F4]" style={fontBody}>
+        <div className="lg:hidden pt-5 px-5 pb-5 flex flex-col gap-4 bg-white border-t border-[#EEF0F4]" style={fontBody}>
           {LINKS.map((l) => (
             <a
               key={l.label}

@@ -15,21 +15,30 @@ export default function AuthLayout({ title, subtitle, children }) {
         <NodeGraph className="absolute inset-0 w-full h-full opacity-60" />
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{ background: "radial-gradient(circle at 30% 20%, rgba(35,64,184,0.35), transparent 55%)" }}
+          style={{
+            background:
+              "radial-gradient(circle at 30% 20%, rgba(35,64,184,0.35), transparent 55%)",
+          }}
         />
         <div className="relative z-10">
           <Link to="/">
-          <Logo dark />
-        </Link>
+            <Logo dark />
+          </Link>
         </div>
 
         <div style={fontBody}>
           <h2 className="text-[28px] font-semibold mb-3" style={fontHead}>
             Where talent meets opportunity
           </h2>
-          <p className="text-white/80 text-[15px] leading-relaxed max-w-95">
+          {/* <p className="text-white/80 text-[15px] leading-relaxed max-w-95">
             Join thousands of students and recruiters connecting on UniHirex.
             Build your profile, upload resume, and land your next opportunity.
+          </p> */}
+
+          <p className="text-white/80 text-[15px] leading-relaxed max-w-95">
+            Connect with the right opportunities, strengthen your resume with
+            AI, and prepare for interviews with confidence. Your career journey
+            starts with UniHireX.
           </p>
         </div>
 
@@ -43,15 +52,21 @@ export default function AuthLayout({ title, subtitle, children }) {
         <div className="w-full max-w-105">
           <div className="lg:hidden mb-8 flex justify-center">
             <Link to="/">
-          <Logo />
-        </Link>
+              <Logo />
+            </Link>
           </div>
 
-          <h1 className="text-[26px] font-bold mb-2" style={{ ...fontHead, color: COLORS.textDark }}>
+          <h1
+            className="text-[26px] font-bold mb-2"
+            style={{ ...fontHead, color: COLORS.textDark }}
+          >
             {title}
           </h1>
           {subtitle && (
-            <p className="text-[15px] mb-8" style={{ ...fontBody, color: COLORS.textMuted }}>
+            <p
+              className="text-[15px] mb-8"
+              style={{ ...fontBody, color: COLORS.textMuted }}
+            >
               {subtitle}
             </p>
           )}

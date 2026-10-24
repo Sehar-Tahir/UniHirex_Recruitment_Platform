@@ -22,15 +22,21 @@ export default function Hero() {
       />
 
       <div className="max-w-295 mx-auto px-5 md:px-8 relative z-10 pt-16 md:pt-20 pb-16 md:pb-20 text-center">
-        <a
-          href="/register"
-          className="inline-flex items-center gap-2 border border-white/15 bg-white/5 hover:bg-white/10 px-4 py-1.5 rounded-full text-[12.5px] font-medium mb-8 transition-colors"
-          style={fontBody}
-        >
-          <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: COLORS.primaryLight }} />
-          New: AI Interview Coach and Resume Analyzer
-          <span aria-hidden="true">→</span>
-        </a>
+        <a 
+  href="/register"
+  className="hidden sm:inline-flex items-center gap-2 border border-white/15 bg-white/5 hover:bg-white/10 px-4 py-1.5 rounded-full text-[12.5px] font-medium mb-8 transition-colors"
+  style={fontBody}
+>
+  <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: COLORS.primaryLight }} />
+  New: AI Interview Coach and Resume Analyzer
+  <span aria-hidden="true">→</span>
+</a>
+          {/* <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: COLORS.primaryLight }} />
+          BUILT FOR THE NEXT GENERATION OF TALENT
+          <span aria-hidden="true">→</span> */}
+       
+        
+
 
         <h1
           className="text-[38px] md:text-[64px] font-bold leading-[1.08] mb-6 max-w-4xl mx-auto"

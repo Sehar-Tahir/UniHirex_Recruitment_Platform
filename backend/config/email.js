@@ -8,11 +8,12 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const sendEmail = async ({ to, subject, html }) => {
+const sendEmail = async ({ to, replyTo, subject, html }) => {
   try {
     await transporter.sendMail({
       from: `UniHirex <${process.env.GMAIL_USER}>`,
       to,
+      replyTo,
       subject,
       html,
     });
