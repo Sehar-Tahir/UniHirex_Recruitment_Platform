@@ -1,4 +1,5 @@
 const Job = require("../models/Job");
+const { cleanSalary } = require("../utils/salary");
 const User = require("../models/User");
 const { createNotification } = require("./notificationController");
 
@@ -14,7 +15,12 @@ const Application = require("../models/Application");
 // @route  POST /api/jobs   (recruiter only)
 const createJob = async (req, res) => {
   try {
-    const { title, category, type, location, salary, salaryMin, salaryMax, experienceLevel, description, requirements } = req.body;
+    const { title, category, type, location, experienceLevel, description, requirements } = req.body;
+
+    // Salary is validated here. The display text is built on the server so it always matches the numbers.
+    const salaryResult = cleanSalary(req.body.salaryMin, req.body.salaryMax);
+    if (salaryResult.error) return res.status(400).json({ message: salaryResult.error });
+    const { salaryMin, salaryMax, salary } = salaryResult;
 
     if (!title || !category || !type || !location || !experienceLevel || !description) {
       return res.status(400).json({ message: "Missing required fields" });
@@ -74,7 +80,10 @@ const getJobs = async (req, res) => {
     if (location) filter.location = { $regex: location, $options: "i" };
 
     const { minSalary } = req.query;
-    if (minSalary) filter.salaryMax = { $gte: Number(minSalary) };
+    const minimum = Number(minSalary);
+    if (minSalary !== undefined && minSalary !== "" && Number.isFinite(minimum) && minimum >= 0) {
+      filter.salaryMax = { $gte: minimum };
+    }
 
     const { page, limit, skip } = getPaginationParams(req.query);
 

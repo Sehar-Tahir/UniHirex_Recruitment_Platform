@@ -17,8 +17,9 @@ export default function MyApplicationsPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchApplications = async () => {
+    const load = async () => {
       setLoading(true);
+      setError("");
       try {
         const result = await getMyApplications({ status: activeTab, page }, token);
         setApplications(result.data);
@@ -29,12 +30,16 @@ export default function MyApplicationsPage() {
         setLoading(false);
       }
     };
-    fetchApplications();
+    load();
   }, [token, activeTab, page]);
 
-  useEffect(() => {
+  const selectTab = (tab) => {
+    if (tab === activeTab) return;
+    setApplications([]); // never show the previous tab's items under the new tab
+    setLoading(true);
     setPage(1);
-  }, [activeTab]);
+    setActiveTab(tab);
+  };
 
   return (
     <div>
@@ -42,7 +47,8 @@ export default function MyApplicationsPage() {
         My Applications
       </h1>
       <p className="text-[14.5px] mb-6" style={{ ...fontBody, color: COLORS.textMuted }}>
-        Track the status of every job and internship you've applied to.
+        Track the status of every job and internship you've applied to. Interview details appear on the application once
+        you're shortlisted and invited.
       </p>
 
       <div className="flex flex-wrap gap-2 mb-6">
@@ -51,7 +57,7 @@ export default function MyApplicationsPage() {
           return (
             <button
               key={tab}
-              onClick={() => setActiveTab(tab)}
+              onClick={() => selectTab(tab)}
               className="px-3 md:px-4 py-1.5 md:py-2 rounded-full text-[12.5px] md:text-[13.5px] font-semibold transition-colors whitespace-nowrap"
               style={{
                 ...fontBody,
@@ -84,7 +90,7 @@ export default function MyApplicationsPage() {
               company={app.job?.company}
               status={app.status}
               appliedOn={new Date(app.createdAt).toLocaleDateString()}
-              interviewInvite={app.interviewInvite}
+              invite={app.interviewInvite}
             />
           ))
         ) : (

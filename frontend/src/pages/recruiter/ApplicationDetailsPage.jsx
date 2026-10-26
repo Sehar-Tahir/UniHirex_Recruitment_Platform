@@ -8,6 +8,7 @@ import { safeUrl } from "../../utils/links";
 import Avatar from "../../components/Avatar";
 import { ProfileLinkButtons, ProjectLinks } from "../../components/ProfileLinks";
 import InterviewInviteSection from "../../components/dashboard/recruiter/InterviewInviteSection";
+import CandidateMatchCard from "../../components/dashboard/recruiter/CandidateMatchCard";
 
 const STATUS_STYLES = {
   "Under Review": { bg: "#FFF6E5", color: "#B45309" },
@@ -143,6 +144,8 @@ export default function ApplicationDetailsPage() {
           )}
         </div>
       </div>
+
+      <CandidateMatchCard applicationId={application._id} />
 
       {application.status === "Shortlisted" && (
         <InterviewInviteSection

@@ -29,6 +29,11 @@ export default function PostListingPage() {
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
+  // Salary boxes only take digits: no minus sign, decimals, or "e"
+  const blockNonDigits = (e) => {
+    if (["-", "+", ".", ",", "e", "E"].includes(e.key)) e.preventDefault();
+  };
+
   const addRequirement = () => {
     const trimmed = requirementInput.trim();
     if (trimmed && !requirements.includes(trimmed)) setRequirements([...requirements, trimmed]);
@@ -42,7 +47,11 @@ export default function PostListingPage() {
     if (!form.title.trim()) errs.title = "Title is required";
     if (!form.location.trim()) errs.location = "Location is required";
     if (!form.description.trim()) errs.description = "Description is required";
-    if (form.salaryMin && form.salaryMax && Number(form.salaryMin) > Number(form.salaryMax)) {
+    const minText = String(form.salaryMin).trim();
+    const maxText = String(form.salaryMax).trim();
+    if ((minText && !/^\d{1,8}$/.test(minText)) || (maxText && !/^\d{1,8}$/.test(maxText))) {
+      errs.salary = "Salary must be a whole number of 0 or more";
+    } else if (minText && maxText && Number(minText) > Number(maxText)) {
       errs.salary = "Minimum salary can't be greater than maximum";
     }
     return errs;
@@ -68,8 +77,8 @@ export default function PostListingPage() {
         {
           ...form,
           salary: salaryDisplay,
-          salaryMin: Number(form.salaryMin) || 0,
-          salaryMax: Number(form.salaryMax) || Number(form.salaryMin) || 0,
+          salaryMin: form.salaryMin,
+          salaryMax: form.salaryMax,
           requirements,
         },
         token
@@ -160,6 +169,9 @@ export default function PostListingPage() {
             <div className="flex items-center gap-2">
               <input
                 name="salaryMin"
+                min="0"
+                inputMode="numeric"
+                onKeyDown={blockNonDigits}
                 type="number"
                 value={form.salaryMin}
                 onChange={handleChange}
@@ -170,6 +182,9 @@ export default function PostListingPage() {
               <span style={{ color: COLORS.textMuted }}>–</span>
               <input
                 name="salaryMax"
+                min="0"
+                inputMode="numeric"
+                onKeyDown={blockNonDigits}
                 type="number"
                 value={form.salaryMax}
                 onChange={handleChange}

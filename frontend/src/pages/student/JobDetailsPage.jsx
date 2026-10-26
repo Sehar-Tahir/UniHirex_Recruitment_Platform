@@ -15,9 +15,12 @@ export default function JobDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [applied, setApplied] = useState(false);
   const [showApply, setShowApply] = useState(false);
-  const [matchLoading, setMatchLoading] = useState(true);
+
+  // The AI match only runs when the student asks for it: "idle" | "loading" | "done" | "error"
+  const [matchStatus, setMatchStatus] = useState("idle");
   const [matchScore, setMatchScore] = useState(null);
   const [matchExplanation, setMatchExplanation] = useState("");
+  const [matchError, setMatchError] = useState("");
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -33,28 +36,26 @@ export default function JobDetailsPage() {
     fetchJob();
   }, [id]);
 
-  useEffect(() => {
-    const fetchMatchScore = async () => {
-      setMatchLoading(true);
-      try {
-        const result = await getJobMatchScore(id, token);
-        setMatchScore(result.matchScore);
-        setMatchExplanation(result.explanation);
-      } catch {
-        // fails gracefully, the badge just won't show
-      } finally {
-        setMatchLoading(false);
-      }
-    };
-    fetchMatchScore();
-  }, [id, token]);
-
   // So the button is right after a refresh, and nobody fills in the form just to be told they already applied
   useEffect(() => {
     checkApplied(id, token)
       .then((result) => setApplied(result.applied))
       .catch(() => {});
   }, [id, token]);
+
+  const handleCheckMatch = async () => {
+    setMatchStatus("loading");
+    setMatchError("");
+    try {
+      const result = await getJobMatchScore(id, token);
+      setMatchScore(result.matchScore);
+      setMatchExplanation(result.explanation);
+      setMatchStatus("done");
+    } catch (err) {
+      setMatchError(err.message);
+      setMatchStatus("error");
+    }
+  };
 
   if (loading) {
     return <p className="text-[14px]" style={{ ...fontBody, color: COLORS.textMuted }}>Loading...</p>;
@@ -101,7 +102,46 @@ export default function JobDetailsPage() {
         </p>
 
         <div className="mb-6">
-          <MatchScoreBadge loading={matchLoading} score={matchScore} explanation={matchExplanation} />
+          {matchStatus === "idle" && (
+            <div
+              className="flex flex-wrap items-center justify-between gap-3 rounded-xl px-4 py-3"
+              style={{ background: "#F4F6FD" }}
+            >
+              <p className="text-[13.5px]" style={{ ...fontBody, color: COLORS.textMuted }}>
+                See how well your skills match this job.
+              </p>
+              <button
+                onClick={handleCheckMatch}
+                className="px-4 py-2 rounded-lg font-semibold text-[13px] text-white whitespace-nowrap"
+                style={{ ...fontBody, background: COLORS.primary }}
+              >
+                ✨ Check my match
+              </button>
+            </div>
+          )}
+
+          {(matchStatus === "loading" || matchStatus === "done") && (
+            <MatchScoreBadge loading={matchStatus === "loading"} score={matchScore} explanation={matchExplanation} />
+          )}
+
+          {matchStatus === "error" && (
+            <div
+              className="flex flex-wrap items-center justify-between gap-3 rounded-xl px-4 py-3"
+              style={{ background: "#FBEAEA" }}
+            >
+              <p className="text-[13.5px]" style={{ ...fontBody, color: "#B91C1C" }}>
+                {matchError || "Couldn't check your match right now."}
+              </p>
+              <button
+                onClick={handleCheckMatch}
+                className="text-[13px] font-semibold"
+                style={{ ...fontBody, color: COLORS.accent }}
+              >
+                Try again
+              </button>
+            </div>
+          )}
+
           <Link
             to={`/student/resume-analyzer?jobId=${id}`}
             className="inline-block mt-3 text-[13px] font-semibold"

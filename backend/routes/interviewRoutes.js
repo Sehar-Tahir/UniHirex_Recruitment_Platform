@@ -1,19 +1,27 @@
 const express = require("express");
 const { protect, authorize } = require("../middleware/authMiddleware");
 const {
-  createEphemeralToken,
-  createInterview,
-  getInterviewById,
-  saveTranscript,
-  getMyInterviews,
-} = require("../controllers/interviewController");
+  getMyApplications,
+  getApplicantsForJob,
+  updateApplicationStatus,
+  getCandidateMatchScore,
+  sendInterviewInvite,
+} = require("../controllers/applicationController");
+const {
+  submitApplication,
+  checkApplied,
+  getApplicationById,
+} = require("../controllers/applicationDetailsController");
 
 const router = express.Router();
 
-router.get("/", protect, authorize("student"), getMyInterviews);
-router.post("/", protect, authorize("student"), createInterview);
-router.get("/:id", protect, authorize("student"), getInterviewById);
-router.post("/:id/ephemeral-token", protect, authorize("student"), createEphemeralToken);
-router.patch("/:id/transcript", protect, authorize("student"), saveTranscript);
+router.post("/", protect, authorize("student"), submitApplication);
+router.get("/mine", protect, authorize("student"), getMyApplications);
+router.get("/check/:jobId", protect, authorize("student"), checkApplied);
+router.get("/job/:jobId", protect, authorize("recruiter", "admin"), getApplicantsForJob);
+router.patch("/:id/status", protect, authorize("recruiter", "admin"), updateApplicationStatus);
+router.get("/:id/candidate-match", protect, authorize("recruiter", "admin"), getCandidateMatchScore);
+router.post("/:id/invite-interview", protect, authorize("recruiter", "admin"), sendInterviewInvite);
+router.get("/:id", protect, authorize("recruiter", "admin"), getApplicationById);
 
 module.exports = router;

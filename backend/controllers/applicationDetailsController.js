@@ -4,6 +4,7 @@ const Job = require("../models/Job");
 const User = require("../models/User");
 const { createNotification } = require("./notificationController");
 const { sanitizeProfileFields, flattenForSet } = require("../utils/profileValidation");
+;
 
 const clean = (value, max) => (typeof value === "string" ? value.trim().slice(0, max) : "");
 const idSet = (list) => new Set((Array.isArray(list) ? list : []).map(String));
@@ -158,5 +159,6 @@ const getApplicationById = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch application", error: err.message });
   }
 };
+
 
 module.exports = { submitApplication, checkApplied, getApplicationById };

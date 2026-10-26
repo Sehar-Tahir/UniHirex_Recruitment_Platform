@@ -1,5 +1,6 @@
 import React from "react";
 import { COLORS, fontBody } from "../../theme";
+import LinkifiedText from "../LinkifiedText";
 
 export default function NotificationCard({ id, text, time, read, onMarkRead }) {
   return (
@@ -14,7 +15,7 @@ export default function NotificationCard({ id, text, time, read, onMarkRead }) {
         />
         <div>
           <p className="text-[14px] leading-snug" style={{ ...fontBody, color: COLORS.textDark }}>
-            {text}
+            <LinkifiedText text={text} />
           </p>
           <p className="text-[12px] mt-1" style={{ ...fontBody, color: COLORS.textMuted }}>
             {time}

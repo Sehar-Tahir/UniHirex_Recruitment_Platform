@@ -108,7 +108,16 @@ const getCandidateMatchScore = async (req, res) => {
 // @route  POST /api/applications/:id/invite-interview   (recruiter — must own the related job, applicant must be Shortlisted)
 const sendInterviewInvite = async (req, res) => {
   try {
-    const { location, message } = req.body;
+    const { message } = req.body;
+
+    // A meeting link typed without "https://" (like meet.google.com/abc) is turned into a proper link
+    let location = String(req.body.location || "").trim();
+    if (/^(www\.)?([a-z0-9-]+\.)+[a-z]{2,}(\/\S*)?$/i.test(location)) location = `https://${location}`;
+
+    const cleanMessage = String(message || "").trim().slice(0, 1000);
+    const messagePreview = cleanMessage
+      ? ` · Message: ${cleanMessage.slice(0, 140)}${cleanMessage.length > 140 ? "…" : ""}`
+      : "";
 
     // The form sends a time with no timezone. UniHirex runs on Pakistan time (UTC+5, no daylight saving),
     // so read it as that, whatever timezone the server itself is in.
@@ -138,7 +147,7 @@ const sendInterviewInvite = async (req, res) => {
     application.interviewInvite = {
       dateTime,
       location,
-      message: message || "",
+      message: cleanMessage,
       sentAt: new Date(),
     };
     await application.save();
@@ -151,7 +160,7 @@ const sendInterviewInvite = async (req, res) => {
 
     await createNotification(
       application.student._id,
-      `Interview invitation for ${application.job.title}: ${formattedDate} (PKT) at ${location}`
+      `Interview invitation for ${application.job.title}: ${formattedDate} (PKT) at ${location}${messagePreview}`
     );
 
     res.json({ message: "Interview invitation sent", application });

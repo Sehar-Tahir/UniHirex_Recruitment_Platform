@@ -100,6 +100,7 @@ export default function StudentDashboard() {
               company={app.job?.company}
               status={app.status}
               appliedOn={new Date(app.createdAt).toLocaleDateString()}
+                invite={app.interviewInvite}
             />
           ))
         ) : (

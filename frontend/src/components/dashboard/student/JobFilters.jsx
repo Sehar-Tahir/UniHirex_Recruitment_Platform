@@ -77,6 +77,8 @@ export default function JobFilters({ filters, setFilters }) {
       <input
         type="number"
         placeholder="Minimum salary (PKR)"
+        min="0"
+        onKeyDown={(e) => ["-", "+", "e", "E", "."].includes(e.key) && e.preventDefault()}
         value={filters.minSalary}
         onChange={handleChange("minSalary")}
         className="w-45 px-3.5 py-2.5 rounded-lg border-[1.5px] text-[14px] outline-none"
