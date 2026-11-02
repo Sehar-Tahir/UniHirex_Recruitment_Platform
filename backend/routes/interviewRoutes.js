@@ -1,27 +1,29 @@
 const express = require("express");
 const { protect, authorize } = require("../middleware/authMiddleware");
+
 const {
-  getMyApplications,
-  getApplicantsForJob,
-  updateApplicationStatus,
-  getCandidateMatchScore,
-  sendInterviewInvite,
-} = require("../controllers/applicationController");
-const {
-  submitApplication,
-  checkApplied,
-  getApplicationById,
-} = require("../controllers/applicationDetailsController");
+createInterview,
+createEphemeralToken,
+getInterviewById,
+saveTranscript,
+getMyInterviews,
+} = require("../controllers/interviewController");
 
 const router = express.Router();
 
-router.post("/", protect, authorize("student"), submitApplication);
-router.get("/mine", protect, authorize("student"), getMyApplications);
-router.get("/check/:jobId", protect, authorize("student"), checkApplied);
-router.get("/job/:jobId", protect, authorize("recruiter", "admin"), getApplicantsForJob);
-router.patch("/:id/status", protect, authorize("recruiter", "admin"), updateApplicationStatus);
-router.get("/:id/candidate-match", protect, authorize("recruiter", "admin"), getCandidateMatchScore);
-router.post("/:id/invite-interview", protect, authorize("recruiter", "admin"), sendInterviewInvite);
-router.get("/:id", protect, authorize("recruiter", "admin"), getApplicationById);
+// Create AI practice interview
+router.post("/", protect, authorize("student"), createInterview);
+
+// Get student's interviews
+router.get("/", protect, authorize("student"), getMyInterviews);
+
+// Get a specific interview
+router.get("/:id", protect, authorize("student"), getInterviewById);
+
+// Generate Gemini Live ephemeral token
+router.post("/:id/ephemeral-token", protect, authorize("student"), createEphemeralToken);
+
+// Save interview transcript
+router.patch("/:id/transcript", protect, authorize("student"), saveTranscript);
 
 module.exports = router;
