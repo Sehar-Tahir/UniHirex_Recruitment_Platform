@@ -1,116 +1,202 @@
 import React, { useState, useEffect } from "react";
 import { COLORS, fontHead, fontBody } from "../../theme";
 import { useAuth } from "../../context/AuthContext";
+
 import ProfileCompletionCard from "../../components/dashboard/student/ProfileCompletionCard";
 import JobCard from "../../components/dashboard/student/JobCard";
 import ApplicationRow from "../../components/dashboard/student/ApplicationRow";
 import NotificationItem from "../../components/dashboard/student/NotificationItem";
+
+import {
+DashboardStatSkeleton,
+DashboardSectionSkeleton,
+SkeletonBox,
+} from "../../components/dashboard/LoadingSkeleton";
+
 import { getMyProfile } from "../../api/users";
 import { getRecommendedJobs } from "../../api/jobs";
 import { getMyApplications } from "../../api/applications";
 import { getMyNotifications } from "../../api/notifications";
 
 export default function StudentDashboard() {
-  const { user, token } = useAuth();
- const [profile, setProfile] = useState(null);
-  const [recommendedJobs, setRecommendedJobs] = useState([]);
-  const [recentApplications, setRecentApplications] = useState([]);
-  const [notifications, setNotifications] = useState([]);
-  const [loading, setLoading] = useState(true);
+const { user, token } = useAuth();
 
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        const [profileData, jobsData, applicationsResult, notificationsData] = await Promise.all([
-          getMyProfile(token),
-          getRecommendedJobs(),
-          getMyApplications({ limit: 3 }, token),
-          getMyNotifications(1, token),
-        ]);
-        setProfile(profileData);
-        setRecommendedJobs(jobsData);
-        setRecentApplications(applicationsResult.data);
-        setNotifications(notificationsData.data.slice(0, 4));
-      } catch {
-        // dashboard widgets fail gracefully - page still renders with what succeeded
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchDashboardData();
-  }, [token]);
+const [profile, setProfile] = useState(null);
+const [recommendedJobs, setRecommendedJobs] = useState([]);
+const [recentApplications, setRecentApplications] = useState([]);
+const [notifications, setNotifications] = useState([]);
+const [loading, setLoading] = useState(true);
 
-  return (
-    <div>
-      <h1 className="text-[24px] font-bold mb-1" style={{ ...fontHead, color: COLORS.textDark }}>
-        Welcome back, {user?.name || "Student"} 👋
-      </h1>
-      <p className="text-[14.5px] mb-8" style={{ ...fontBody, color: COLORS.textMuted }}>
-        Here's what's happening with your job search today.
-      </p>
+useEffect(() => {
+const fetchDashboardData = async () => {
+try {
+const [
+profileData,
+jobsData,
+applicationsResult,
+notificationsData,
+] = await Promise.all([
+getMyProfile(token),
+getRecommendedJobs(),
+getMyApplications({ limit: 3 }, token),
+getMyNotifications(1, token),
+]);
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        {!loading && profile && (
-          <ProfileCompletionCard completion={profile.profileCompletion} missing={profile.profileMissing} />
-        )}
+    setProfile(profileData);
+    setRecommendedJobs(jobsData);
+    setRecentApplications(applicationsResult.data);
+    setNotifications(notificationsData.data.slice(0, 4));
+  } catch {
+    // Dashboard widgets fail gracefully
+  } finally {
+    setLoading(false);
+  }
+};
 
-        <div className="lg:col-span-2 border border-[#ECEEF3] rounded-2xl p-6 bg-white">
-          <h3 className="text-[16px] font-semibold mb-4" style={{ ...fontHead, color: COLORS.textDark }}>
-            Notifications
-          </h3>
-          {notifications.length > 0 ? (
-            notifications.map((n) => (
-              <NotificationItem key={n._id} text={n.text} time={new Date(n.createdAt).toLocaleDateString()} />
-            ))
-          ) : (
-            !loading && (
-              <p className="text-[13.5px]" style={{ ...fontBody, color: COLORS.textMuted }}>
-                No notifications yet.
-              </p>
-            )
-          )}
-        </div>
-      </div>
+fetchDashboardData();
 
-      <div className="mb-8">
-        <h3 className="text-[16px] font-semibold mb-4" style={{ ...fontHead, color: COLORS.textDark }}>
-          Recommended Jobs
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {recommendedJobs.map((job) => (
-            <JobCard key={job._id} id={job._id} title={job.title} company={job.company} location={job.location} type={job.type} />
-          ))}
-        </div>
-        {!loading && recommendedJobs.length === 0 && (
-          <p className="text-[14px]" style={{ ...fontBody, color: COLORS.textMuted }}>
-            No open listings right now - check back soon.
-          </p>
-        )}
-      </div>
 
+}, [token]);
+
+return ( <div>
+<h1
+className="text-[24px] font-bold mb-1"
+style={{ ...fontHead, color: COLORS.textDark }}
+>
+Welcome back, {user?.name || "Student"} 👋 </h1>
+
+
+  <p
+    className="text-[14.5px] mb-8"
+    style={{ ...fontBody, color: COLORS.textMuted }}
+  >
+    Here's what's happening with your job search today.
+  </p>
+
+  {/* Profile & Notifications */}
+  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+    {loading ? (
       <div className="border border-[#ECEEF3] rounded-2xl p-6 bg-white">
-        <h3 className="text-[16px] font-semibold mb-2" style={{ ...fontHead, color: COLORS.textDark }}>
-          Recent Applications
+        <SkeletonBox className="h-5 w-36 mb-6" />
+        <SkeletonBox className="h-16 w-16 rounded-full mb-5" />
+        <SkeletonBox className="h-3 w-full mb-3" />
+        <SkeletonBox className="h-3 w-3/4 mb-3" />
+        <SkeletonBox className="h-3 w-1/2" />
+      </div>
+    ) : (
+      profile && (
+        <ProfileCompletionCard
+          completion={profile.profileCompletion}
+          missing={profile.profileMissing}
+        />
+      )
+    )}
+
+    {loading ? (
+      <div className="lg:col-span-2">
+        <DashboardSectionSkeleton rows={4} />
+      </div>
+    ) : (
+      <div className="lg:col-span-2 border border-[#ECEEF3] rounded-2xl p-6 bg-white">
+        <h3
+          className="text-[16px] font-semibold mb-4"
+          style={{ ...fontHead, color: COLORS.textDark }}
+        >
+          Notifications
         </h3>
-        {recentApplications.length > 0 ? (
-          recentApplications.map((app) => (
-            <ApplicationRow
-              key={app._id}
-              title={app.job?.title}
-              company={app.job?.company}
-              status={app.status}
-              appliedOn={new Date(app.createdAt).toLocaleDateString()}
-                invite={app.interviewInvite}
+
+        {notifications.length > 0 ? (
+          notifications.map((n) => (
+            <NotificationItem
+              key={n._id}
+              text={n.text}
+              time={new Date(n.createdAt).toLocaleDateString()}
             />
           ))
         ) : (
-          !loading && (
-            <p className="text-[14px]" style={{ ...fontBody, color: COLORS.textMuted }}>
-              No applications yet - start browsing jobs to apply.
-            </p>
-          )
+          <p
+            className="text-[13.5px]"
+            style={{ ...fontBody, color: COLORS.textMuted }}
+          >
+            No notifications yet.
+          </p>
         )}
       </div>
+    )}
+  </div>
+
+  {/* Recommended Jobs */}
+  <div className="mb-8">
+    <h3
+      className="text-[16px] font-semibold mb-4"
+      style={{ ...fontHead, color: COLORS.textDark }}
+    >
+      Recommended Jobs
+    </h3>
+
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+      {loading ? (
+        Array.from({ length: 3 }).map((_, index) => (
+          <DashboardStatSkeleton key={index} />
+        ))
+      ) : (
+        recommendedJobs.map((job) => (
+          <JobCard
+            key={job._id}
+            id={job._id}
+            title={job.title}
+            company={job.company}
+            location={job.location}
+            type={job.type}
+          />
+        ))
+      )}
     </div>
-  );
+
+    {!loading && recommendedJobs.length === 0 && (
+      <p
+        className="text-[14px]"
+        style={{ ...fontBody, color: COLORS.textMuted }}
+      >
+        No open listings right now - check back soon.
+      </p>
+    )}
+  </div>
+
+  {/* Recent Applications */}
+  {loading ? (
+    <DashboardSectionSkeleton rows={3} />
+  ) : (
+    <div className="border border-[#ECEEF3] rounded-2xl p-6 bg-white">
+      <h3
+        className="text-[16px] font-semibold mb-2"
+        style={{ ...fontHead, color: COLORS.textDark }}
+      >
+        Recent Applications
+      </h3>
+
+      {recentApplications.length > 0 ? (
+        recentApplications.map((app) => (
+          <ApplicationRow
+            key={app._id}
+            title={app.job?.title}
+            company={app.job?.company}
+            status={app.status}
+            appliedOn={new Date(app.createdAt).toLocaleDateString()}
+            invite={app.interviewInvite}
+          />
+        ))
+      ) : (
+        <p
+          className="text-[14px]"
+          style={{ ...fontBody, color: COLORS.textMuted }}
+        >
+          No applications yet - start browsing jobs to apply.
+        </p>
+      )}
+    </div>
+  )}
+</div>
+
+);
 }

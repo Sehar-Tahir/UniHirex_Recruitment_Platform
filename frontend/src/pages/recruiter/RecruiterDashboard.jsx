@@ -4,6 +4,10 @@ import { useAuth } from "../../context/AuthContext";
 import StatCard from "../../components/dashboard/recruiter/StatCard";
 import ApplicantMiniRow from "../../components/dashboard/recruiter/ApplicantMiniRow";
 import { getRecruiterStats } from "../../api/jobs";
+import {
+  DashboardStatSkeleton,
+  DashboardSectionSkeleton,
+} from "../../components/dashboard/LoadingSkeleton";
 
 export default function RecruiterDashboard() {
   const { user, token } = useAuth();
@@ -34,34 +38,45 @@ export default function RecruiterDashboard() {
       </p>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-        <StatCard label="Active Listings" value={loading ? "-" : stats?.activeListings ?? 0} />
-        <StatCard label="Total Applicants" value={loading ? "-" : stats?.totalApplicants ?? 0} />
-        <StatCard label="Shortlisted" value={loading ? "-" : stats?.shortlisted ?? 0} accent />
-        <StatCard label="New This Week" value={loading ? "-" : stats?.newThisWeek ?? 0} />
-      </div>
+  {loading ? (
+    Array.from({ length: 4 }).map((_, i) => (
+      <DashboardStatSkeleton key={i} />
+    ))
+  ) : (
+    <>
+      <StatCard label="Active Listings" value={stats?.activeListings ?? 0} />
+      <StatCard label="Total Applicants" value={stats?.totalApplicants ?? 0} />
+      <StatCard label="Shortlisted" value={stats?.shortlisted ?? 0} accent />
+      <StatCard label="New This Week" value={stats?.newThisWeek ?? 0} />
+    </>
+  )}
+</div>
 
-      <div className="border border-[#ECEEF3] rounded-2xl p-6 bg-white">
-        <h3 className="text-[16px] font-semibold mb-2" style={{ ...fontHead, color: COLORS.textDark }}>
-          Recent Applicants
-        </h3>
-        {stats?.recentApplicants?.length > 0 ? (
-          stats.recentApplicants.map((a) => (
-            <ApplicantMiniRow
-              key={a._id}
-              studentName={a.student?.name}
-              jobTitle={a.job?.title}
-              appliedOn={new Date(a.createdAt).toLocaleDateString()}
-              status={a.status}
-            />
-          ))
-        ) : (
-          !loading && (
-            <p className="text-[14px]" style={{ ...fontBody, color: COLORS.textMuted }}>
-              No applicants yet.
-            </p>
-          )
-        )}
-      </div>
+      {loading ? (
+  <DashboardSectionSkeleton rows={4} />
+) : (
+  <div className="border border-[#ECEEF3] rounded-2xl p-6 bg-white">
+    <h3 className="text-[16px] font-semibold mb-2" style={{ ...fontHead, color: COLORS.textDark }}>
+      Recent Applicants
+    </h3>
+
+    {stats?.recentApplicants?.length > 0 ? (
+      stats.recentApplicants.map((a) => (
+        <ApplicantMiniRow
+          key={a._id}
+          studentName={a.student?.name}
+          jobTitle={a.job?.title}
+          appliedOn={new Date(a.createdAt).toLocaleDateString()}
+          status={a.status}
+        />
+      ))
+    ) : (
+      <p className="text-[14px]" style={{ ...fontBody, color: COLORS.textMuted }}>
+        No applicants yet.
+      </p>
+    )}
+  </div>
+)}
     </div>
   );
 }

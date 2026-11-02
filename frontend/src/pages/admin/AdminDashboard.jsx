@@ -4,6 +4,10 @@ import { useAuth } from "../../context/AuthContext";
 import AdminStatCard from "../../components/dashboard/admin/AdminStatCard";
 import ActivityItem from "../../components/dashboard/admin/ActivityItem";
 import { getAdminStats } from "../../api/admin";
+import {
+  DashboardStatSkeleton,
+  DashboardSectionSkeleton,
+} from "../../components/dashboard/LoadingSkeleton";
 
 function timeAgo(dateString) {
   const seconds = Math.floor((Date.now() - new Date(dateString)) / 1000);
@@ -45,26 +49,39 @@ export default function AdminDashboard() {
       </p>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-        <AdminStatCard label="Total Students" value={loading ? "-" : stats?.totalStudents ?? 0} />
-        <AdminStatCard label="Total Recruiters" value={loading ? "-" : stats?.totalRecruiters ?? 0} />
-        <AdminStatCard label="Total Listings" value={loading ? "-" : stats?.totalListings ?? 0} />
-        <AdminStatCard label="Total Applications" value={loading ? "-" : stats?.totalApplications ?? 0} />
-      </div>
+  {loading ? (
+    Array.from({ length: 4 }).map((_, i) => (
+      <DashboardStatSkeleton key={i} />
+    ))
+  ) : (
+    <>
+      <AdminStatCard label="Total Students" value={stats?.totalStudents ?? 0} />
+      <AdminStatCard label="Total Recruiters" value={stats?.totalRecruiters ?? 0} />
+      <AdminStatCard label="Total Listings" value={stats?.totalListings ?? 0} />
+      <AdminStatCard label="Total Applications" value={stats?.totalApplications ?? 0} />
+    </>
+  )}
+</div>
 
-      <div className="border border-[#ECEEF3] rounded-2xl p-6 bg-white">
-        <h3 className="text-[16px] font-semibold mb-2" style={{ ...fontHead, color: COLORS.textDark }}>
-          Recent Activity
-        </h3>
-        {stats?.activity?.length > 0 ? (
-          stats.activity.map((a) => <ActivityItem key={a.id} text={a.text} time={timeAgo(a.time)} />)
-        ) : (
-          !loading && (
-            <p className="text-[14px]" style={{ ...fontBody, color: COLORS.textMuted }}>
-              No recent activity yet.
-            </p>
-          )
-        )}
-      </div>
+      {loading ? (
+  <DashboardSectionSkeleton rows={4} />
+) : (
+  <div className="border border-[#ECEEF3] rounded-2xl p-6 bg-white">
+    <h3 className="text-[16px] font-semibold mb-2" style={{ ...fontHead, color: COLORS.textDark }}>
+      Recent Activity
+    </h3>
+
+    {stats?.activity?.length > 0 ? (
+      stats.activity.map((a) => (
+        <ActivityItem key={a.id} text={a.text} time={timeAgo(a.time)} />
+      ))
+    ) : (
+      <p className="text-[14px]" style={{ ...fontBody, color: COLORS.textMuted }}>
+        No recent activity yet.
+      </p>
+    )}
+  </div>
+)}
     </div>
   );
 }
